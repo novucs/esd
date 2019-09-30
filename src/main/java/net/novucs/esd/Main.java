@@ -1,12 +1,18 @@
 package net.novucs.esd;
 
 import java.sql.*;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
+        Map<String, String> env = System.getenv();
+        String dbHost = env.getOrDefault("DB_HOST", "localhost");
+        String dbPort = env.getOrDefault("DB_PORT", "1527");
+        String dbUser = env.getOrDefault("DB_USER", "impact");
+        String dbPass = env.getOrDefault("DB_PASS", "derbypass");
         Connection con = DriverManager.getConnection(
-                "jdbc:derby://localhost:1527/esd;create=true",
-                "impact", "derbypass");
+                String.format("jdbc:derby://%s:%s/esd;create=true", dbHost, dbPort),
+                dbUser, dbPass);
 
         try {
             PreparedStatement createUserTable = con.prepareStatement(
@@ -35,5 +41,6 @@ public class Main {
         resultSet.close();
         statement.close();
         con.close();
+        System.out.println("Success");
     }
 }

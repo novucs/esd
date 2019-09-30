@@ -7,3 +7,7 @@ services:
       - 1527:1527
   app:
     build: .
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
