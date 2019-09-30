@@ -1,0 +1,7 @@
+---
+version: '3.7'
+services:
+  db:
+    image: az82/docker-derby
+  app:
+    build: .
