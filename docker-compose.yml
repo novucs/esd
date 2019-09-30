@@ -2,6 +2,8 @@
 version: '3.7'
 services:
   db:
-    image: az82/docker-derby
+    build: derby
+    ports:
+      - 1527:1527
   app:
     build: .
