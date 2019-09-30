@@ -3,6 +3,8 @@
 
 ## Quickstart
 Requirements:
+* [jdk11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+* [gradle](https://gradle.org/install/)
 * [git](https://git-scm.com/)
 * [docker](https://docs.docker.com/get-started/)
 * [docker-compose](https://docs.docker.com/compose/)
