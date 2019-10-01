@@ -6,6 +6,7 @@ plugins {
 group 'net.novucs'
 version '0.1.0'
 
+// TODO: Switch to 1.11 when custom Glassfish installer is complete.
 sourceCompatibility = 1.8
 
 repositories {
