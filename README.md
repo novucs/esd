@@ -12,6 +12,7 @@ Requirements:
 Steps:
 1. Clone the repo `git clone https://github.com/novucs/esd.git && cd esd`
 2. Run the project `docker-compose up -d`
+3. Open the [app](http://localhost:8080/app/) in your web browser
 
 ## IDE Setup
 IntelliJ:
