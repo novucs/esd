@@ -1,11 +1,11 @@
 # Enterprise Systems Development Project
 *We're not entirely sure what it is yet. Though we do know we need Glassfish,
-Derby, and JDK11. This project currently provides tooling for the ESD tech stack
+Derby, and JDK8. This project currently provides tooling for the ESD tech stack
 that is compatible with Docker, IntelliJ, and NetBeans.*
 
 ## Quickstart
 Requirements:
-* [jdk11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+* [jdk8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [gradle](https://gradle.org/install/)
 * [git](https://git-scm.com/)
 * [docker](https://docs.docker.com/get-started/)
