@@ -4,7 +4,6 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle war --no-daemon
 
-# use the built project jar in jre container
-# TODO: Create and maintain an updated glassfish docker build for jdk11 (currently jdk8).
-FROM glassfish
+# copy built app to glassfish
+FROM novucs/glassfish:5.1.0-jdk8-slim
 COPY --from=build /home/gradle/src/build/libs/*.war $GLASSFISH_HOME/glassfish/domains/domain1/autodeploy/app.war

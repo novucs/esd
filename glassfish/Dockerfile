@@ -1,14 +1,21 @@
-# glassfish requires old jdk+maven to compile :(
-FROM maven:3.2-jdk-8 AS build
-ENV GLASSFISH_VERSION=5.1.0
-# Download and prepare sources
-RUN apt-get update && apt-get install -y --force-yes wget && \
-	wget https://github.com/eclipse-ee4j/glassfish/archive/${GLASSFISH_VERSION}.tar.gz && \
-	mkdir /glassfish && \
-	tar xzf ${GLASSFISH_VERSION}.tar.gz -C glassfish --strip-components=1
-# Compile the project
-RUN mvn -f /glassfish -Dmaven.artifact.threads=30 -Pstaging install
+# Glassfish does not yet support JDK11
+FROM openjdk:8-jre-slim
 
-FROM openjdk:11-jre-slim AS glassfish
 ENV GLASSFISH_HOME=/app
-COPY --from=build /glassfish/appserver/distributions/glassfish/target/stage/glassfish5/glassfish /app
+ENV GLASSFISH_VERSION=5.1.0
+
+RUN apt-get update && apt-get install -y wget zip netcat && \
+    wget "https://www.eclipse.org/downloads/download.php?file=/glassfish/glassfish-${GLASSFISH_VERSION}.zip&r=1" -O glassfish.zip && \
+    unzip glassfish.zip && \
+    mv glassfish5 ${GLASSFISH_HOME} && \
+    rm -Rf /*.tar.gz && \
+    apt-get purge -y wget && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR ${GLASSFISH_HOME}
+VOLUME ["${GLASSFISH_HOME}/domains/domain1/autodeploy"]
+EXPOSE 4848 8080 8181
+
+HEALTHCHECK CMD nc -z localhost 4848 || exit 1
+
+CMD ["./glassfish/bin/asadmin", "start-domain", "--verbose"]
