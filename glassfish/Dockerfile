@@ -13,7 +13,6 @@ RUN apt-get update && apt-get install -y wget zip netcat && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR ${GLASSFISH_HOME}
-VOLUME ["${GLASSFISH_HOME}/domains/domain1/autodeploy"]
 EXPOSE 4848 8080 8181
 
 HEALTHCHECK CMD nc -z localhost 4848 || exit 1

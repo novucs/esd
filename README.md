@@ -16,6 +16,8 @@ Steps:
 2. Run the project `docker-compose up -d`
 3. [Open the app in your web browser](http://localhost:8080/app/)
 
+To automate local deployments while editing code: `./scripts/autodeploy.sh`
+
 ## IDE Setup
 IntelliJ:
 * `File -> Open -> <select repo location>`
