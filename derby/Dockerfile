@@ -5,8 +5,7 @@ ENV DERBY_HOME=/derby
 ENV DERBY_LIB=${DERBY_HOME}/lib
 ENV CLASSPATH=${DERBY_LIB}/derby.jar:${DERBY_LIB}/derbynet.jar:${DERBY_LIB}/derbytools.jar:${DERBY_LIB}/derbyoptionaltools.jar:${DERBY_LIB}/derbyclient.jar
 
-RUN \
-    apt-get update && apt-get install -y wget netcat && \
+RUN apt-get update && apt-get install -y wget && \
     wget https://dist.apache.org/repos/dist/release/db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz && \
     tar xzf /db-derby-${DERBY_VERSION}-bin.tar.gz && \
     mv /db-derby-${DERBY_VERSION}-bin /derby && \

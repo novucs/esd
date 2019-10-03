@@ -2,7 +2,7 @@
 version: '3.7'
 services:
   db:
-    build: derby
+    build: novucs/derby:10.14.2.0-jdk11-slim
     ports:
       - 1527:1527
   app:
