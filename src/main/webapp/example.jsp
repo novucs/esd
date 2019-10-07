@@ -6,6 +6,7 @@
 </head>
 <body>
 <h1>Example</h1>
+<a href="/app">Go back home</a>
 <p>
 <table border="1" style="text-align: center;">
     <thead>
