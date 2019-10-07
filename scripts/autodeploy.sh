@@ -6,16 +6,16 @@ trap 'trap - SIGTERM && kill -- -$$' SIGINT SIGTERM EXIT
 ./gradlew build
 ./gradlew war -t &
 
-WARFILE="./build/libs/*.war"
+WARFILE="$(find ./build/libs/*.war | sort | head -n 1)"
 
 function date_of_warfile() {
-    return "$(stat -c %y "${WARFILE}")"
+  stat -c %y "${WARFILE}"
 }
 
-last_modified=date_of_warfile
+last_modified=$(date_of_warfile)
 while sleep 1; do
-  if [[ $last_modified != date_of_warfile ]]; then
-    last_modified=date_of_warfile
-    docker cp ./build/libs/*.war "$(docker-compose ps -q app)":/app/glassfish/domains/domain1/autodeploy/app.war
+  if [[ $last_modified != $(date_of_warfile) ]]; then
+    last_modified=$(date_of_warfile)
+    docker cp "${WARFILE}" "$(docker-compose ps -q app)":/app/glassfish/domains/domain1/autodeploy/app.war
   fi
 done
