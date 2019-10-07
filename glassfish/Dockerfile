@@ -1,5 +1,5 @@
 # Glassfish does not yet support JDK11
-FROM openjdk:8-jre-slim
+FROM openjdk:8-slim
 
 ENV GLASSFISH_HOME=/app
 ENV GLASSFISH_VERSION=5.1.0
