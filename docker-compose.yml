@@ -5,6 +5,9 @@ services:
     image: novucs/derby:10.14.2.0-jdk11-slim
     ports:
       - 1527:1527
+    volumes:
+      - db-data:/dbs
+
   app:
     build: .
     depends_on:
@@ -16,3 +19,6 @@ services:
       - "4848:4848"
     volumes:
       - ./build/app.war:/app/glassfish/domains/domain1/autodeploy/app.war
+
+volumes:
+  db-data:
