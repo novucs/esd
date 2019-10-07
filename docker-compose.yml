@@ -1,5 +1,5 @@
 ---
-version: '3.7'
+version: '3.0'
 services:
   db:
     image: novucs/derby:10.14.2.0-jdk11-slim
@@ -14,3 +14,5 @@ services:
     ports:
       - "8080:8080"
       - "4848:4848"
+    volumes:
+      - ./build/app.war:/app/glassfish/domains/domain1/autodeploy/app.war

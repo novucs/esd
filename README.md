@@ -16,7 +16,9 @@ Steps:
 2. Run the project `docker-compose up -d`
 3. [Open the app in your web browser](http://localhost:8080/app/)
 
-To automate local deployments while editing code: `./scripts/autodeploy.sh`
+When docker-compose is running, execute the relevant command to automatically build and deploy the project:
+* UNIX: `./gradlew autodeploy -t`
+* Windows: `gradlew.bat autodeploy -t`
 
 ## IDE Setup
 IntelliJ:
