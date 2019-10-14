@@ -39,6 +39,12 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
 }
 
 checkstyle {
-    configFile file('config/checkstyle/checkstyle.xml');
     toolVersion '8.24'
+    configFile file('config/checkstyle/checkstyle.xml');
+}
+
+pmd {
+    toolVersion '6.18.0'
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/excludes.xml")
 }

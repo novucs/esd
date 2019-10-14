@@ -1,8 +1,8 @@
 package net.novucs.esd;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ public class ExampleServerlet extends HttpServlet {
   private void processRequest(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     response.setContentType("text/html;charset=UTF-8");
-    Map<String, String> anExampleMap = new HashMap<>();
+    Map<String, String> anExampleMap = new ConcurrentHashMap<>();
     anExampleMap.put("a", "b");
     anExampleMap.put("hello", "friend");
     request.setAttribute("anExampleMap", anExampleMap);

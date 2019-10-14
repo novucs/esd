@@ -26,3 +26,11 @@ IntelliJ:
 
 NetBeans:
 * `File -> Open Project -> <select repo location>`
+
+## Linting
+To perform linting checks: `./gradlew check`
+
+Code quality reports will be generated after running checks, view them locally at:
+* [CheckStyle](build/reports/checkstyle/main.html)
+* [PMD](build/reports/pmd/main.html)
+* [SpotBugs](build/reports/spotbugs/main.html)
