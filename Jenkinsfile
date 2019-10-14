@@ -5,13 +5,6 @@ pipeline {
     options {
         disableConcurrentBuilds()
     }
-    environment {
-        if (BRANCH_NAME == 'master') {
-            DEPLOYMENT_TAG = 'latest'
-        } else {
-            DEPLOYMENT_TAG = GIT_COMMIT
-        }
-    }
     stages {
 //        stage('build') {
 //            steps {
@@ -64,6 +57,11 @@ pipeline {
 //                }
 //            }
             steps {
+//                if (BRANCH_NAME == 'master') {
+//                    DEPLOYMENT_TAG = 'latest'
+//                } else {
+//                    DEPLOYMENT_TAG = GIT_COMMIT
+//                }
                 sh 'printenv'
                 echo BRANCH_NAME
 //                sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} latest"
