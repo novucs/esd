@@ -23,21 +23,30 @@ pipeline {
         stage('publish reports') {
             steps {
                 script {
-                    def reports = [
-                            'build/reports/checkstyle/main.html',
-                            'build/reports/pmd/main.html',
-                            'build/reports/spotbugs/main.html',
+                    publishHTML target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll              : true,
+                            reportDir            : 'build/reports/checkstyle/',
+                            reportFiles          : 'main.html',
+                            reportName           : 'checkstyle',
                     ]
-                    for (report in reports) {
-                        publishHTML target: [
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: false,
-                                keepAll              : true,
-                                reportDir            : report,
-                                reportFiles          : report,
-                                reportName           : report,
-                        ]
-                    }
+                    publishHTML target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll              : true,
+                            reportDir            : 'build/reports/pmd/',
+                            reportFiles          : 'main.html',
+                            reportName           : 'pmd',
+                    ]
+                    publishHTML target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll              : true,
+                            reportDir            : 'build/reports/spotbugs/',
+                            reportFiles          : 'main.html',
+                            reportName           : 'spotbugs',
+                    ]
                 }
             }
         }
