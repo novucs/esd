@@ -1,6 +1,8 @@
 pipeline {
+    agent {
+        label 'esd'
+    }
     options {
-        timestamps()
         disableConcurrentBuilds()
     }
     stages {
