@@ -62,6 +62,7 @@ pipeline {
 //                } else {
 //                    DEPLOYMENT_TAG = GIT_COMMIT
 //                }
+                sh 'git tag'
                 sh 'printenv'
                 echo BRANCH_NAME
 //                sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} latest"
