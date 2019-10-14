@@ -1,3 +1,4 @@
 workflow-aggregator:2.6
 workflow-multibranch:2.21
 github-oauth:0.33
+htmlpublisher:1.21
