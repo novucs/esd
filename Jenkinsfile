@@ -5,7 +5,9 @@ pipeline {
     }
     stages {
         stage('setup') {
-            echo 'testing 123'
+            steps {
+                echo 'testing 123'
+            }
         }
     }
 }
