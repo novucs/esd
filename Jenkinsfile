@@ -6,14 +6,14 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-//         stage('build') {
-//             steps {
-//                 sh './gradlew build'
-//             }
-//         }
+        stage('build') {
+            steps {
+                sh './gradlew build'
+            }
+        }
         stage('deploy') {
             steps {
-                sh 'docker ps'
+                sh 'cp build/app.war /var/jenkins_home/deployments/app.war'
             }
         }
     }
