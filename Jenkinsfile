@@ -6,9 +6,9 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('setup') {
+        stage('build') {
             steps {
-                echo 'testing 123'
+                sh './gradlew build'
             }
         }
     }
