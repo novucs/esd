@@ -20,6 +20,27 @@ pipeline {
                 }
             }
         }
+        stage('publish reports') {
+            steps {
+                script {
+                    def reports = [
+                            'build/reports/checkstyle/main.html',
+                            'build/reports/pmd/main.html',
+                            'build/reports/spotbugs/main.html',
+                    ]
+                    for (report in reports) {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : report,
+                                reportFiles          : report,
+                                reportName           : report,
+                        ]
+                    }
+                }
+            }
+        }
         stage('deploy') {
             steps {
                 sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} app"
