@@ -6,9 +6,14 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('build') {
+//         stage('build') {
+//             steps {
+//                 sh './gradlew build'
+//             }
+//         }
+        stage('deploy') {
             steps {
-                sh './gradlew build'
+                sh 'docker ps'
             }
         }
     }
