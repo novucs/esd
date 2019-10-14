@@ -6,41 +6,36 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('setup') {
-            steps {
-                sh './gradlew'
-            }
-        }
         stage('tests') {
             parallel {
                 stage('linting | checkstyle main') {
                     steps {
-                        sh './gradlew checkstyleMain'
+                        sh './gradlew checkstyleMain --no-daemon'
                     }
                 }
                 stage('linting | checkstyle test') {
                     steps {
-                        sh './gradlew checkstyleTest'
+                        sh './gradlew checkstyleTest --no-daemon'
                     }
                 }
                 stage('linting | pmd main') {
                     steps {
-                        sh './gradlew pmdMain'
+                        sh './gradlew pmdMain --no-daemon'
                     }
                 }
                 stage('linting | pmd test') {
                     steps {
-                        sh './gradlew pmdTest'
+                        sh './gradlew pmdTest --no-daemon'
                     }
                 }
                 stage('linting | spotbugs main') {
                     steps {
-                        sh './gradlew spotbugsMain'
+                        sh './gradlew spotbugsMain --no-daemon'
                     }
                 }
-                stage('linting | spotbugs test') {
+                stage('linting | spotbugs test ') {
                     steps {
-                        sh './gradlew spotbugsTest'
+                        sh './gradlew spotbugsTest --no-daemon'
                     }
                 }
             }
