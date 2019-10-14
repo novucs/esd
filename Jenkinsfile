@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'esd'
+        label 'master'
     }
     options {
         disableConcurrentBuilds()
