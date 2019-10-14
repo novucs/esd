@@ -6,13 +6,9 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('tests') {
-            parallel {
-                stage('linting') {
-                    steps {
-                        sh './gradlew check'
-                    }
-                }
+        stage('lint') {
+            steps {
+                sh './gradlew check'
             }
             post {
                 always {
@@ -43,6 +39,11 @@ pipeline {
                         ]
                     }
                 }
+            }
+        }
+        stage('test') {
+            steps {
+                sh './gradlew test'
             }
         }
         stage('build') {
