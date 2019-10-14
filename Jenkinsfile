@@ -13,8 +13,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-//                 sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} app"
-                echo 'test'
+                sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} app"
             }
         }
     }
