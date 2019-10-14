@@ -19,34 +19,34 @@ pipeline {
                     }
                 }
             }
-        }
-        stage('publish reports') {
-            steps {
-                script {
-                    publishHTML target: [
-                            allowMissing         : false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll              : true,
-                            reportDir            : 'build/reports/checkstyle/',
-                            reportFiles          : 'main.html',
-                            reportName           : 'checkstyle',
-                    ]
-                    publishHTML target: [
-                            allowMissing         : false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll              : true,
-                            reportDir            : 'build/reports/pmd/',
-                            reportFiles          : 'main.html',
-                            reportName           : 'pmd',
-                    ]
-                    publishHTML target: [
-                            allowMissing         : false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll              : true,
-                            reportDir            : 'build/reports/spotbugs/',
-                            reportFiles          : 'main.html',
-                            reportName           : 'spotbugs',
-                    ]
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/checkstyle/',
+                                reportFiles          : 'main.html',
+                                reportName           : 'checkstyle',
+                        ]
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/pmd/',
+                                reportFiles          : 'main.html',
+                                reportName           : 'pmd',
+                        ]
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/spotbugs/',
+                                reportFiles          : 'main.html',
+                                reportName           : 'spotbugs',
+                        ]
+                    }
                 }
             }
         }
