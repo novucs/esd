@@ -13,7 +13,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'cp build/app.war /var/jenkins_home/deployments/app.war'
+                sh 'cp build/app.war /tmp/deployments/app.war'
             }
         }
     }

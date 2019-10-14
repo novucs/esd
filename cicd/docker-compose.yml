@@ -25,7 +25,7 @@ services:
       - jenkins_user
       - jenkins_pass
     volumes:
-      - deployments:/var/jenkins_home/deployments
+      - deployments:/tmp/deployments
 
 volumes:
   db-data:
