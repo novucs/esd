@@ -13,7 +13,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'cp build/app.war /tmp/deployments/app.war'
+                sh 'ssh billy@esd.novucs.net docker ps'
             }
         }
     }
