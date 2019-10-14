@@ -1,6 +1,6 @@
 FROM jenkins/jenkins:lts
 
-ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Djava.awt.headless=true -Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' 'unsafe-inline' data:;\""
 
 COPY security.groovy /usr/share/jenkins/ref/init.groovy.d/security.groovy
 
