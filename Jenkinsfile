@@ -8,34 +8,9 @@ pipeline {
     stages {
         stage('tests') {
             parallel {
-                stage('linting | checkstyle main') {
+                stage('linting') {
                     steps {
-                        sh './gradlew checkstyleMain --no-daemon'
-                    }
-                }
-                stage('linting | checkstyle test') {
-                    steps {
-                        sh './gradlew checkstyleTest --no-daemon'
-                    }
-                }
-                stage('linting | pmd main') {
-                    steps {
-                        sh './gradlew pmdMain --no-daemon'
-                    }
-                }
-                stage('linting | pmd test') {
-                    steps {
-                        sh './gradlew pmdTest --no-daemon'
-                    }
-                }
-                stage('linting | spotbugs main') {
-                    steps {
-                        sh './gradlew spotbugsMain --no-daemon'
-                    }
-                }
-                stage('linting | spotbugs test ') {
-                    steps {
-                        sh './gradlew spotbugsTest --no-daemon'
+                        sh './gradlew check'
                     }
                 }
             }
