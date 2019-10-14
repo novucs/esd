@@ -30,7 +30,7 @@ pipeline {
                     ]
                     for (report in reports) {
                         publishHTML target: [
-                                allowMissing         : false,
+                                allowMissing         : true,
                                 alwaysLinkToLastBuild: false,
                                 keepAll              : true,
                                 reportDir            : report,
