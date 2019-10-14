@@ -19,6 +19,9 @@ services:
     build: jenkins
     environment:
       JAVA_OPTS: "-Dhudson.footerURL=http://esd.novucs.net:8080 -Djenkins.install.runSetupWizard=false"
+      JOB_DISPLAY_URL: http://esd.novucs.net:8080
+      RUN_CHANGES_DISPLAY_URL: http://esd.novucs.net:8080
+      RUN_DISPLAY_URL: http://esd.novucs.net:8080
     ports:
       - "8081:8080"
     secrets:
