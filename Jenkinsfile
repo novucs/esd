@@ -6,16 +6,41 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('build') {
+        stage('setup') {
             steps {
-                sh './gradlew autodeploy'
+                sh './gradlew'
             }
         }
-        stage('run all tests') {
+        stage('tests') {
             parallel {
-                stage('source checks') {
+                stage('linting | checkstyle main') {
                     steps {
-                        sh './gradlew check'
+                        sh './gradlew checkstyleMain'
+                    }
+                }
+                stage('linting | checkstyle test') {
+                    steps {
+                        sh './gradlew checkstyleTest'
+                    }
+                }
+                stage('linting | pmd main') {
+                    steps {
+                        sh './gradlew pmdMain'
+                    }
+                }
+                stage('linting | pmd test') {
+                    steps {
+                        sh './gradlew pmdTest'
+                    }
+                }
+                stage('linting | spotbugs main') {
+                    steps {
+                        sh './gradlew spotbugsMain'
+                    }
+                }
+                stage('linting | spotbugs test') {
+                    steps {
+                        sh './gradlew spotbugsTest'
                     }
                 }
             }
@@ -48,6 +73,11 @@ pipeline {
                         ]
                     }
                 }
+            }
+        }
+        stage('build') {
+            steps {
+                sh './gradlew autodeploy'
             }
         }
         stage('deploy') {
