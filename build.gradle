@@ -2,6 +2,8 @@ plugins {
     id 'war'
     id 'java'
     id "com.github.spotbugs" version "2.0.0"
+    id 'pmd'
+    id 'checkstyle'
 }
 
 group 'net.novucs'
@@ -34,4 +36,9 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
         xml.enabled = false
         html.enabled = true
     }
+}
+
+checkstyle {
+    configFile file('config/checkstyle/checkstyle.xml');
+    toolVersion '8.24'
 }

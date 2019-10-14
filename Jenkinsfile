@@ -13,7 +13,7 @@ pipeline {
         }
         stage('run all tests') {
             parallel {
-                stage('spot bugs') {
+                stage('source checks') {
                     steps {
                         sh './gradlew check'
                     }
