@@ -14,6 +14,7 @@ pipeline {
                 always {
                     script {
                         junit 'build/test-results/test/*.xml'
+                        step( [ $class: 'JacocoPublisher' ] )
                         publishHTML target: [
                                 allowMissing         : false,
                                 alwaysLinkToLastBuild: false,
