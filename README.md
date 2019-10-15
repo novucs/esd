@@ -1,9 +1,6 @@
 # Enterprise Systems Development Project
-*~~We're not entirely sure what it is yet.~~ [Link to planning/spec document](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)*
-
-*Though we do know we need Glassfish,
-Derby, and JDK8. This project currently provides tooling for the ESD tech stack
-that is compatible with Docker, IntelliJ, and NetBeans.*
+*[Link to planning/spec document](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)*
+*This project currently provides tooling for the ESD tech stack that is compatible with Docker, IntelliJ, and NetBeans.*
 
 ## Quickstart
 Requirements:
@@ -30,20 +27,16 @@ IntelliJ:
 NetBeans:
 * `File -> Open Project -> <select repo location>`
 
-## Linting
-To perform linting checks: `./gradlew check`
+## Code checks
+To perform code checks with: `./gradlew check`
 
 Code quality reports will be generated after running checks, view them locally at:
-* [CheckStyle](build/reports/checkstyle/main.html)
-* [PMD](build/reports/pmd/main.html)
-* [SpotBugs](build/reports/spotbugs/main.html)
+* CheckStyle: `./build/reports/checkstyle/main.html`
+* PMD: `./build/reports/pmd/main.html`
+* SpotBugs: `./build/reports/spotbugs/main.html`
+* Tests: `./build/reports/tests/test/index.html`
 
 If any lint checks seem out of place, and are difficult to work with please let @novucs know.
-
-## Testing
-Currently only unit tests are supported. To run them, simply execute: `./gradlew test`
-
-Code coverage and integration tests will be defined when the project specification has been confirmed.
 
 ## Contributing
 Feel free to branch off this repo in the format `feature/{ticket-number}-{name-of-feature}` e.g. 

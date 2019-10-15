@@ -6,13 +6,14 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('lint') {
+        stage('check') {
             steps {
                 sh './gradlew check --no-daemon'
             }
             post {
                 always {
                     script {
+                        junit 'build/test-results/test/*.xml'
                         publishHTML target: [
                                 allowMissing         : false,
                                 alwaysLinkToLastBuild: false,
@@ -39,11 +40,6 @@ pipeline {
                         ]
                     }
                 }
-            }
-        }
-        stage('test') {
-            steps {
-                sh './gradlew test --no-daemon'
             }
         }
         stage('build') {
