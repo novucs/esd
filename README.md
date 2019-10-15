@@ -25,6 +25,7 @@ When docker-compose is running, execute the relevant command to automatically bu
 ## IDE Setup
 IntelliJ:
 * `File -> Open -> <select repo location>`
+* `File -> Settings -> Editor -> Code Style -> Scheme Cog -> Import Scheme -> IntelliJ IDEA code style XML -> config/codestyles/GoogleStyle.xml`
 
 NetBeans:
 * `File -> Open Project -> <select repo location>`
