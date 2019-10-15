@@ -1,5 +1,7 @@
 # Enterprise Systems Development Project
-*We're not entirely sure what it is yet. Though we do know we need Glassfish,
+*~~We're not entirely sure what it is yet.~~ [Link to planning/spec document](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)*
+
+*Though we do know we need Glassfish,
 Derby, and JDK8. This project currently provides tooling for the ESD tech stack
 that is compatible with Docker, IntelliJ, and NetBeans.*
 
