@@ -9,6 +9,7 @@ pipeline {
         stage('check') {
             steps {
                 sh './gradlew check --no-daemon'
+                sh 'cd build/test-results/test && touch *.xml'
             }
             post {
                 always {
