@@ -18,7 +18,7 @@
 <module name="Checker">
   <property name="charset" value="UTF-8"/>
 
-  <property name="severity" value="warning"/>
+  <property name="severity" value="error"/>
 
   <property name="fileExtensions" value="java, properties, xml"/>
   <!-- Excludes all 'module-info.java' files              -->
@@ -194,6 +194,7 @@
       <property name="arrayInitIndent" value="2"/>
     </module>
     <module name="AbbreviationAsWordInName">
+      <property name="severity" value="warning"/>
       <property name="ignoreFinal" value="false"/>
       <property name="allowedAbbreviationLength" value="1"/>
     </module>
@@ -249,6 +250,7 @@
       <property name="allowThrowsTagsForSubclasses" value="true"/>
     </module>
     <module name="MissingJavadocMethod">
+      <property name="severity" value="ignore"/>
       <property name="scope" value="public"/>
       <property name="minLineCount" value="2"/>
       <property name="allowedAnnotations" value="Override, Test"/>
