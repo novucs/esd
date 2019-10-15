@@ -8,9 +8,6 @@ pipeline {
     stages {
         stage('lint') {
             steps {
-                sh './gradlew --status'
-                sh './gradlew --stop'
-                sh './gradlew --status'
                 sh './gradlew check --no-daemon'
             }
             post {
