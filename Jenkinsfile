@@ -54,7 +54,7 @@ pipeline {
         stage('deploy') {
             when {
                 expression {
-                    BRANCH_NAME == 'master' || BRANCH_NAME.startswith('release/')
+                    BRANCH_NAME == 'master' || BRANCH_NAME.startsWith('release/')
                 }
             }
             steps {
