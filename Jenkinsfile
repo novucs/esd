@@ -18,7 +18,7 @@ pipeline {
                                 alwaysLinkToLastBuild: false,
                                 keepAll              : true,
                                 reportDir            : 'build/reports/checkstyle/',
-                                reportFiles          : 'main.html',
+                                reportFiles          : 'main.html,test.html',
                                 reportName           : 'checkstyle',
                         ]
                         publishHTML target: [
@@ -26,7 +26,7 @@ pipeline {
                                 alwaysLinkToLastBuild: false,
                                 keepAll              : true,
                                 reportDir            : 'build/reports/pmd/',
-                                reportFiles          : 'main.html',
+                                reportFiles          : 'main.html,test.html',
                                 reportName           : 'pmd',
                         ]
                         publishHTML target: [
@@ -34,7 +34,7 @@ pipeline {
                                 alwaysLinkToLastBuild: false,
                                 keepAll              : true,
                                 reportDir            : 'build/reports/spotbugs/',
-                                reportFiles          : 'main.html',
+                                reportFiles          : 'main.html,test.html',
                                 reportName           : 'spotbugs',
                         ]
                     }
