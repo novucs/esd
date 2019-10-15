@@ -54,11 +54,11 @@ pipeline {
         stage('deploy') {
             when {
                 expression {
-                    BRANCH_NAME == 'master'
+                    BRANCH_NAME == 'master' || BRANCH_NAME.startsWith('release/')
                 }
             }
             steps {
-                sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} latest"
+                sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} ${BRANCH_NAME == 'master' ? 'latest' : 'stable'}"
             }
         }
     }
