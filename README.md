@@ -51,3 +51,10 @@ want. I'm not your mum.
 Once you have completed a feature, open a pull request to the master branch. If CI is passing, and
 you are happy with your code, ask another member of the team to do a code review. When all checks
 are green, hit `Squash and merge`.
+
+## Deployments
+There are currently two types of deployments accessible from the CI/CD pipeline:
+* [latest](http://esd.novucs.net:8080/latest/) - Updated on every change merged into master
+* [stable](http://esd.novucs.net:8080/stable/) - Updated on every release
+
+All repository releases are marked via tags, and are accessible [here](https://github.com/novucs/esd/releases).
