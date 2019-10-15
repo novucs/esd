@@ -26,3 +26,28 @@ IntelliJ:
 
 NetBeans:
 * `File -> Open Project -> <select repo location>`
+
+## Linting
+To perform linting checks: `./gradlew check`
+
+Code quality reports will be generated after running checks, view them locally at:
+* [CheckStyle](build/reports/checkstyle/main.html)
+* [PMD](build/reports/pmd/main.html)
+* [SpotBugs](build/reports/spotbugs/main.html)
+
+If any lint checks seem out of place, and are difficult to work with please let @novucs know.
+
+## Testing
+Currently only unit tests are supported. To run them, simply execute: `./gradlew test`
+
+Code coverage and integration tests will be defined when the project specification has been confirmed.
+
+## Contributing
+Feel free to branch off this repo in the format `feature/{ticket-number}-{name-of-feature}` e.g. 
+`feature/123-add-user-create-endpoint`. The CI/CD pipeline will not execute on forks of this
+repository, so its advisable to actively maintain branches here. Though feel free to do what you
+want. I'm not your mum.
+
+Once you have completed a feature, open a pull request to the master branch. If CI is passing, and
+you are happy with your code, ask another member of the team to do a code review. When all checks
+are green, hit `Squash and merge`.

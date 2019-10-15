@@ -3,6 +3,7 @@
 .idea
 build
 gradlew.bat
+cicd
 derby
 glassfish
 scripts/autodeploy.sh

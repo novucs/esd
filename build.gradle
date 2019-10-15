@@ -1,6 +1,9 @@
 plugins {
     id 'war'
     id 'java'
+    id "com.github.spotbugs" version "2.0.0"
+    id 'pmd'
+    id 'checkstyle'
 }
 
 group 'net.novucs'
@@ -22,4 +25,26 @@ task autodeploy(type: Copy) {
     from war.archiveFile
     into "build"
     rename "esd-${project.version}.war", "app.war"
+}
+
+spotbugs {
+    toolVersion = '4.0.0-beta4'
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+checkstyle {
+    toolVersion '8.24'
+    configFile file('config/checkstyle/checkstyle.xml');
+}
+
+pmd {
+    toolVersion '6.18.0'
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/excludes.xml")
 }
