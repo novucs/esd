@@ -6,13 +6,16 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('lint') {
+        stage('check') {
             steps {
                 sh './gradlew check --no-daemon'
+                sh 'cd build/test-results/test && touch *.xml'
             }
             post {
                 always {
                     script {
+                        junit 'build/test-results/test/*.xml'
+                        step([$class: 'JacocoPublisher'])
                         publishHTML target: [
                                 allowMissing         : false,
                                 alwaysLinkToLastBuild: false,
@@ -39,11 +42,6 @@ pipeline {
                         ]
                     }
                 }
-            }
-        }
-        stage('test') {
-            steps {
-                sh './gradlew test --no-daemon'
             }
         }
         stage('build') {

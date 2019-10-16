@@ -4,6 +4,7 @@ plugins {
     id "com.github.spotbugs" version "2.0.0"
     id 'pmd'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 group 'net.novucs'
@@ -47,4 +48,8 @@ pmd {
     toolVersion '6.18.0'
     ruleSets = []
     ruleSetFiles = files("config/pmd/excludes.xml")
+}
+
+jacoco {
+    toolVersion = "0.8.4"
 }
