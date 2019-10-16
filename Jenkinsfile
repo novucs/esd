@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('lint') {
             steps {
-                sh './gradlew check'
+                sh './gradlew check --no-daemon'
             }
             post {
                 always {
@@ -43,12 +43,12 @@ pipeline {
         }
         stage('test') {
             steps {
-                sh './gradlew test'
+                sh './gradlew test --no-daemon'
             }
         }
         stage('build') {
             steps {
-                sh './gradlew autodeploy'
+                sh './gradlew autodeploy --no-daemon'
             }
         }
         stage('deploy') {
