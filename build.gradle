@@ -53,3 +53,11 @@ pmd {
 jacoco {
     toolVersion = "0.8.4"
 }
+
+task checkBuildReport {
+    dependsOn 'check'
+    dependsOn 'jacocoTestReport'
+    dependsOn 'autodeploy'
+    tasks.findByName('jacocoTestReport').mustRunAfter 'check'
+    tasks.findByName('autodeploy').mustRunAfter 'jacocoTestReport'
+}

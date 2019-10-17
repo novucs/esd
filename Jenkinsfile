@@ -8,10 +8,9 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('check') {
+        stage('build') {
             steps {
-                sh './gradlew check'
-                sh './gradlew jacocoTestReport'
+                sh './gradlew checkBuildReport'
                 sh 'cd build/test-results/test && touch *.xml'
             }
             post {
@@ -53,11 +52,6 @@ pipeline {
                         ]
                     }
                 }
-            }
-        }
-        stage('build') {
-            steps {
-                sh './gradlew autodeploy'
             }
         }
         stage('deploy') {
