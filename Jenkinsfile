@@ -10,6 +10,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh './gradlew --stop'
                 sh './gradlew autodeploy'
             }
         }
