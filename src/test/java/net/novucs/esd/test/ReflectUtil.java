@@ -49,7 +49,7 @@ public final class ReflectUtil {
   public static void executePrivateStaticMethod(Class clazz, String methodName, Class[] classes,
       Object... params)
       throws Throwable {
-     Method method = clazz.getDeclaredMethod(methodName, classes);
+    Method method = clazz.getDeclaredMethod(methodName, classes);
     boolean wasAccessible = method.isAccessible();
     method.setAccessible(true);
 

@@ -100,7 +100,7 @@ public class TestMain {
           insertion.setString(1, name);
           insertion.addBatch();
         }
-        insertion.executeBatch();
+        // insertion.executeBatch();
       }
 
       // When
