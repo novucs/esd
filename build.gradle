@@ -56,11 +56,18 @@ jacocoTestCoverageVerification {
     }
 }
 
+task coverage {
+    dependsOn 'jacocoTestReport'
+    dependsOn 'jacocoTestCoverageVerification'
+    tasks.findByName('jacocoTestCoverageVerification').mustRunAfter 'jacocoTestReport'
+}
+
 task checkBuildReport {
     dependsOn 'check'
     dependsOn 'jacocoTestReport'
     dependsOn 'jacocoTestCoverageVerification'
     dependsOn 'autodeploy'
     tasks.findByName('jacocoTestReport').mustRunAfter 'check'
-    tasks.findByName('autodeploy').mustRunAfter 'jacocoTestReport'
+    tasks.findByName('jacocoTestCoverageVerification').mustRunAfter 'jacocoTestReport'
+    tasks.findByName('autodeploy').mustRunAfter 'jacocoTestCoverageVerification'
 }

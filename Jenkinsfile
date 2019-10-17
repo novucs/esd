@@ -8,31 +8,107 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('build') {
+        stage('Build') {
             steps {
-                sh './gradlew checkBuildReport'
+                sh './gradlew autodeploy'
+            }
+        }
+        stage('Lint src/main') {
+            steps {
+                sh './gradlew checkstyleMain'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/checkstyle/',
+                                reportFiles          : 'main.html',
+                                reportName           : 'CheckStyle Linting Report - Main',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('Lint src/test') {
+            steps {
+                sh './gradlew checkstyleTest'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/checkstyle/',
+                                reportFiles          : 'test.html',
+                                reportName           : 'CheckStyle Linting Report - Test',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('Static code analysis src/main') {
+            steps {
+                sh './gradlew pmdMain'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/pmd/',
+                                reportFiles          : 'main.html',
+                                reportName           : 'PMD Static Code Analysis Report - Main',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('Static code analysis src/test') {
+            steps {
+                sh './gradlew pmdTest'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/pmd/',
+                                reportFiles          : 'test.html',
+                                reportName           : 'PMD Static Code Analysis Report - Test',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('Tests') {
+            steps {
+                sh './gradlew test'
                 sh 'cd build/test-results/test && touch *.xml'
             }
             post {
                 always {
                     script {
                         junit 'build/test-results/test/*.xml'
-                        publishHTML target: [
-                                allowMissing         : false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll              : true,
-                                reportDir            : 'build/reports/checkstyle/',
-                                reportFiles          : 'main.html,test.html',
-                                reportName           : 'CheckStyle Linting Report',
-                        ]
-                        publishHTML target: [
-                                allowMissing         : false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll              : true,
-                                reportDir            : 'build/reports/pmd/',
-                                reportFiles          : 'main.html,test.html',
-                                reportName           : 'PMD Static Code Analysis Report',
-                        ]
+                    }
+                }
+            }
+        }
+        stage('Coverage') {
+            steps {
+                sh './gradlew coverage'
+            }
+            post {
+                always {
+                    script {
                         publishHTML target: [
                                 allowMissing         : false,
                                 alwaysLinkToLastBuild: false,
@@ -45,7 +121,7 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
+        stage('Deploy') {
             when {
                 expression {
                     BRANCH_NAME == 'master' || BRANCH_NAME.startsWith('release/')
