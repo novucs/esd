@@ -69,7 +69,6 @@ public class TestMain {
   public void testMainPrintsContentsOfPerson() throws Throwable {
     // Given
     ENVIRONMENT.set("DB_URL", DB_URL);
-    Main.main(new String[]{});
     String[] names = {"Bob", "Steve", "Jeff"};
     Logger logger = mock(Logger.class);
     setStaticFieldValue(Main.class, "LOGGER", logger);
