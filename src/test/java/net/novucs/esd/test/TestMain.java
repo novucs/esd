@@ -36,6 +36,20 @@ public class TestMain {
   }
 
   @Test
+  public void testMainExecutesWithoutErrors() throws ReflectiveOperationException {
+    // Given
+    ENVIRONMENT.set("DB_URL", DB_URL);
+    Logger logger = mock(Logger.class);
+    setStaticFieldValue(Main.class, "LOGGER", logger);
+
+    // When
+    Main.main(new String[]{});
+
+    // Assert
+    verify(logger, times(0)).log(eq(Level.SEVERE), any(String.class), any(SQLException.class));
+  }
+
+  @Test
   public void testMainExceptsWithBadDatabaseUrl() throws ReflectiveOperationException {
     // Given
     Logger logger = mock(Logger.class);
