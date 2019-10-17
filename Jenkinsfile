@@ -1,3 +1,5 @@
+env.JENKINS_NODE_COOKIE = 'dontKillMe'
+
 pipeline {
     agent {
         label 'master'
@@ -8,7 +10,7 @@ pipeline {
     stages {
         stage('check') {
             steps {
-                sh './gradlew check --no-daemon'
+                sh './gradlew check'
                 sh 'cd build/test-results/test && touch *.xml'
             }
             post {
@@ -46,7 +48,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh './gradlew autodeploy --no-daemon'
+                sh './gradlew autodeploy'
             }
         }
         stage('deploy') {
