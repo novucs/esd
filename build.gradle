@@ -1,7 +1,6 @@
 plugins {
     id 'war'
     id 'java'
-    id "com.github.spotbugs" version "2.0.0"
     id 'pmd'
     id 'checkstyle'
     id 'jacoco'
@@ -32,17 +31,6 @@ task autodeploy(type: Copy) {
     rename "esd-${project.version}.war", "app.war"
 }
 
-spotbugs {
-    toolVersion = '4.0.0-beta4'
-}
-
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
-
 checkstyle {
     toolVersion '8.24'
     configFile file('config/checkstyle/checkstyle.xml');
@@ -62,7 +50,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.7
+                minimum = 1.0
             }
         }
     }

@@ -26,7 +26,7 @@ public final class Main {
       String dbUser = env.getOrDefault("DB_USER", "impact");
       String dbPass = env.getOrDefault("DB_PASS", "derbypass");
       try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
-        performDatabaseUpdates(connection);
+        displayPeople(connection);
       }
       LOGGER.info("Successfully completed transaction");
     } catch (SQLException ex) {
@@ -34,13 +34,19 @@ public final class Main {
     }
   }
 
-  private static void performDatabaseUpdates(Connection connection) throws SQLException {
+  private static void displayPeople(Connection connection) throws SQLException {
     try (PreparedStatement createUserTable = connection.prepareStatement(
         "CREATE TABLE person ("
             + "id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
             + "name VARCHAR(255), "
             + "PRIMARY KEY (id))")) {
       createUserTable.execute();
+    } catch (SQLException ex) {
+      // Do nothing if already exists
+      // http://db.apache.org/derby/docs/10.8/ref/rrefexcept71493.html
+      if (!ex.getSQLState().equals("X0Y32")) {
+        throw ex;
+      }
     }
 
     try (Statement statement = connection.createStatement();

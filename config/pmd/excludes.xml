@@ -11,6 +11,7 @@
     <exclude name="LocalVariableCouldBeFinal"/>
     <exclude name="MethodArgumentCouldBeFinal"/>
     <exclude name="ShortClassName"/>
+    <exclude name="TooManyStaticImports"/>
   </rule>
   <rule ref="category/java/design.xml">
     <exclude name="LawOfDemeter"/>
@@ -20,6 +21,7 @@
   </rule>
   <rule ref="category/java/errorprone.xml">
     <exclude name="DataflowAnomalyAnalysis"/>
+    <exclude name="MoreThanOneLogger"/>
   </rule>
   <rule ref="category/java/multithreading.xml"/>
   <rule ref="category/java/performance.xml">
