@@ -13,7 +13,7 @@ public final class TestRunner {
   }
 
   public static void main(String[] args) {
-    Result result = JUnitCore.runClasses(TestJunit.class);
+    Result result = JUnitCore.runClasses(TestMain.class);
 
     for (Failure failure : result.getFailures()) {
       LOGGER.severe(failure.toString());

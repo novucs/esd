@@ -8,50 +8,120 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('check') {
+        stage('Build') {
             steps {
-                sh './gradlew check'
+                sh './gradlew autodeploy'
+            }
+        }
+        stage('Lint (src/main)') {
+            steps {
+                sh './gradlew checkstyleMain'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/checkstyle/',
+                                reportFiles          : 'main.html',
+                                reportName           : 'Lint Report (src/main)',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('Lint (src/test)') {
+            steps {
+                sh './gradlew checkstyleTest'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/checkstyle/',
+                                reportFiles          : 'test.html',
+                                reportName           : 'Lint Report (src/test)',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('PMD (src/main)') {
+            steps {
+                sh './gradlew pmdMain'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/pmd/',
+                                reportFiles          : 'main.html',
+                                reportName           : 'PMD Report (src/main)',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('PMD (src/test)') {
+            steps {
+                sh './gradlew pmdTest'
+            }
+            post {
+                always {
+                    script {
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/pmd/',
+                                reportFiles          : 'test.html',
+                                reportName           : 'PMD Report (src/test)',
+                        ]
+                    }
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                sh './gradlew test'
                 sh 'cd build/test-results/test && touch *.xml'
             }
             post {
                 always {
                     script {
                         junit 'build/test-results/test/*.xml'
-                        step([$class: 'JacocoPublisher'])
+                    }
+                }
+            }
+        }
+        stage('Coverage') {
+            steps {
+                sh './gradlew coverage'
+            }
+            post {
+                always {
+                    script {
                         publishHTML target: [
                                 allowMissing         : false,
                                 alwaysLinkToLastBuild: false,
                                 keepAll              : true,
-                                reportDir            : 'build/reports/checkstyle/',
-                                reportFiles          : 'main.html,test.html',
-                                reportName           : 'checkstyle',
-                        ]
-                        publishHTML target: [
-                                allowMissing         : false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll              : true,
-                                reportDir            : 'build/reports/pmd/',
-                                reportFiles          : 'main.html,test.html',
-                                reportName           : 'pmd',
-                        ]
-                        publishHTML target: [
-                                allowMissing         : false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll              : true,
-                                reportDir            : 'build/reports/spotbugs/',
-                                reportFiles          : 'main.html,test.html',
-                                reportName           : 'spotbugs',
+                                reportDir            : 'build/reports/jacoco/test/html/',
+                                reportFiles          : 'index.html',
+                                reportName           : 'Coverage Report',
                         ]
                     }
                 }
             }
         }
-        stage('build') {
-            steps {
-                sh './gradlew autodeploy'
-            }
-        }
-        stage('deploy') {
+        stage('Deploy') {
             when {
                 expression {
                     BRANCH_NAME == 'master' || BRANCH_NAME.startsWith('release/')

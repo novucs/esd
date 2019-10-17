@@ -28,13 +28,7 @@ public class ExampleServerlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
-    processRequest(request, response);
-  }
-
-  @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     processRequest(request, response);
   }

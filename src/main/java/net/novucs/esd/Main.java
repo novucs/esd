@@ -22,13 +22,11 @@ public final class Main {
   public static void main(String[] args) {
     try {
       Map<String, String> env = System.getenv();
-      String dbHost = env.getOrDefault("DB_HOST", "localhost");
-      String dbPort = env.getOrDefault("DB_PORT", "1527");
+      String dbUrl = env.getOrDefault("DB_URL", "jdbc:derby://localhost:1527/esd;create=true");
       String dbUser = env.getOrDefault("DB_USER", "impact");
       String dbPass = env.getOrDefault("DB_PASS", "derbypass");
-      String dbUrl = String.format("jdbc:derby://%s:%s/esd;create=true", dbHost, dbPort);
       try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
-        performDatabaseUpdates(connection);
+        displayPeople(connection);
       }
       LOGGER.info("Successfully completed transaction");
     } catch (SQLException ex) {
@@ -36,13 +34,19 @@ public final class Main {
     }
   }
 
-  private static void performDatabaseUpdates(Connection connection) throws SQLException {
+  private static void displayPeople(Connection connection) throws SQLException {
     try (PreparedStatement createUserTable = connection.prepareStatement(
         "CREATE TABLE person ("
             + "id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
             + "name VARCHAR(255), "
             + "PRIMARY KEY (id))")) {
       createUserTable.execute();
+    } catch (SQLException ex) {
+      // Do nothing if already exists
+      // http://db.apache.org/derby/docs/10.8/ref/rrefexcept71493.html
+      if (!ex.getSQLState().equals("X0Y32")) {
+        throw ex;
+      }
     }
 
     try (Statement statement = connection.createStatement();
