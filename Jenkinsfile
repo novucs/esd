@@ -23,7 +23,7 @@ pipeline {
                                 keepAll              : true,
                                 reportDir            : 'build/reports/checkstyle/',
                                 reportFiles          : 'main.html,test.html',
-                                reportName           : 'checkstyle',
+                                reportName           : 'CheckStyle Linting Report',
                         ]
                         publishHTML target: [
                                 allowMissing         : false,
@@ -31,15 +31,7 @@ pipeline {
                                 keepAll              : true,
                                 reportDir            : 'build/reports/pmd/',
                                 reportFiles          : 'main.html,test.html',
-                                reportName           : 'pmd',
-                        ]
-                        publishHTML target: [
-                                allowMissing         : false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll              : true,
-                                reportDir            : 'build/reports/spotbugs/',
-                                reportFiles          : 'main.html,test.html',
-                                reportName           : 'spotbugs',
+                                reportName           : 'PMD Static Code Analysis Report',
                         ]
                         publishHTML target: [
                                 allowMissing         : false,
@@ -47,7 +39,7 @@ pipeline {
                                 keepAll              : true,
                                 reportDir            : 'build/reports/jacoco/test/html/',
                                 reportFiles          : 'index.html',
-                                reportName           : 'coverage',
+                                reportName           : 'Coverage Report',
                         ]
                     }
                 }
