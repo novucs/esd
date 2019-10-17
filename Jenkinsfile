@@ -42,6 +42,14 @@ pipeline {
                                 reportFiles          : 'main.html,test.html',
                                 reportName           : 'spotbugs',
                         ]
+                        publishHTML target: [
+                                allowMissing         : false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll              : true,
+                                reportDir            : 'build/reports/jacoco/test/html/',
+                                reportFiles          : 'index.html',
+                                reportName           : 'coverage',
+                        ]
                     }
                 }
             }
