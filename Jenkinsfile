@@ -11,6 +11,7 @@ pipeline {
         stage('check') {
             steps {
                 sh './gradlew check'
+                sh './gradlew jacocoTestReport'
                 sh 'cd build/test-results/test && touch *.xml'
             }
             post {
