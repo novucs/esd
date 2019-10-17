@@ -13,7 +13,7 @@ pipeline {
                 sh './gradlew autodeploy'
             }
         }
-        stage('Lint src/main') {
+        stage('Lint (src/main)') {
             steps {
                 sh './gradlew checkstyleMain'
             }
@@ -26,13 +26,13 @@ pipeline {
                                 keepAll              : true,
                                 reportDir            : 'build/reports/checkstyle/',
                                 reportFiles          : 'main.html',
-                                reportName           : 'CheckStyle Linting Report - Main',
+                                reportName           : 'Lint Report (src/main)',
                         ]
                     }
                 }
             }
         }
-        stage('Lint src/test') {
+        stage('Lint (src/test)') {
             steps {
                 sh './gradlew checkstyleTest'
             }
@@ -45,13 +45,13 @@ pipeline {
                                 keepAll              : true,
                                 reportDir            : 'build/reports/checkstyle/',
                                 reportFiles          : 'test.html',
-                                reportName           : 'CheckStyle Linting Report - Test',
+                                reportName           : 'Lint Report (src/test)',
                         ]
                     }
                 }
             }
         }
-        stage('Static code analysis src/main') {
+        stage('PMD (src/main)') {
             steps {
                 sh './gradlew pmdMain'
             }
@@ -64,13 +64,13 @@ pipeline {
                                 keepAll              : true,
                                 reportDir            : 'build/reports/pmd/',
                                 reportFiles          : 'main.html',
-                                reportName           : 'PMD Static Code Analysis Report - Main',
+                                reportName           : 'PMD Report (src/main)',
                         ]
                     }
                 }
             }
         }
-        stage('Static code analysis src/test') {
+        stage('PMD (src/test)') {
             steps {
                 sh './gradlew pmdTest'
             }
@@ -83,13 +83,13 @@ pipeline {
                                 keepAll              : true,
                                 reportDir            : 'build/reports/pmd/',
                                 reportFiles          : 'test.html',
-                                reportName           : 'PMD Static Code Analysis Report - Test',
+                                reportName           : 'PMD Report (src/test)',
                         ]
                     }
                 }
             }
         }
-        stage('Tests') {
+        stage('Test') {
             steps {
                 sh './gradlew test'
                 sh 'cd build/test-results/test && touch *.xml'
