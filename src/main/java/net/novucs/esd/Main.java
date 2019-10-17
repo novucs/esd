@@ -22,11 +22,9 @@ public final class Main {
   public static void main(String[] args) {
     try {
       Map<String, String> env = System.getenv();
-      String dbHost = env.getOrDefault("DB_HOST", "localhost");
-      String dbPort = env.getOrDefault("DB_PORT", "1527");
+      String dbUrl = env.getOrDefault("DB_URL", "jdbc:derby://localhost:1527/esd;create=true");
       String dbUser = env.getOrDefault("DB_USER", "impact");
       String dbPass = env.getOrDefault("DB_PASS", "derbypass");
-      String dbUrl = String.format("jdbc:derby://%s:%s/esd;create=true", dbHost, dbPort);
       try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
         performDatabaseUpdates(connection);
       }
