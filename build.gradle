@@ -31,6 +31,14 @@ task autodeploy(type: Copy) {
     rename "esd-${project.version}.war", "app.war"
 }
 
+task netbeansdeploy(type: Copy) {
+    from war.archiveFile
+    // TODO: Change this glassfish installation location to whichever machine is
+    //  performing the demo.
+    into "/home/billy/GlassFish_Server/glassfish/domains/domain1/autodeploy"
+    rename "esd-${project.version}.war", "app.war"
+}
+
 checkstyle {
     toolVersion '8.24'
     configFile file('config/checkstyle/checkstyle.xml');
