@@ -23,7 +23,7 @@ When docker-compose is running, execute the relevant command to automatically bu
 ## IDE Setup
 IntelliJ:
 * `File -> Open -> <select repo location>`
-* `Preferences -> Editor -> code style -> select cog -> import -> intellij xml -> directory under config/codestyles/GoogleStyle.xml`
+
 NetBeans:
 * `File -> Open Project -> <select repo location>`
 

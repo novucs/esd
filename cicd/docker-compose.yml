@@ -3,11 +3,13 @@ version: '3.3'
 services:
   db:
     image: novucs/derby:10.14.2.0-jdk11-slim
+    restart: always
     volumes:
       - db-data:/dbs
 
   app:
     image: novucs/glassfish:5.1.0-jdk8-slim
+    restart: always
     depends_on:
       - db
     environment:
@@ -17,6 +19,7 @@ services:
 
   jenkins:
     build: jenkins
+    restart: always
     ports:
       - "8081:8080"
     secrets:
