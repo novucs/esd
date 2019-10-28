@@ -12,8 +12,9 @@ Requirements:
 
 Steps:
 1. Clone the repo `git clone https://github.com/novucs/esd.git && cd esd`
-2. Run the project `docker-compose up -d`
-3. [Open the app in your web browser](http://localhost:8080/app/)
+2. Build the repo `./gradlew autodeploy` (for UNIX) or `gradlew.bat autodeploy` (for Windows)
+3. Run the project `docker-compose up -d`
+4. [Open the app in your web browser](http://localhost:8080/app/)
 
 When docker-compose is running, execute the relevant command to automatically build and deploy the project:
 * UNIX: `./gradlew autodeploy -t`
