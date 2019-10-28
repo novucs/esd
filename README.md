@@ -27,6 +27,13 @@ IntelliJ:
 NetBeans:
 * `File -> Open Project -> <select repo location>`
 
+NetBeans for UWE machines:
+* `Tools -> Plugins -> Available Plugins -> Gradle Support -> Install`
+* `Tools -> Options -> Miscallenous -> Gradle -> Scripts & Tasks -> Gradle arguments`
+    * Add `netbeansdeploy`
+* If `netbeansdeploy` build location is invalid, update task in the `build.gradle` file to match the GlassFish location.
+    * For example: `C:\\Users\\r2-benson\\AppData\\Roaming\\Netbeans\\8.2\\config\\GF_4.1.1\\domain1\\autodeploy`
+
 ## Code checks
 To perform code checks with: `./gradlew check`
 
