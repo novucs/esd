@@ -9,6 +9,7 @@ plugins {
 group 'net.novucs'
 version '0.1.0'
 
+def username = System.properties['user.name']
 sourceCompatibility = 1.8
 
 repositories {
@@ -35,7 +36,7 @@ task netbeansdeploy(type: Copy) {
     from war.archiveFile
     // TODO: Change this glassfish installation location to whichever machine is
     //  performing the demo.
-    into "/home/billy/GlassFish_Server/glassfish/domains/domain1/autodeploy"
+    into "C:\\Users\\$username\\AppData\\Roaming\\Netbeans\\8.2\\config\\GF_4.1.1\\domain1\\autodeploy"
     rename "esd-${project.version}.war", "app.war"
 }
 

@@ -2,3 +2,4 @@
 build
 workspace.xml
 derby.log
+/.nb-gradle/
