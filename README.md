@@ -33,6 +33,9 @@ NetBeans for UWE machines:
     * Add `netbeansdeploy`
 * If `netbeansdeploy` build location is invalid, update task in the `build.gradle` file to match the GlassFish location.
     * For example: `C:\\Users\\r2-benson\\AppData\\Roaming\\Netbeans\\8.2\\config\\GF_4.1.1\\domain1\\autodeploy`
+* Make sure to start the GlassFish server via the 'Services' tab:
+    * Right-click `Servers -> GlassFish Server 4.1.1` and click `Start`
+* To deploy, click the big fancy Green Play button!
 
 ## Code checks
 To perform code checks with: `./gradlew check`
