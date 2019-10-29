@@ -37,11 +37,14 @@ public class Where {
     return this;
   }
 
-  public String sql() {
-    StringJoiner clauseJoiner = new StringJoiner("");
+  public SQLBuilder sql() {
+    StringJoiner clauseJoiner = new StringJoiner(" ");
+    List<SQLParameter> parameters = new ArrayList<>();
     for (Clause clause : this.clauses) {
-      clauseJoiner.add(clause.sql());
+      SQLBuilder builder = clause.sql();
+      parameters.addAll(builder.getParameters());
+      clauseJoiner.add(builder.getQuery());
     }
-    return clauseJoiner.toString();
+    return new SQLBuilder(clauseJoiner.toString(), parameters);
   }
 }

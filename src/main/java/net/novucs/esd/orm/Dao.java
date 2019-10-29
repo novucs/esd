@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,11 +24,11 @@ public class Dao<M> {
     this.modelClass = model;
   }
 
-  public M constructModel(List<Object> values) {
+  public M constructModel(List<Object> modelAttributes) {
     try {
       M model = this.modelClass.getConstructor().newInstance();
       Iterator<ParsedColumn> columns = this.getParsedModel().getColumns().values().iterator();
-      Iterator<Object> valuesIterator = values.iterator();
+      Iterator<Object> valuesIterator = modelAttributes.iterator();
 
       while (columns.hasNext() && valuesIterator.hasNext()) {
         Object value = valuesIterator.next();
@@ -72,8 +71,8 @@ public class Dao<M> {
   public void selectById(int id) throws SQLException {
   }
 
-  public Selector<M> select() throws SQLException {
-    return new Selector<M>(this);
+  public Select<M> select() throws SQLException {
+    return new Select<M>(this);
   }
 
   /*
@@ -134,10 +133,9 @@ public class Dao<M> {
 
   private String insertSQL() {
     ParsedModel model = getParsedModel();
-    StringJoiner queryJoiner = new StringJoiner("");
-    queryJoiner.add("INSERT INTO \"");
-    queryJoiner.add(model.getTableName());
-    queryJoiner.add("\" ");
+    StringJoiner queryJoiner = new StringJoiner(" ");
+    queryJoiner.add("INSERT INTO");
+    queryJoiner.add(model.getSQLTableName());
 
     StringJoiner columnJoiner = new StringJoiner(", ", "(", ")");
     for (ParsedColumn column : model.getColumns().values()) {
@@ -147,7 +145,7 @@ public class Dao<M> {
     }
 
     queryJoiner.add(columnJoiner.toString());
-    queryJoiner.add(" VALUES ");
+    queryJoiner.add("VALUES");
 
     StringJoiner valueJoiner = new StringJoiner(",", "(", ")");
     for (ParsedColumn column : model.getColumns().values()) {

@@ -15,6 +15,10 @@ public class ParsedModel {
     return tableName;
   }
 
+  public String getSQLTableName() {
+    return "\"" + tableName + "\"";
+  }
+
   public LinkedHashMap<String, ParsedColumn> getColumns() {
     return columns;
   }

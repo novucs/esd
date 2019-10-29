@@ -1,8 +1,13 @@
 package net.novucs.esd.orm.clause;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
+import net.novucs.esd.orm.SQLBuilder;
+import net.novucs.esd.orm.SQLParameter;
 
 public class EqClause implements Clause {
+
   private final String columnName;
   private final Object value;
 
@@ -20,24 +25,13 @@ public class EqClause implements Clause {
   }
 
   @Override
-  public String sql() {
-    StringJoiner clauseJoiner = new StringJoiner("");
-
-//    clauseJoiner.add("\"");
+  public SQLBuilder sql() {
+    StringJoiner clauseJoiner = new StringJoiner(" ");
     clauseJoiner.add(this.getColumnName());
+    clauseJoiner.add("= ?");
 
-    if (this.getValue() instanceof Integer) {
-//      clauseJoiner.add("\" = ");
-      clauseJoiner.add(" = ");
-      clauseJoiner.add(this.getValue().toString());
-    }
-    else if(this.getValue() instanceof String) {
-//      clauseJoiner.add("\" = \"");
-      clauseJoiner.add(" = '");
-      clauseJoiner.add(this.getValue().toString());
-      clauseJoiner.add("'");
-    }
-
-    return clauseJoiner.toString();
+    List<SQLParameter> parameters = new ArrayList<>();
+    parameters.add(new SQLParameter(value.getClass(), value));
+    return new SQLBuilder(clauseJoiner.toString(), parameters);
   }
 }

@@ -1,8 +1,10 @@
 package net.novucs.esd.orm.clause;
 
+import net.novucs.esd.orm.SQLBuilder;
 import net.novucs.esd.orm.Where;
 
 public class WhereClause implements Clause {
+
   private final Where where;
 
   public WhereClause(Where where) {
@@ -10,7 +12,8 @@ public class WhereClause implements Clause {
   }
 
   @Override
-  public String sql() {
-    return "(" + this.where.sql() + ")";
+  public SQLBuilder sql() {
+    SQLBuilder builder = where.sql();
+    return new SQLBuilder("(" + builder.getQuery() + ")", builder.getParameters());
   }
 }

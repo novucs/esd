@@ -1,8 +1,11 @@
 package net.novucs.esd.orm.clause;
 
+import net.novucs.esd.orm.SQLBuilder;
+
 public class OrClause implements Clause {
+
   @Override
-  public String sql() {
-    return " OR ";
+  public SQLBuilder sql() {
+    return new SQLBuilder("OR");
   }
 }

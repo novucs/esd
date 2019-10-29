@@ -1,6 +1,7 @@
 package net.novucs.esd.orm;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import net.novucs.esd.model.User;
 
@@ -19,10 +20,16 @@ public class DaoManager {
     userDao.insert(user);
 
     // See if we can get a result for Bob
-    User nameOfUser = userDao.select()
-        .where(new Where().eq("name", "bob"))
-//        .limit(1)
-        .first();
-    System.out.println(nameOfUser.getName());
+    List<User> allUsers = userDao.select()
+        .where(new Where()
+            .eq("name", "bob")
+            .and()
+            .eq("id", 1)
+            .or()
+            .eq("id", 2)
+        )
+        .limit(2)
+        .all();
+    System.out.println(allUsers);
   }
 }
