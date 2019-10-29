@@ -15,5 +15,7 @@ public class DaoManager {
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
     Dao<User> userDao = new Dao<>(connectionSource, User.class);
     userDao.createTable();
+    User user = new User("bob");
+    userDao.insert(user);
   }
 }

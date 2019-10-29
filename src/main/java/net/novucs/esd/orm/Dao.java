@@ -6,8 +6,7 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.StringJoiner;
 
@@ -15,10 +14,129 @@ public class Dao<M> {
 
   private final ConnectionSource connectionSource;
   private final Class<M> modelClass;
+  private ParsedModel parsedModel = null;
 
   public Dao(ConnectionSource connectionSource, Class<M> model) {
     this.connectionSource = connectionSource;
     this.modelClass = model;
+  }
+
+  // todo: select, update, delete,
+
+  // SELECT columnNames FROM tableName WHERE columnName1 = value1 LIMIT x GROUP BY y
+
+  /*
+
+  SELECT
+     id,
+     name,
+     age
+   FROM
+     user u
+   INNER JOIN
+     user_roles ur ON
+       u.id = ur.uid
+   WHERE
+     name = 'bob'
+   ;
+
+
+   */
+
+
+  public void selectById(int id) throws SQLException {
+  }
+
+  public Selector select() throws SQLException {
+    return null;
+  }
+
+  /*
+  id condition and (blah == "xd" || something == "fldjsfdkshfjkdshbgfjhdks")
+
+  SELECT id FROM user WHERE name = "bob" AND (age > 10 AND age < 20) LIMIT 3;
+
+  Dao<User> userDao = new Dao<>();
+  userDao.select()
+    .where(Where()
+      .eq("name", "bob")
+      .and()
+      .wrapper(Where()....)
+      .eq("email", "blah@blah.com"))
+    .limit(10)
+   */
+
+  static class Selector {
+
+  }
+
+  // SELECT COUNT(*) FROM tableName;
+  // UPDATE tableName SET columnName = value, columnName2 = value2 WHERE someColumn = someValue LIMIT x;
+  // DELETE FROM tableName WHERE columnName = value LIMIT x;
+
+  public void insert(M toInsert) throws SQLException {
+    String query = insertSQL();
+    Connection connection = this.connectionSource.getConnection();
+    PreparedStatement statement = connection.prepareStatement(query);
+    ParsedModel model = getParsedModel();
+
+    int i = 1;
+
+    for (ParsedColumn column : model.fields.values()) {
+      if (column.primary) {
+        continue;
+      }
+
+      if (column.type == String.class) {
+        String value = getValue(toInsert, column);
+        statement.setString(i, value);
+      }
+
+      i++;
+    }
+
+    statement.execute();
+  }
+
+  private <T> T getValue(M model, ParsedColumn column) {
+    try {
+      Field field = this.modelClass.getDeclaredField(column.name);
+      field.setAccessible(true);
+      Object value = field.get(model);
+      field.setAccessible(false);
+      //noinspection unchecked
+      return (T) value;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new IllegalStateException("Model class has somehow changed during runtime? :/");
+    }
+  }
+
+  private String insertSQL() {
+    ParsedModel model = getParsedModel();
+    StringJoiner queryJoiner = new StringJoiner("");
+    queryJoiner.add("INSERT INTO \"");
+    queryJoiner.add(model.tableName);
+    queryJoiner.add("\" ");
+
+    StringJoiner columnJoiner = new StringJoiner(", ", "(", ")");
+    for (ParsedColumn column : model.fields.values()) {
+      if (!column.primary) {
+        columnJoiner.add(column.name);
+      }
+    }
+
+    queryJoiner.add(columnJoiner.toString());
+    queryJoiner.add(" VALUES ");
+
+    StringJoiner valueJoiner = new StringJoiner(",", "(", ")");
+    for (ParsedColumn column : model.fields.values()) {
+      if (!column.primary) {
+        valueJoiner.add("?");
+      }
+    }
+
+    queryJoiner.add(valueJoiner.toString());
+    return queryJoiner.toString();
   }
 
   public void createTable() throws SQLException {
@@ -29,32 +147,30 @@ public class Dao<M> {
           + tables.length + " found on " + this.modelClass.getName());
     }
 
-    Table table = tables[0];
-    Map<String, ParsedColumn> fields = parseModelClass();
+    Connection connection = this.connectionSource.getConnection();
+    String query = createTableSQL();
 
-//    "CREATE TABLE person ("
-//        + "id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
-//        + "name VARCHAR(255), "
-//        + "PRIMARY KEY (id))"
-
-    String query = createTableSQL(fields);
-    System.out.println(query);
-    Connection connection = connectionSource.getConnection();
-
-    PreparedStatement createUserTable = connection.prepareStatement(query);
-    createUserTable.execute();
+    try (PreparedStatement createUserTable = connection.prepareStatement(query)) {
+      createUserTable.execute();
+    } catch (SQLException ex) {
+      // Do nothing if already exists
+      // http://db.apache.org/derby/docs/10.8/ref/rrefexcept71493.html
+      if (!ex.getSQLState().equals("X0Y32")) {
+        throw ex;
+      }
+    }
   }
 
-  private String createTableSQL(Map<String, ParsedColumn> fields) {
-    String tableName = camelToSnake(this.modelClass.getSimpleName());
+  private String createTableSQL() {
+    ParsedModel model = getParsedModel();
     StringJoiner tableJoiner = new StringJoiner("");
     tableJoiner.add("CREATE TABLE \"");
-    tableJoiner.add(tableName);
+    tableJoiner.add(model.tableName);
     tableJoiner.add("\" ");
 
     StringJoiner contentsJoiner = new StringJoiner(", ", "(", ")");
 
-    for (Entry<String, ParsedColumn> entry : fields.entrySet()) {
+    for (Entry<String, ParsedColumn> entry : model.fields.entrySet()) {
       String columnName = entry.getKey();
       ParsedColumn column = entry.getValue();
       StringJoiner columnJoiner = new StringJoiner(" ");
@@ -63,11 +179,11 @@ public class Dao<M> {
       if (column.primary) {
         if (column.type != Integer.class) {
           throw new IllegalStateException("Primary keys must be of the type Integer. "
-              + tableName + "." + columnName + " was found to be a(n) " + column.type);
+              + model.tableName + "." + columnName + " was found to be a(n) " + column.type);
         }
 
-        columnJoiner
-            .add("INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)");
+        columnJoiner.add("INT NOT NULL GENERATED ALWAYS AS IDENTITY");
+        columnJoiner.add("(START WITH 1, INCREMENT BY 1)");
       } else if (column.type == String.class) {
         columnJoiner.add("VARCHAR(255)");
       } else if (column.type == Integer.class) {
@@ -77,7 +193,7 @@ public class Dao<M> {
       contentsJoiner.merge(columnJoiner);
     }
 
-    for (Entry<String, ParsedColumn> entry : fields.entrySet()) {
+    for (Entry<String, ParsedColumn> entry : model.fields.entrySet()) {
       // todo: add foreign key / primary key constraints here :)
       String columnName = entry.getKey();
       ParsedColumn column = entry.getValue();
@@ -96,8 +212,13 @@ public class Dao<M> {
     return tableJoiner.toString();
   }
 
-  private Map<String, ParsedColumn> parseModelClass() {
-    Map<String, ParsedColumn> fields = new HashMap<>();
+  private ParsedModel getParsedModel() {
+    if (this.parsedModel != null) {
+      return this.parsedModel;
+    }
+
+    String tableName = camelToSnake(this.modelClass.getSimpleName());
+    LinkedHashMap<String, ParsedColumn> fields = new LinkedHashMap<>();
 
     for (Field field : this.modelClass.getDeclaredFields()) {
       Column[] columns = field.getAnnotationsByType(Column.class);
@@ -112,7 +233,19 @@ public class Dao<M> {
         fields.put(columnName, new ParsedColumn(type, columnName, column.primary()));
       }
     }
-    return fields;
+
+    return new ParsedModel(tableName, fields);
+  }
+
+  static class ParsedModel {
+
+    final String tableName;
+    final LinkedHashMap<String, ParsedColumn> fields;
+
+    ParsedModel(String tableName, LinkedHashMap<String, ParsedColumn> fields) {
+      this.tableName = tableName;
+      this.fields = fields;
+    }
   }
 
   static class ParsedColumn {

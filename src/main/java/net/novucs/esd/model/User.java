@@ -10,4 +10,16 @@ public class User {
 
   @Column()
   private String name;
+
+  public User(String name) {
+    this.name = name;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
 }
