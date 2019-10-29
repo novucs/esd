@@ -183,10 +183,9 @@ public class Dao<M> {
 
   private String createTableSQL() {
     ParsedModel model = getParsedModel();
-    StringJoiner tableJoiner = new StringJoiner("");
-    tableJoiner.add("CREATE TABLE \"");
-    tableJoiner.add(model.getTableName());
-    tableJoiner.add("\" ");
+    StringJoiner tableJoiner = new StringJoiner(" ");
+    tableJoiner.add("CREATE TABLE");
+    tableJoiner.add(model.getSQLTableName());
 
     StringJoiner contentsJoiner = new StringJoiner(", ", "(", ")");
 
