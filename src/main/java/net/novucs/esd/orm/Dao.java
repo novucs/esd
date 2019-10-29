@@ -6,9 +6,13 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.StringJoiner;
+
 
 public class Dao<M> {
 
@@ -21,11 +25,34 @@ public class Dao<M> {
     this.modelClass = model;
   }
 
-  // todo: select, update, delete,
+  public M constructModel(List<Object> values) {
+    try {
+      M model = this.modelClass.getConstructor().newInstance();
+      Iterator<ParsedColumn> columns = this.getParsedModel().getColumns().values().iterator();
+      Iterator<Object> valuesIterator = values.iterator();
+
+      while (columns.hasNext() && valuesIterator.hasNext()) {
+        Object value = valuesIterator.next();
+        ParsedColumn column = columns.next();
+
+        Field field = this.modelClass.getDeclaredField(column.getName());
+        field.setAccessible(true);
+        field.set(model, value);
+        field.setAccessible(false);
+      }
+
+      return model;
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalStateException("Model classes must have an empty public constructor. "
+          + modelClass.getSimpleName() + " violates this requirement.");
+    }
+  }
+
+// todo: select, update, delete,
 
   // SELECT columnNames FROM tableName WHERE columnName1 = value1 LIMIT x GROUP BY y
 
-  /*
+  /*+
 
   SELECT
      id,
@@ -39,16 +66,14 @@ public class Dao<M> {
    WHERE
      name = 'bob'
    ;
-
-
    */
 
 
   public void selectById(int id) throws SQLException {
   }
 
-  public Selector select() throws SQLException {
-    return null;
+  public Selector<M> select() throws SQLException {
+    return new Selector<M>(this);
   }
 
   /*
@@ -66,10 +91,6 @@ public class Dao<M> {
     .limit(10)
    */
 
-  static class Selector {
-
-  }
-
   // SELECT COUNT(*) FROM tableName;
   // UPDATE tableName SET columnName = value, columnName2 = value2 WHERE someColumn = someValue LIMIT x;
   // DELETE FROM tableName WHERE columnName = value LIMIT x;
@@ -82,12 +103,12 @@ public class Dao<M> {
 
     int i = 1;
 
-    for (ParsedColumn column : model.fields.values()) {
-      if (column.primary) {
+    for (ParsedColumn column : model.getColumns().values()) {
+      if (column.isPrimary()) {
         continue;
       }
 
-      if (column.type == String.class) {
+      if (column.getType() == String.class) {
         String value = getValue(toInsert, column);
         statement.setString(i, value);
       }
@@ -100,7 +121,7 @@ public class Dao<M> {
 
   private <T> T getValue(M model, ParsedColumn column) {
     try {
-      Field field = this.modelClass.getDeclaredField(column.name);
+      Field field = this.modelClass.getDeclaredField(column.getName());
       field.setAccessible(true);
       Object value = field.get(model);
       field.setAccessible(false);
@@ -115,13 +136,13 @@ public class Dao<M> {
     ParsedModel model = getParsedModel();
     StringJoiner queryJoiner = new StringJoiner("");
     queryJoiner.add("INSERT INTO \"");
-    queryJoiner.add(model.tableName);
+    queryJoiner.add(model.getTableName());
     queryJoiner.add("\" ");
 
     StringJoiner columnJoiner = new StringJoiner(", ", "(", ")");
-    for (ParsedColumn column : model.fields.values()) {
-      if (!column.primary) {
-        columnJoiner.add(column.name);
+    for (ParsedColumn column : model.getColumns().values()) {
+      if (!column.isPrimary()) {
+        columnJoiner.add(column.getName());
       }
     }
 
@@ -129,8 +150,8 @@ public class Dao<M> {
     queryJoiner.add(" VALUES ");
 
     StringJoiner valueJoiner = new StringJoiner(",", "(", ")");
-    for (ParsedColumn column : model.fields.values()) {
-      if (!column.primary) {
+    for (ParsedColumn column : model.getColumns().values()) {
+      if (!column.isPrimary()) {
         valueJoiner.add("?");
       }
     }
@@ -165,41 +186,42 @@ public class Dao<M> {
     ParsedModel model = getParsedModel();
     StringJoiner tableJoiner = new StringJoiner("");
     tableJoiner.add("CREATE TABLE \"");
-    tableJoiner.add(model.tableName);
+    tableJoiner.add(model.getTableName());
     tableJoiner.add("\" ");
 
     StringJoiner contentsJoiner = new StringJoiner(", ", "(", ")");
 
-    for (Entry<String, ParsedColumn> entry : model.fields.entrySet()) {
+    for (Entry<String, ParsedColumn> entry : model.getColumns().entrySet()) {
       String columnName = entry.getKey();
       ParsedColumn column = entry.getValue();
       StringJoiner columnJoiner = new StringJoiner(" ");
       columnJoiner.add(columnName);
 
-      if (column.primary) {
-        if (column.type != Integer.class) {
+      if (column.isPrimary()) {
+        if (column.getType() != Integer.class) {
           throw new IllegalStateException("Primary keys must be of the type Integer. "
-              + model.tableName + "." + columnName + " was found to be a(n) " + column.type);
+              + model.getTableName() + "." + columnName + " was found to be a(n) " + column
+              .getType());
         }
 
         columnJoiner.add("INT NOT NULL GENERATED ALWAYS AS IDENTITY");
         columnJoiner.add("(START WITH 1, INCREMENT BY 1)");
-      } else if (column.type == String.class) {
+      } else if (column.getType() == String.class) {
         columnJoiner.add("VARCHAR(255)");
-      } else if (column.type == Integer.class) {
+      } else if (column.getType() == Integer.class) {
         columnJoiner.add("INT");
       }
 
       contentsJoiner.merge(columnJoiner);
     }
 
-    for (Entry<String, ParsedColumn> entry : model.fields.entrySet()) {
+    for (Entry<String, ParsedColumn> entry : model.getColumns().entrySet()) {
       // todo: add foreign key / primary key constraints here :)
       String columnName = entry.getKey();
       ParsedColumn column = entry.getValue();
       StringJoiner constraintJoiner = new StringJoiner("");
 
-      if (column.primary) {
+      if (column.isPrimary()) {
         constraintJoiner.add("PRIMARY KEY (");
         constraintJoiner.add(columnName);
         constraintJoiner.add(")");
@@ -212,7 +234,11 @@ public class Dao<M> {
     return tableJoiner.toString();
   }
 
-  private ParsedModel getParsedModel() {
+  public ConnectionSource getConnectionSource() {
+    return connectionSource;
+  }
+
+  public ParsedModel getParsedModel() {
     if (this.parsedModel != null) {
       return this.parsedModel;
     }
@@ -235,29 +261,5 @@ public class Dao<M> {
     }
 
     return new ParsedModel(tableName, fields);
-  }
-
-  static class ParsedModel {
-
-    final String tableName;
-    final LinkedHashMap<String, ParsedColumn> fields;
-
-    ParsedModel(String tableName, LinkedHashMap<String, ParsedColumn> fields) {
-      this.tableName = tableName;
-      this.fields = fields;
-    }
-  }
-
-  static class ParsedColumn {
-
-    final Class<?> type;
-    final String name;
-    final boolean primary;
-
-    ParsedColumn(Class<?> type, String name, boolean primary) {
-      this.type = type;
-      this.name = name;
-      this.primary = primary;
-    }
   }
 }

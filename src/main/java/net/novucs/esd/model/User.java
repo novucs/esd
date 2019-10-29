@@ -11,6 +11,9 @@ public class User {
   @Column()
   private String name;
 
+  public User() {
+  }
+
   public User(String name) {
     this.name = name;
   }

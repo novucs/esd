@@ -17,5 +17,12 @@ public class DaoManager {
     userDao.createTable();
     User user = new User("bob");
     userDao.insert(user);
+
+    // See if we can get a result for Bob
+    User nameOfUser = userDao.select()
+        .where(new Where().eq("name", "bob"))
+//        .limit(1)
+        .first();
+    System.out.println(nameOfUser.getName());
   }
 }
