@@ -16,8 +16,8 @@ public class DaoManager {
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
     Dao<User> userDao = new Dao<>(connectionSource, User.class);
     userDao.createTable();
-    User user = new User("bob");
-    userDao.insert(user);
+//    User user = new User("bob");
+//    userDao.insert(user);
 
     // See if we can get a result for Bob
     List<User> allUsers = userDao.select()
@@ -31,5 +31,8 @@ public class DaoManager {
         .limit(2)
         .all();
     System.out.println(allUsers);
+
+    User userById = userDao.selectById(1);
+    System.out.println(userById.getId() + " " + userById.getName());
   }
 }

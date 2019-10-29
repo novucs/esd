@@ -68,10 +68,11 @@ public class Dao<M> {
    */
 
 
-  public void selectById(int id) throws SQLException {
+  public M selectById(int id) throws SQLException {
+    return select().where(new Where().eq("id", id)).one();
   }
 
-  public Select<M> select() throws SQLException {
+  public Select<M> select() {
     return new Select<M>(this);
   }
 
