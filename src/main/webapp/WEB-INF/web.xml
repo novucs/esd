@@ -11,9 +11,25 @@
         <servlet-name>ExampleServerlet</servlet-name>
         <url-pattern>/example</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>homeServlet</servlet-name>
+        <servlet-class>net.novucs.esd.homeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>homeServlet</servlet-name>
+        <url-pattern>/homepage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>memberServlet</servlet-name>
+        <servlet-class>net.novucs.esd.memberServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>memberServlet</servlet-name>
+        <url-pattern>/app/members</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
+            20
         </session-timeout>
     </session-config>
 </web-app>
