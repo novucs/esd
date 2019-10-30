@@ -95,6 +95,53 @@ public class Dao<M> {
   // UPDATE tableName SET columnName = value, columnName2 = value2 WHERE someColumn = someValue LIMIT x;
   // DELETE FROM tableName WHERE columnName = value LIMIT x;
 
+  public void update(M toUpdate) throws SQLException {
+    String query = updateSQL(toUpdate);
+
+    Connection connection = connectionSource.getConnection();
+    PreparedStatement statement = connection.prepareStatement(query);
+    ParsedModel model = getParsedModel();
+
+    int i = 1;
+    for (ParsedColumn column : model.getColumns().values()) {
+      if (column.isPrimary()) continue;
+      Object value = getValue(toUpdate, column);
+      if (value instanceof String) {
+        statement.setString(i, (String) value);
+      } else if (value instanceof Integer) {
+        statement.setInt(i, (Integer) value);
+      }
+      i++;
+    }
+
+    statement.executeUpdate();
+  }
+
+  private String updateSQL(M toUpdate) {
+    ParsedModel model = getParsedModel();
+    ParsedColumn primaryKeyColumn = model.getPrimaryKey();
+    Integer primaryKey = getValue(toUpdate, primaryKeyColumn);
+
+    StringJoiner updateJoiner = new StringJoiner(" ");
+
+    updateJoiner.add("UPDATE");
+    updateJoiner.add(model.getSQLTableName());
+
+    updateJoiner.add("SET");
+    for (ParsedColumn column : model.getColumns().values()) {
+      if (column.isPrimary()) continue;
+      updateJoiner.add(column.getName());
+      updateJoiner.add("= ?");
+    }
+
+    updateJoiner.add("WHERE");
+    updateJoiner.add(primaryKeyColumn.getName());
+    updateJoiner.add("=");
+    updateJoiner.add(primaryKey.toString());
+
+    return updateJoiner.toString();
+  }
+
   public void insert(M toInsert) throws SQLException {
     String query = insertSQL();
     Connection connection = this.connectionSource.getConnection();
@@ -110,7 +157,7 @@ public class Dao<M> {
 
       if (column.getType() == String.class) {
         String value = getValue(toInsert, column);
-        statement.setString(i, value);
+        statement.setString(i, value); // todo: sanitize inputs
       }
 
       i++;

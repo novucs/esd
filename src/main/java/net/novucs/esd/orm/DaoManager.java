@@ -33,6 +33,12 @@ public class DaoManager {
     System.out.println(allUsers);
 
     User userById = userDao.selectById(1);
-    System.out.println(userById.getId() + " " + userById.getName());
+    userById.setName("bob");
+    userDao.update(userById);
+    System.out.println(userById.getId() + " : " + userById.getName());
+    userById.setName("steve");
+    userDao.update(userById);
+    userById = userDao.selectById(1);
+    System.out.println(userById.getId() + " : " + userById.getName());
   }
 }
