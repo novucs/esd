@@ -160,7 +160,7 @@ public class Dao<M> {
   public void createTable() throws SQLException {
     Table[] tables = this.modelClass.getAnnotationsByType(Table.class);
 
-    if (tables.length == 1) {
+    if (tables.length != 1) {
       throw new IllegalStateException("Model class must have a single @Table declaration. "
           + tables.length + " found on " + this.modelClass.getName());
     }
