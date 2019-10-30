@@ -16,8 +16,6 @@ public class DaoManager {
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
     Dao<User> userDao = new Dao<>(connectionSource, User.class);
     userDao.createTable();
-//    User user = new User("bob");
-//    userDao.insert(user);
 
     // See if we can get a result for Bob
     List<User> allUsers = userDao.select()
@@ -32,13 +30,22 @@ public class DaoManager {
         .all();
     System.out.println(allUsers);
 
-    User userById = userDao.selectById(1);
-    userById.setName("bob");
-    userDao.update(userById);
-    System.out.println(userById.getId() + " : " + userById.getName());
-    userById.setName("steve");
-    userDao.update(userById);
-    userById = userDao.selectById(1);
-    System.out.println(userById.getId() + " : " + userById.getName());
+    User bobNameChange = userDao.selectById(1);
+    bobNameChange.setName("bob");
+    userDao.update(bobNameChange);
+    System.out.println(bobNameChange.getId() + " : " + bobNameChange.getName());
+    bobNameChange.setName("steve");
+    userDao.update(bobNameChange);
+    bobNameChange = userDao.selectById(1);
+    System.out.println(bobNameChange.getId() + " : " + bobNameChange.getName());
+
+    User jeff = new User("jeff");
+    userDao.insert(jeff);
+    System.out.println(jeff.getId() + " : " + jeff.getName());
+    User user1 = userDao.select().where(new Where().eq("id", jeff.getId())).first();
+    System.out.println("before delete:" + user1);
+    userDao.delete(jeff);
+    User user2 = userDao.select().where(new Where().eq("id", jeff.getId())).first();
+    System.out.println("after delete:" + user2);
   }
 }

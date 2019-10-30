@@ -5,7 +5,9 @@ import static net.novucs.esd.util.StringUtil.camelToSnake;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,27 +49,6 @@ public class Dao<M> {
     }
   }
 
-// todo: select, update, delete,
-
-  // SELECT columnNames FROM tableName WHERE columnName1 = value1 LIMIT x GROUP BY y
-
-  /*+
-
-  SELECT
-     id,
-     name,
-     age
-   FROM
-     user u
-   INNER JOIN
-     user_roles ur ON
-       u.id = ur.uid
-   WHERE
-     name = 'bob'
-   ;
-   */
-
-
   public M selectById(int id) throws SQLException {
     return select().where(new Where().eq("id", id)).one();
   }
@@ -76,24 +57,26 @@ public class Dao<M> {
     return new Select<M>(this);
   }
 
-  /*
-  id condition and (blah == "xd" || something == "fldjsfdkshfjkdshbgfjhdks")
+  public void delete(M toDelete) throws SQLException {
+    String query = deleteSQL(toDelete);
+    Connection connection = connectionSource.getConnection();
+    PreparedStatement statement = connection.prepareStatement(query);
+    statement.executeUpdate();
+  }
 
-  SELECT id FROM user WHERE name = "bob" AND (age > 10 AND age < 20) LIMIT 3;
-
-  Dao<User> userDao = new Dao<>();
-  userDao.select()
-    .where(Where()
-      .eq("name", "bob")
-      .and()
-      .wrapper(Where()....)
-      .eq("email", "blah@blah.com"))
-    .limit(10)
-   */
-
-  // SELECT COUNT(*) FROM tableName;
-  // UPDATE tableName SET columnName = value, columnName2 = value2 WHERE someColumn = someValue LIMIT x;
-  // DELETE FROM tableName WHERE columnName = value LIMIT x;
+  private String deleteSQL(M toDelete) {
+    ParsedModel model = getParsedModel();
+    ParsedColumn primaryKeyColumn = model.getPrimaryKey();
+    Integer primaryKey = getValue(toDelete, primaryKeyColumn);
+    StringJoiner deleteJoiner = new StringJoiner(" ");
+    deleteJoiner.add("DELETE FROM");
+    deleteJoiner.add(model.getSQLTableName());
+    deleteJoiner.add("WHERE");
+    deleteJoiner.add(primaryKeyColumn.getName());
+    deleteJoiner.add("=");
+    deleteJoiner.add(primaryKey.toString());
+    return deleteJoiner.toString();
+  }
 
   public void update(M toUpdate) throws SQLException {
     String query = updateSQL(toUpdate);
@@ -104,7 +87,9 @@ public class Dao<M> {
 
     int i = 1;
     for (ParsedColumn column : model.getColumns().values()) {
-      if (column.isPrimary()) continue;
+      if (column.isPrimary()) {
+        continue;
+      }
       Object value = getValue(toUpdate, column);
       if (value instanceof String) {
         statement.setString(i, (String) value);
@@ -129,7 +114,9 @@ public class Dao<M> {
 
     updateJoiner.add("SET");
     for (ParsedColumn column : model.getColumns().values()) {
-      if (column.isPrimary()) continue;
+      if (column.isPrimary()) {
+        continue;
+      }
       updateJoiner.add(column.getName());
       updateJoiner.add("= ?");
     }
@@ -145,25 +132,41 @@ public class Dao<M> {
   public void insert(M toInsert) throws SQLException {
     String query = insertSQL();
     Connection connection = this.connectionSource.getConnection();
-    PreparedStatement statement = connection.prepareStatement(query);
+    PreparedStatement statement = connection
+        .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     ParsedModel model = getParsedModel();
 
     int i = 1;
-
     for (ParsedColumn column : model.getColumns().values()) {
-      if (column.isPrimary()) {
-        continue;
-      }
-
+      if (column.isPrimary()) continue;
       if (column.getType() == String.class) {
         String value = getValue(toInsert, column);
-        statement.setString(i, value); // todo: sanitize inputs
+        statement.setString(i, value);
       }
-
       i++;
     }
 
-    statement.execute();
+    statement.executeUpdate();
+
+    ResultSet rs = statement.getGeneratedKeys();
+    if (rs.next()) {
+      ParsedColumn primaryKeyColumn = model.getPrimaryKey();
+      int primaryKey = rs.getInt(1);
+      setValue(toInsert, primaryKeyColumn, primaryKey);
+    }
+  }
+
+  private <T> T setValue(M model, ParsedColumn column, Object value) {
+    try {
+      Field field = this.modelClass.getDeclaredField(column.getName());
+      field.setAccessible(true);
+      field.set(model, value);
+      field.setAccessible(false);
+      //noinspection unchecked
+      return (T) value;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new IllegalStateException("Model class has somehow changed during runtime? :/");
+    }
   }
 
   private <T> T getValue(M model, ParsedColumn column) {
