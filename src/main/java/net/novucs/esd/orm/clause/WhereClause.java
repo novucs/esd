@@ -5,7 +5,7 @@ import net.novucs.esd.orm.Where;
 
 public class WhereClause implements Clause {
 
-  private final Where where;
+  private final transient Where where;
 
   public WhereClause(Where where) {
     this.where = where;

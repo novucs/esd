@@ -7,13 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+import net.novucs.esd.util.ReflectUtil;
 
 // todo: support joins
 public class Select<M> {
 
-  private final Dao<M> dao;
-  private Integer limit = null;
-  private Where where = null;
+  private final transient Dao<M> dao;
+  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+  private transient Integer limit;
+  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+  private transient Where where;
 
   public Select(Dao<M> dao) {
     this.dao = dao;
@@ -33,13 +36,14 @@ public class Select<M> {
     StringJoiner selectorJoiner = new StringJoiner(" ");
     selectorJoiner.add("SELECT");
     StringJoiner columnJoiner = new StringJoiner(", ");
-    for (ParsedColumn column : this.dao.getParsedModel().getColumns().values()) {
+    ParsedModel parsedModel = ParsedModel.of(dao.getModelClass());
+    for (ParsedColumn column : parsedModel.getColumns().values()) {
       columnJoiner.add(column.getName());
     }
 
     selectorJoiner.add(columnJoiner.toString());
     selectorJoiner.add("FROM");
-    selectorJoiner.add(this.dao.getParsedModel().getSQLTableName());
+    selectorJoiner.add(parsedModel.getSQLTableName());
 
     List<SQLParameter> parameters = new ArrayList<>();
     if (this.where != null) {
@@ -61,16 +65,16 @@ public class Select<M> {
   public M first() throws SQLException {
     this.limit = 1;
     List<M> models = execute();
-    if (models.size() > 0) {
-      return models.get(0);
-    } else {
+    if (models.isEmpty()) {
       return null;
+    } else {
+      return models.get(0);
     }
   }
 
   public M one() throws SQLException {
     List<M> models = execute();
-    if (models.size() == 0) {
+    if (models.isEmpty()) {
       throw new SQLException("Expected one result, found none");
     }
     if (models.size() > 1) {
@@ -100,20 +104,20 @@ public class Select<M> {
         i++;
       }
 
-      ResultSet resultSet = statement.executeQuery();
-      List<M> models = new ArrayList<>();
-      while (resultSet.next()) {
-        M model = getModel(resultSet);
-        models.add(model);
+      try (ResultSet resultSet = statement.executeQuery()) {
+        List<M> models = new ArrayList<>();
+        while (resultSet.next()) {
+          M model = getModel(resultSet);
+          models.add(model);
+        }
+        return models;
       }
-
-      return models;
     }
   }
 
   private M getModel(ResultSet resultSet) throws SQLException {
     List<Object> attributes = new ArrayList<>();
-    ParsedModel model = this.dao.getParsedModel();
+    ParsedModel model = ParsedModel.of(dao.getModelClass());
     int i = 1;
     for (ParsedColumn column : model.getColumns().values()) {
       if (column.isPrimary()) {
@@ -123,6 +127,6 @@ public class Select<M> {
       }
       i++;
     }
-    return this.dao.constructModel(attributes);
+    return ReflectUtil.constructModel(dao.getModelClass(), attributes);
   }
 }

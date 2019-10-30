@@ -20,4 +20,16 @@ public class ConnectionSource {
     // todo: turn this into a viable connection pool
     return DriverManager.getConnection(dbUrl, dbUser, dbPass);
   }
+
+  public String getDbUrl() {
+    return dbUrl;
+  }
+
+  public String getDbUser() {
+    return dbUser;
+  }
+
+  public String getDbPass() {
+    return dbPass;
+  }
 }

@@ -7,12 +7,13 @@ import net.novucs.esd.orm.Table;
 public class User {
 
   @Column(primary = true)
-  private Integer id;
+  private transient Integer id;
 
   @Column()
-  private String name;
+  private transient String name;
 
   public User() {
+    // This constructor is intentionally empty.
   }
 
   public User(String name) {

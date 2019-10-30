@@ -1,52 +1,23 @@
 package net.novucs.esd.orm;
 
-import static net.novucs.esd.util.StringUtil.camelToSnake;
-
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.StringJoiner;
+import net.novucs.esd.util.ReflectUtil;
 
 
 public class Dao<M> {
 
   private final ConnectionSource connectionSource;
   private final Class<M> modelClass;
-  private ParsedModel parsedModel = null;
 
   public Dao(ConnectionSource connectionSource, Class<M> model) {
     this.connectionSource = connectionSource;
     this.modelClass = model;
-  }
-
-  public M constructModel(List<Object> modelAttributes) {
-    try {
-      M model = this.modelClass.getConstructor().newInstance();
-      Iterator<ParsedColumn> columns = this.getParsedModel().getColumns().values().iterator();
-      Iterator<Object> valuesIterator = modelAttributes.iterator();
-
-      while (columns.hasNext() && valuesIterator.hasNext()) {
-        Object value = valuesIterator.next();
-        ParsedColumn column = columns.next();
-
-        Field field = this.modelClass.getDeclaredField(column.getName());
-        field.setAccessible(true);
-        field.set(model, value);
-        field.setAccessible(false);
-      }
-
-      return model;
-    } catch (ReflectiveOperationException e) {
-      throw new IllegalStateException("Model classes must have an empty public constructor. "
-          + modelClass.getSimpleName() + " violates this requirement.");
-    }
   }
 
   public M selectById(int id) throws SQLException {
@@ -66,9 +37,9 @@ public class Dao<M> {
   }
 
   private String deleteSQL(M toDelete) {
-    ParsedModel model = getParsedModel();
+    ParsedModel model = ParsedModel.of(modelClass);
     ParsedColumn primaryKeyColumn = model.getPrimaryKey();
-    Integer primaryKey = getValue(toDelete, primaryKeyColumn);
+    Integer primaryKey = ReflectUtil.getValue(toDelete, primaryKeyColumn);
     StringJoiner deleteJoiner = new StringJoiner(" ");
     deleteJoiner.add("DELETE FROM");
     deleteJoiner.add(model.getSQLTableName());
@@ -83,13 +54,13 @@ public class Dao<M> {
     String query = updateSQL(toUpdate);
     try (Connection connection = connectionSource.getConnection();
         PreparedStatement statement = connection.prepareStatement(query)) {
-      ParsedModel model = getParsedModel();
+      ParsedModel model = ParsedModel.of(modelClass);
       int i = 1;
       for (ParsedColumn column : model.getColumns().values()) {
         if (column.isPrimary()) {
           continue;
         }
-        Object value = getValue(toUpdate, column);
+        Object value = ReflectUtil.getValue(toUpdate, column);
         if (value instanceof String) {
           statement.setString(i, (String) value);
         } else if (value instanceof Integer) {
@@ -102,7 +73,7 @@ public class Dao<M> {
   }
 
   private String updateSQL(M toUpdate) {
-    ParsedModel model = getParsedModel();
+    ParsedModel model = ParsedModel.of(modelClass);
 
     StringJoiner updateJoiner = new StringJoiner(" ");
 
@@ -122,7 +93,7 @@ public class Dao<M> {
     ParsedColumn primaryKeyColumn = model.getPrimaryKey();
     updateJoiner.add(primaryKeyColumn.getName());
     updateJoiner.add("=");
-    Integer primaryKey = getValue(toUpdate, primaryKeyColumn);
+    Integer primaryKey = ReflectUtil.getValue(toUpdate, primaryKeyColumn);
     updateJoiner.add(primaryKey.toString());
 
     return updateJoiner.toString();
@@ -133,7 +104,7 @@ public class Dao<M> {
     try (Connection connection = this.connectionSource.getConnection();
         PreparedStatement statement = connection
             .prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-      ParsedModel model = getParsedModel();
+      ParsedModel model = ParsedModel.of(modelClass);
 
       int i = 1;
       for (ParsedColumn column : model.getColumns().values()) {
@@ -141,7 +112,7 @@ public class Dao<M> {
           continue;
         }
         if (column.getType() == String.class) {
-          String value = getValue(toInsert, column);
+          String value = ReflectUtil.getValue(toInsert, column);
           statement.setString(i, value);
         }
         i++;
@@ -153,38 +124,14 @@ public class Dao<M> {
         if (rs.next()) {
           ParsedColumn primaryKeyColumn = model.getPrimaryKey();
           int primaryKey = rs.getInt(1);
-          setValue(toInsert, primaryKeyColumn, primaryKey);
+          ReflectUtil.setValue(toInsert, primaryKeyColumn, primaryKey);
         }
       }
     }
   }
 
-  private void setValue(M model, ParsedColumn column, Object value) {
-    try {
-      Field field = this.modelClass.getDeclaredField(column.getName());
-      field.setAccessible(true);
-      field.set(model, value);
-      field.setAccessible(false);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new IllegalStateException("Model class has somehow changed during runtime? :/");
-    }
-  }
-
-  private <T> T getValue(M model, ParsedColumn column) {
-    try {
-      Field field = this.modelClass.getDeclaredField(column.getName());
-      field.setAccessible(true);
-      Object value = field.get(model);
-      field.setAccessible(false);
-      //noinspection unchecked
-      return (T) value;
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new IllegalStateException("Model class has somehow changed during runtime? :/");
-    }
-  }
-
   private String insertSQL() {
-    ParsedModel model = getParsedModel();
+    ParsedModel model = ParsedModel.of(modelClass);
     StringJoiner queryJoiner = new StringJoiner(" ");
     queryJoiner.add("INSERT INTO");
     queryJoiner.add(model.getSQLTableName());
@@ -213,7 +160,7 @@ public class Dao<M> {
   public void createTable() throws SQLException {
     Table[] tables = this.modelClass.getAnnotationsByType(Table.class);
 
-    if (tables.length != 1) {
+    if (tables.length == 1) {
       throw new IllegalStateException("Model class must have a single @Table declaration. "
           + tables.length + " found on " + this.modelClass.getName());
     }
@@ -232,7 +179,7 @@ public class Dao<M> {
   }
 
   private String createTableSQL() {
-    ParsedModel model = getParsedModel();
+    ParsedModel model = ParsedModel.of(modelClass);
     StringJoiner tableJoiner = new StringJoiner(" ");
     tableJoiner.add("CREATE TABLE");
     tableJoiner.add(model.getSQLTableName());
@@ -286,28 +233,7 @@ public class Dao<M> {
     return connectionSource;
   }
 
-  public ParsedModel getParsedModel() {
-    if (this.parsedModel != null) {
-      return this.parsedModel;
-    }
-
-    String tableName = camelToSnake(this.modelClass.getSimpleName());
-    LinkedHashMap<String, ParsedColumn> fields = new LinkedHashMap<>();
-
-    for (Field field : this.modelClass.getDeclaredFields()) {
-      Column[] columns = field.getAnnotationsByType(Column.class);
-      if (columns.length > 1) {
-        throw new IllegalStateException("Fields should only have one @Column declaration. "
-            + columns.length + " found on " + this.modelClass.getName() + " " + field.getName());
-      }
-      if (columns.length == 1) {
-        Column column = columns[0];
-        String columnName = camelToSnake(field.getName());
-        Class<?> type = field.getType();
-        fields.put(columnName, new ParsedColumn(type, columnName, column.primary()));
-      }
-    }
-
-    return new ParsedModel(tableName, fields);
+  public Class<M> getModelClass() {
+    return modelClass;
   }
 }
