@@ -1,32 +1,63 @@
 package net.novucs.esd.test.orm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class TestDaoManager {
 
   private static final String ALICE = "alice";
   private static final String BOB = "bob";
-  private transient Dao<User> userDao;
+  private static ConnectionSource connectionSource;
+  private static Dao<User> userDao;
 
   @Before
   public void setUp() throws SQLException {
     String dbUrl = "jdbc:derby:memory:testDB;create=true";
     String dbUser = "impact";
     String dbPass = "derbypass";
+    connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
+  }
 
-    ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
+  @Test
+  public void testCreateTable() throws SQLException {
+    // Check that we have a connection
+    assertNotNull("The connection should've been established.", connectionSource);
+
+    // When
     userDao = new Dao<>(connectionSource, User.class);
+
+    // Then
     userDao.createTable();
+
+    // Query
+    PreparedStatement statement = connectionSource.getConnection().prepareStatement(
+            "SELECT TABLEID FROM SYS.SYSTABLES WHERE TABLENAME=?"
+    );
+    statement.setString(1, User.class.getSimpleName());
+    statement.execute();
+
+    // Result
+    ResultSet rs = statement.getResultSet();
+    int rowCount = rs.getFetchSize();
+
+    // Assert
+    assertEquals(
+            "Expected one table to be create as " + User.class.getSimpleName() + ", none were found.",
+            1,
+            rowCount
+    );
   }
 
   @Test
@@ -72,6 +103,6 @@ public class TestDaoManager {
     userDao.insert(bob);
     userDao.delete(bob);
     User deletedUser = userDao.select().where(new Where().eq("id", bob.getId())).first();
-    assertNull("The user jeff should be deleted", deletedUser);
+    assertNull("The user bob should be deleted", deletedUser);
   }
 }
