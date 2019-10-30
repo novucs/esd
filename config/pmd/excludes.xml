@@ -18,6 +18,7 @@
     <exclude name="UnnecessaryFullyQualifiedName"/>
   </rule>
   <rule ref="category/java/design.xml">
+    <exclude name="DataClass"/>
     <exclude name="LawOfDemeter"/>
   </rule>
   <rule ref="category/java/documentation.xml">

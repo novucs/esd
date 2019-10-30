@@ -1,7 +1,7 @@
 package net.novucs.esd.test;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.novucs.esd.test.ReflectUtil.setFieldValue;
+import static net.novucs.esd.util.ReflectUtil.setFieldValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

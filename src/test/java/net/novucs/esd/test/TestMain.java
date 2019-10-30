@@ -1,7 +1,7 @@
 package net.novucs.esd.test;
 
-import static net.novucs.esd.test.ReflectUtil.executePrivateStaticMethod;
-import static net.novucs.esd.test.ReflectUtil.setStaticFieldValue;
+import static net.novucs.esd.util.ReflectUtil.executePrivateStaticMethod;
+import static net.novucs.esd.util.ReflectUtil.setStaticFieldValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
