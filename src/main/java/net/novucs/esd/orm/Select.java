@@ -60,52 +60,55 @@ public class Select<M> {
 
   public M first() throws SQLException {
     this.limit = 1;
-    ResultSet resultSet = execute();
-    if (resultSet.next()) {
-      return getModel(resultSet);
+    List<M> models = execute();
+    if (models.size() > 0) {
+      return models.get(0);
+    } else {
+      return null;
     }
-    return null;
   }
 
   public M one() throws SQLException {
-    ResultSet resultSet = execute();
-    if (resultSet.next()) {
-      M model = getModel(resultSet);
-      if (resultSet.next()) {
-        throw new SQLException("Expected only one result, found multiple");
-      }
-      return model;
+    List<M> models = execute();
+    if (models.size() == 0) {
+      throw new SQLException("Expected one result, found none");
     }
-    throw new SQLException("Expected one result, found none");
+    if (models.size() > 1) {
+      throw new SQLException("Expected only one result, found multiple");
+    }
+    return models.get(0);
   }
 
   public List<M> all() throws SQLException {
-    ResultSet resultSet = execute();
-    List<M> models = new ArrayList<>();
-    while (resultSet.next()) {
-      M model = getModel(resultSet);
-      models.add(model);
-    }
-    return models;
+    return execute();
   }
 
-  private ResultSet execute() throws SQLException {
-    Connection connection = this.dao.getConnectionSource().getConnection();
+  private List<M> execute() throws SQLException {
     SQLBuilder builder = this.sql();
-    PreparedStatement statement = connection.prepareStatement(builder.getQuery());
 
-    int i = 1;
-    for (SQLParameter parameter : builder.getParameters()) {
-      Object value = parameter.getValue();
-      if (value instanceof String) {
-        statement.setString(i, (String) value);
-      } else if (value instanceof Integer) {
-        statement.setInt(i, (Integer) value);
+    try (Connection connection = this.dao.getConnectionSource().getConnection();
+        PreparedStatement statement = connection.prepareStatement(builder.getQuery())) {
+
+      int i = 1;
+      for (SQLParameter parameter : builder.getParameters()) {
+        Object value = parameter.getValue();
+        if (value instanceof String) {
+          statement.setString(i, (String) value);
+        } else if (value instanceof Integer) {
+          statement.setInt(i, (Integer) value);
+        }
+        i++;
       }
-      i++;
-    }
 
-    return statement.executeQuery();
+      ResultSet resultSet = statement.executeQuery();
+      List<M> models = new ArrayList<>();
+      while (resultSet.next()) {
+        M model = getModel(resultSet);
+        models.add(model);
+      }
+
+      return models;
+    }
   }
 
   private M getModel(ResultSet resultSet) throws SQLException {

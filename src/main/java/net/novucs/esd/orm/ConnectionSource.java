@@ -17,6 +17,7 @@ public class ConnectionSource {
   }
 
   public Connection getConnection() throws SQLException {
+    // todo: turn this into a viable connection pool
     return DriverManager.getConnection(dbUrl, dbUser, dbPass);
   }
 }

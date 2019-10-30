@@ -59,9 +59,10 @@ public class Dao<M> {
 
   public void delete(M toDelete) throws SQLException {
     String query = deleteSQL(toDelete);
-    Connection connection = connectionSource.getConnection();
-    PreparedStatement statement = connection.prepareStatement(query);
-    statement.executeUpdate();
+    try (Connection connection = connectionSource.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+      statement.executeUpdate();
+    }
   }
 
   private String deleteSQL(M toDelete) {
@@ -80,26 +81,24 @@ public class Dao<M> {
 
   public void update(M toUpdate) throws SQLException {
     String query = updateSQL(toUpdate);
-
-    Connection connection = connectionSource.getConnection();
-    PreparedStatement statement = connection.prepareStatement(query);
-    ParsedModel model = getParsedModel();
-
-    int i = 1;
-    for (ParsedColumn column : model.getColumns().values()) {
-      if (column.isPrimary()) {
-        continue;
+    try (Connection connection = connectionSource.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+      ParsedModel model = getParsedModel();
+      int i = 1;
+      for (ParsedColumn column : model.getColumns().values()) {
+        if (column.isPrimary()) {
+          continue;
+        }
+        Object value = getValue(toUpdate, column);
+        if (value instanceof String) {
+          statement.setString(i, (String) value);
+        } else if (value instanceof Integer) {
+          statement.setInt(i, (Integer) value);
+        }
+        i++;
       }
-      Object value = getValue(toUpdate, column);
-      if (value instanceof String) {
-        statement.setString(i, (String) value);
-      } else if (value instanceof Integer) {
-        statement.setInt(i, (Integer) value);
-      }
-      i++;
+      statement.executeUpdate();
     }
-
-    statement.executeUpdate();
   }
 
   private String updateSQL(M toUpdate) {
@@ -131,28 +130,32 @@ public class Dao<M> {
 
   public void insert(M toInsert) throws SQLException {
     String query = insertSQL();
-    Connection connection = this.connectionSource.getConnection();
-    PreparedStatement statement = connection
-        .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ParsedModel model = getParsedModel();
+    try (Connection connection = this.connectionSource.getConnection();
+        PreparedStatement statement = connection
+            .prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+      ParsedModel model = getParsedModel();
 
-    int i = 1;
-    for (ParsedColumn column : model.getColumns().values()) {
-      if (column.isPrimary()) continue;
-      if (column.getType() == String.class) {
-        String value = getValue(toInsert, column);
-        statement.setString(i, value);
+      int i = 1;
+      for (ParsedColumn column : model.getColumns().values()) {
+        if (column.isPrimary()) {
+          continue;
+        }
+        if (column.getType() == String.class) {
+          String value = getValue(toInsert, column);
+          statement.setString(i, value);
+        }
+        i++;
       }
-      i++;
-    }
 
-    statement.executeUpdate();
+      statement.executeUpdate();
 
-    ResultSet rs = statement.getGeneratedKeys();
-    if (rs.next()) {
-      ParsedColumn primaryKeyColumn = model.getPrimaryKey();
-      int primaryKey = rs.getInt(1);
-      setValue(toInsert, primaryKeyColumn, primaryKey);
+      try (ResultSet rs = statement.getGeneratedKeys()) {
+        if (rs.next()) {
+          ParsedColumn primaryKeyColumn = model.getPrimaryKey();
+          int primaryKey = rs.getInt(1);
+          setValue(toInsert, primaryKeyColumn, primaryKey);
+        }
+      }
     }
   }
 
@@ -215,10 +218,9 @@ public class Dao<M> {
           + tables.length + " found on " + this.modelClass.getName());
     }
 
-    Connection connection = this.connectionSource.getConnection();
     String query = createTableSQL();
-
-    try (PreparedStatement createUserTable = connection.prepareStatement(query)) {
+    try (Connection connection = this.connectionSource.getConnection();
+        PreparedStatement createUserTable = connection.prepareStatement(query)) {
       createUserTable.execute();
     } catch (SQLException ex) {
       // Do nothing if already exists
