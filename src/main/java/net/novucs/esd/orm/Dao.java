@@ -156,14 +156,12 @@ public class Dao<M> {
     }
   }
 
-  private <T> T setValue(M model, ParsedColumn column, Object value) {
+  private void setValue(M model, ParsedColumn column, Object value) {
     try {
       Field field = this.modelClass.getDeclaredField(column.getName());
       field.setAccessible(true);
       field.set(model, value);
       field.setAccessible(false);
-      //noinspection unchecked
-      return (T) value;
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new IllegalStateException("Model class has somehow changed during runtime? :/");
     }
