@@ -20,6 +20,13 @@ When docker-compose is running, execute the relevant command to automatically bu
 * UNIX: `./gradlew autodeploy -t`
 * Windows: `gradlew.bat autodeploy -t`
 
+## Developer Tips
+During development, to run all CI checks locally you may perform the following command:
+* `./gradlew checkBuildReport`
+
+All the reports for any check/test failures will be saved into the relevant directory under:
+`./build/reports/`
+
 ## IDE Setup
 IntelliJ:
 * `File -> Open -> <select repo location>`
