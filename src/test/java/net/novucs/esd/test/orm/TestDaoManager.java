@@ -1,29 +1,44 @@
 package net.novucs.esd.test.orm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.sql.SQLException;
 import java.util.List;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestDaoManager {
 
-  @Test
-  public void testRequestGetsMapAttribute() throws SQLException {
+  private static final String ALICE = "alice";
+  private static final String BOB = "bob";
+  private transient Dao<User> userDao;
+
+  @Before
+  public void setUp() throws SQLException {
     String dbUrl = "jdbc:derby:memory:testDB;create=true";
     String dbUser = "impact";
     String dbPass = "derbypass";
 
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
-    Dao<User> userDao = new Dao<>(connectionSource, User.class);
+    userDao = new Dao<>(connectionSource, User.class);
     userDao.createTable();
+  }
 
-    // See if we can get a result for Bob
+  @Test
+  public void testSelectAll() throws SQLException {
+    // Check two bobs are inserted and can be fetched.
+    userDao.insert(new User(BOB));
+    userDao.insert(new User(BOB));
+    userDao.insert(new User(BOB));
+    userDao.insert(new User(ALICE));
     List<User> allUsers = userDao.select()
         .where(new Where()
-            .eq("name", "bob")
+            .eq("name", BOB)
             .and()
             .eq("id", 1)
             .or()
@@ -31,25 +46,32 @@ public class TestDaoManager {
         )
         .limit(2)
         .all();
-    System.out.println(allUsers);
+    assertEquals("Two users should be selected", 2, allUsers.size());
+  }
 
-    userDao.insert(new User("old name"));
-    User bobNameChange = userDao.selectById(1);
-    bobNameChange.setName("bob");
-    userDao.update(bobNameChange);
-    System.out.println(bobNameChange.getId() + " : " + bobNameChange.getName());
-    bobNameChange.setName("steve");
-    userDao.update(bobNameChange);
-    bobNameChange = userDao.selectById(1);
-    System.out.println(bobNameChange.getId() + " : " + bobNameChange.getName());
+  @Test
+  public void testSelectById() throws SQLException {
+    userDao.insert(new User(BOB));
+    User bob = userDao.selectById(1);
+    assertEquals("The user bob should be selected by ID 1", BOB, bob.getName());
+  }
 
-    User jeff = new User("jeff");
-    userDao.insert(jeff);
-    System.out.println(jeff.getId() + " : " + jeff.getName());
-    User user1 = userDao.select().where(new Where().eq("id", jeff.getId())).first();
-    System.out.println("before delete:" + user1);
-    userDao.delete(jeff);
-    User user2 = userDao.select().where(new Where().eq("id", jeff.getId())).first();
-    System.out.println("after delete:" + user2);
+  @Test
+  public void testUpdate() throws SQLException {
+    User bob = new User(BOB);
+    userDao.insert(bob);
+    bob.setName(ALICE);
+    userDao.update(bob);
+    User alice = userDao.selectById(bob.getId());
+    assertEquals("The user bob should be renamed to alice", ALICE, alice.getName());
+  }
+
+  @Test
+  public void testDeletion() throws SQLException {
+    User bob = new User(BOB);
+    userDao.insert(bob);
+    userDao.delete(bob);
+    User deletedUser = userDao.select().where(new Where().eq("id", bob.getId())).first();
+    assertNull("The user jeff should be deleted", deletedUser);
   }
 }

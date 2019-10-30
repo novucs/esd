@@ -12,6 +12,7 @@
     <exclude name="MethodArgumentCouldBeFinal"/>
     <exclude name="OnlyOneReturn"/>
     <exclude name="ShortClassName"/>
+    <exclude name="ShortMethodName"/>
     <exclude name="ShortVariable"/>
     <exclude name="TooManyStaticImports"/>
     <exclude name="UnnecessaryFullyQualifiedName"/>

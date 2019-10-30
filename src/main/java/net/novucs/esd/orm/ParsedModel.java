@@ -39,7 +39,6 @@ public class ParsedModel {
     return columns;
   }
 
-  @SuppressWarnings("PMD.ShortMethodName")
   public static ParsedModel of(Class<?> model) {
     if (MODEL_CACHE.containsKey(model)) {
       return MODEL_CACHE.get(model);

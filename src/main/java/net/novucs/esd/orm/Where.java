@@ -17,7 +17,6 @@ public class Where {
     return clauses;
   }
 
-  @SuppressWarnings("PMD.ShortMethodName")
   public Where eq(String columnName, Object value) {
     clauses.add(new EqClause(columnName, value));
     return this;
@@ -33,7 +32,6 @@ public class Where {
     return this;
   }
 
-  @SuppressWarnings("PMD.ShortMethodName")
   public Where or() {
     clauses.add(new OrClause());
     return this;
