@@ -12,19 +12,19 @@
         <url-pattern>/example</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>homeServlet</servlet-name>
-        <servlet-class>net.novucs.esd.homeServlet</servlet-class>
+        <servlet-name>HomepageServlet</servlet-name>
+        <servlet-class>net.novucs.esd.HomepageServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>homeServlet</servlet-name>
+        <servlet-name>HomepageServlet</servlet-name>
         <url-pattern>/homepage</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>memberServlet</servlet-name>
-        <servlet-class>net.novucs.esd.memberServlet</servlet-class>
+        <servlet-name>MemberServlet</servlet-name>
+        <servlet-class>net.novucs.esd.MemberServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>memberServlet</servlet-name>
+        <servlet-name>MemberServlet</servlet-name>
         <url-pattern>/app/members</url-pattern>
     </servlet-mapping>
     <session-config>
