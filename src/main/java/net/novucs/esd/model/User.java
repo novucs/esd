@@ -5,7 +5,8 @@ import net.novucs.esd.orm.Table;
 
 @Table()
 public class User {
-  @Column(primary=true)
+
+  @Column(primary = true)
   private Integer id;
 
   @Column()
