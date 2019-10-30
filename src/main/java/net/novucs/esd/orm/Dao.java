@@ -103,8 +103,6 @@ public class Dao<M> {
 
   private String updateSQL(M toUpdate) {
     ParsedModel model = getParsedModel();
-    ParsedColumn primaryKeyColumn = model.getPrimaryKey();
-    Integer primaryKey = getValue(toUpdate, primaryKeyColumn);
 
     StringJoiner updateJoiner = new StringJoiner(" ");
 
@@ -121,8 +119,10 @@ public class Dao<M> {
     }
 
     updateJoiner.add("WHERE");
+    ParsedColumn primaryKeyColumn = model.getPrimaryKey();
     updateJoiner.add(primaryKeyColumn.getName());
     updateJoiner.add("=");
+    Integer primaryKey = getValue(toUpdate, primaryKeyColumn);
     updateJoiner.add(primaryKey.toString());
 
     return updateJoiner.toString();
