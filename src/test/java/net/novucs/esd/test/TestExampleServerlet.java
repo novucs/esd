@@ -30,12 +30,12 @@ public class TestExampleServerlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
 
     // When
-    when(request.getRequestDispatcher("/example.jsp")).thenAnswer(
+    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     serverlet.doGet(request, response);
 
     // Assert
-    verify(request, times(1)).setAttribute(any(String.class), any(Map.class));
+    verify(request, times(3)).setAttribute(any(String.class), any(Map.class));
   }
 
   @Test

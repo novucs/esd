@@ -24,7 +24,12 @@ public class ExampleServerlet extends HttpServlet {
     anExampleMap.put("hello", "friend");
     anExampleMap.put("appname", this.appName);
     request.setAttribute("anExampleMap", anExampleMap);
-    request.getRequestDispatcher("/example.jsp").forward(request, response);
+    
+    // Setting the title and the location of the page you would like to view
+    // while dispatching to the layout will ensure consistent UI.
+    request.setAttribute("title", "Example");
+    request.setAttribute("page", "/example.jsp");
+    request.getRequestDispatcher("/layout.jsp").forward(request, response);    
   }
 
   @Override

@@ -1,7 +1,6 @@
 # Enterprise Systems Development Project
-*We're not entirely sure what it is yet. Though we do know we need Glassfish,
-Derby, and JDK8. This project currently provides tooling for the ESD tech stack
-that is compatible with Docker, IntelliJ, and NetBeans.*
+*[Link to planning/spec document](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)*
+*This project currently provides tooling for the ESD tech stack that is compatible with Docker, IntelliJ, and NetBeans.*
 
 ## Quickstart
 Requirements:
@@ -23,24 +22,31 @@ When docker-compose is running, execute the relevant command to automatically bu
 ## IDE Setup
 IntelliJ:
 * `File -> Open -> <select repo location>`
+* `File -> Settings -> Editor -> Code Style -> Scheme Cog -> Import Scheme -> IntelliJ IDEA code style XML -> config/codestyles/GoogleStyle.xml`
 
 NetBeans:
 * `File -> Open Project -> <select repo location>`
 
-## Linting
-To perform linting checks: `./gradlew check`
+NetBeans for UWE machines:
+* `Tools -> Plugins -> Available Plugins -> Gradle Support -> Install`
+* `Tools -> Options -> Miscallenous -> Gradle -> Scripts & Tasks -> Gradle arguments`
+    * Add `netbeansdeploy`
+* If `netbeansdeploy` build location is invalid, update task in the `build.gradle` file to match the GlassFish location.
+    * For example: `C:\\Users\\r2-benson\\AppData\\Roaming\\Netbeans\\8.2\\config\\GF_4.1.1\\domain1\\autodeploy`
+* Make sure to start the GlassFish server via the 'Services' tab:
+    * Right-click `Servers -> GlassFish Server 4.1.1` and click `Start`
+* To deploy, click the big fancy Green Play button!
+
+## Code checks
+To perform code checks with: `./gradlew check`
 
 Code quality reports will be generated after running checks, view them locally at:
-* [CheckStyle](build/reports/checkstyle/main.html)
-* [PMD](build/reports/pmd/main.html)
-* [SpotBugs](build/reports/spotbugs/main.html)
+* CheckStyle: `./build/reports/checkstyle/main.html`
+* PMD: `./build/reports/pmd/main.html`
+* SpotBugs: `./build/reports/spotbugs/main.html`
+* Tests: `./build/reports/tests/test/index.html`
 
 If any lint checks seem out of place, and are difficult to work with please let @novucs know.
-
-## Testing
-Currently only unit tests are supported. To run them, simply execute: `./gradlew test`
-
-Code coverage and integration tests will be defined when the project specification has been confirmed.
 
 ## Contributing
 Feel free to branch off this repo in the format `feature/{ticket-number}-{name-of-feature}` e.g. 
