@@ -3,13 +3,13 @@ package net.novucs.esd.model;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
-@Table()
+@Table
 public class User {
 
   @Column(primary = true)
   private Integer id;
 
-  @Column()
+  @Column
   private String name;
 
   @Column(nullable = true)
