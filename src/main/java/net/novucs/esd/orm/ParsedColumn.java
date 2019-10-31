@@ -2,6 +2,8 @@ package net.novucs.esd.orm;
 
 import static net.novucs.esd.util.StringUtil.camelToSnake;
 
+import java.util.StringJoiner;
+
 public class ParsedColumn {
 
   private final Class<?> type;
@@ -53,5 +55,25 @@ public class ParsedColumn {
 
   public boolean isNullable() {
     return nullable;
+  }
+
+  public String createSQL() {
+    StringJoiner columnJoiner = new StringJoiner(" ");
+    columnJoiner.add(this.getSQLName());
+    if (this.isPrimary()) {
+      columnJoiner.add("INT NOT NULL GENERATED ALWAYS AS IDENTITY");
+      columnJoiner.add("(START WITH 1, INCREMENT BY 1)");
+    } else if (this.isForeignKey()) {
+      columnJoiner.add("INT REFERENCES");
+      columnJoiner.add(this.foreignKeySQL());
+    } else if (this.getType() == String.class) {
+      columnJoiner.add("VARCHAR(255)");
+    } else if (this.getType() == Integer.class) {
+      columnJoiner.add("INT");
+    }
+    if (!this.isNullable()) {
+      columnJoiner.add("NOT NULL");
+    }
+    return columnJoiner.toString();
   }
 }

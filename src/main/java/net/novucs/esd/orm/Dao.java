@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map.Entry;
 import java.util.StringJoiner;
 import net.novucs.esd.util.ReflectUtil;
 
@@ -83,10 +82,9 @@ public class Dao<M> {
     updateJoiner.add("SET");
     StringJoiner setJoiner = new StringJoiner(", ");
     for (ParsedColumn column : model.getColumns().values()) {
-      if (column.isPrimary()) {
-        continue;
+      if (!column.isPrimary()) {
+        setJoiner.add(column.getSQLName() + " = ?");
       }
-      setJoiner.add(column.getSQLName() + " = ?");
     }
     updateJoiner.merge(setJoiner);
 
@@ -191,40 +189,16 @@ public class Dao<M> {
     StringJoiner contentsJoiner = new StringJoiner(", ", "(", ")");
 
     for (ParsedColumn column : model.getColumns().values()) {
-      StringJoiner columnJoiner = new StringJoiner(" ");
-      columnJoiner.add(column.getSQLName());
-
-      if (column.isPrimary()) {
-        columnJoiner.add("INT NOT NULL GENERATED ALWAYS AS IDENTITY");
-        columnJoiner.add("(START WITH 1, INCREMENT BY 1)");
-      } else if (column.isForeignKey()) {
-        columnJoiner.add("INT REFERENCES");
-        columnJoiner.add(column.foreignKeySQL());
-      } else if (column.getType() == String.class) {
-        columnJoiner.add("VARCHAR(255)");
-      } else if (column.getType() == Integer.class) {
-        columnJoiner.add("INT");
-      }
-
-      if (!column.isNullable()) {
-        columnJoiner.add("NOT NULL");
-      }
-
-      contentsJoiner.merge(columnJoiner);
+      contentsJoiner.add(column.createSQL());
     }
 
-    for (Entry<String, ParsedColumn> entry : model.getColumns().entrySet()) {
-      // todo: add foreign key / primary key constraints here :)
-      String columnName = entry.getKey();
-      ParsedColumn column = entry.getValue();
+    for (ParsedColumn column : model.getColumns().values()) {
       StringJoiner constraintJoiner = new StringJoiner("");
-
       if (column.isPrimary()) {
         constraintJoiner.add("PRIMARY KEY (");
-        constraintJoiner.add(columnName);
+        constraintJoiner.add(column.getSQLName());
         constraintJoiner.add(")");
       }
-
       contentsJoiner.merge(constraintJoiner);
     }
 
