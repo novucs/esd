@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ExampleServerlet extends HttpServlet {
+class ExampleServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
@@ -40,6 +40,6 @@ public class ExampleServerlet extends HttpServlet {
 
   @Override
   public String getServletInfo() {
-    return "An example serverlet";
+    return "An example servlet";
   }
 }

@@ -14,17 +14,17 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.Exampleservlet;
+import net.novucs.esd.HomepageServlet;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
-public class TestExampleServlet {
+public class TestHomepageServlet {
 
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException, ReflectiveOperationException {
     // Given
-    Exampleservlet servlet = new Exampleservlet();
+    HomepageServlet servlet = new HomepageServlet();
     setFieldValue(servlet, "appName", "dummyApp");
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
@@ -39,15 +39,15 @@ public class TestExampleServlet {
   }
 
   @Test
-  public void testExampleInservlettInfo() {
+  public void testHomepageInServletInfo() {
     // Given
-    Exampleservlet servlet = new Exampleservlet();
+    HomepageServlet servlet = new HomepageServlet();
 
     // When
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("Example servlett info must contain the key word example",
-        servletInfo.contains("example"));
+    assertTrue("Homepage servlet info must contain the key word homepage",
+        servletInfo.contains("homepage"));
   }
 }
