@@ -6,7 +6,7 @@
         <div id="login-component-container" class="col s6 push-s3 rounded-container">
             <div class="row">
                 <div class="col s12 center-align">
-                    <h3>
+                    <h3 id="login-title">
                         Login
                     </h3>
                 </div>
@@ -18,7 +18,7 @@
                             <div class="col s12">
                                 <div class="input-field">
                                     <input name="username" placeholder="" id="username" type="email" class="validate"
-                                           required/>
+                                           autocomplete="off" required/>
                                     <label for="username">Username</label>
                                 </div>
                             </div>
