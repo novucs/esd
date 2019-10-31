@@ -1,4 +1,4 @@
-var errorModule = (function() {
+const errorModule = (function() {
 
     const displayError = (errorText) => {
         M.toast({

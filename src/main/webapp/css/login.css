@@ -1,0 +1,25 @@
+body {
+    height: 100vh;
+    margin: 0;
+    background: white;
+}
+
+body:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -250px;
+    width: 700px;
+    background: #000;
+    transform: skew(-30deg);
+}
+
+#login-button{
+    background-color: #909090;
+    float: left;
+}
+
+#login-component-container{
+    margin-top: 30px;
+}
