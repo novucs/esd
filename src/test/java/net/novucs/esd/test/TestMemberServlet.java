@@ -1,6 +1,5 @@
 package net.novucs.esd.test;
 
-import static com.sun.tools.doclint.Entity.times;
 import static junit.framework.TestCase.assertTrue;
 import static net.novucs.esd.test.ReflectUtil.setFieldValue;
 import static org.mockito.Matchers.any;
@@ -45,7 +44,7 @@ public class TestMemberServlet {
     MemberServlet memberServlet = new MemberServlet();
 
     // When
-    String servletInfo = servlet.getServletInfo();
+    String servletInfo = memberServlet.getServletInfo();
 
     // Assert
     assertTrue("Member servlet info must contain the key word member",
