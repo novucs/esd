@@ -11,8 +11,9 @@ import java.util.stream.Collectors;
 
 public class DaoManager {
 
-  private final Map<Class<?>, Dao<?>> daos = Collections.synchronizedMap(new LinkedHashMap<>());
-  private final ConnectionSource connectionSource;
+  private final transient Map<Class<?>, Dao<?>> daos = Collections
+      .synchronizedMap(new LinkedHashMap<>());
+  private final transient ConnectionSource connectionSource;
 
   public DaoManager(ConnectionSource connectionSource) {
     this.connectionSource = connectionSource;
