@@ -5,11 +5,19 @@
          version="4.0">
     <servlet>
         <servlet-name>ExampleServerlet</servlet-name>
-        <servlet-class>net.novucs.esd.ExampleServerlet</servlet-class>
+        <servlet-class>net.novucs.esd.RegistrationServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ExampleServerlet</servlet-name>
         <url-pattern>/example</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>RegistrationServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.RegistrationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegistrationServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
