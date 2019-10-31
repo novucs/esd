@@ -10,7 +10,7 @@ body:before {
     top: 0;
     bottom: 0;
     left: -250px;
-    width: 700px;
+    width: 60vw;
     background: #000;
     transform: skew(-30deg);
 }

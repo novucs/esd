@@ -1,4 +1,4 @@
-package net.novucs.esd.servlets;
+package net.novucs.esd.controllers;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -29,7 +29,6 @@ public class LoginServlet extends BaseServlet {
     } else {
       // Add error
       super.addResponseError("LoginFailed", "Failed to login");
-      super.addResponseError("LoginFailed2", "You suck");
       super.forward(request, response, "Login", "/login");
     }
   }
@@ -39,5 +38,10 @@ public class LoginServlet extends BaseServlet {
       throws ServletException, IOException {
     response.setContentType("text/html;charset=UTF-8");
     super.forward(request, response, "Login", "/login");
+  }
+
+  @Override
+  public String getServletInfo(){
+    return "LoginServlet";
   }
 }

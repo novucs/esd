@@ -1,4 +1,4 @@
-package net.novucs.esd.servlets;
+package net.novucs.esd.controllers;
 
 import java.io.IOException;
 import java.util.Map;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet(name = "BaseServlet")
 public abstract class BaseServlet extends HttpServlet {
 
   @Resource(lookup = "java:app/AppName")

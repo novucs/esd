@@ -43,11 +43,12 @@
                     </form>
                 </div>
             </div>
+            <div class="row">
+                <div class="col s12">
+                    Not have an account? Register <a href="register">here</a>.
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col s6 push-s3">
-            Not have an account? Register <a href="register">here</a>.
-        </div>
-    </div>
+
 </div>
