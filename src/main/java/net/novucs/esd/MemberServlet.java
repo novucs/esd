@@ -38,6 +38,6 @@ public class MemberServlet extends HttpServlet {
 
   @Override
   public String getServletInfo() {
-    return "Member's dashboard";
+    return "members dashboard";
   }
 }

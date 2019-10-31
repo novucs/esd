@@ -38,6 +38,6 @@ public class HomepageServlet extends HttpServlet {
 
   @Override
   public String getServletInfo() {
-    return "Homepage is loaded";
+    return "homepage is loaded";
   }
 }
