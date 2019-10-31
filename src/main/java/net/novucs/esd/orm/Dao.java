@@ -206,6 +206,10 @@ public class Dao<M> {
         columnJoiner.add("INT");
       }
 
+      if (!column.isNullable()) {
+        columnJoiner.add("NOT NULL");
+      }
+
       contentsJoiner.merge(columnJoiner);
     }
 

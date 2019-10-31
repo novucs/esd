@@ -22,16 +22,21 @@ public class TestReflectUtil {
   @Test(expected = IllegalStateException.class)
   public void testSetValueFailsOnBadAttribute() {
     // Given
-    ParsedColumn parsedColumn = new ParsedColumn(String.class, "this is not an attribute", false);
+    ParsedColumn parsedColumn = createDummyParsedColumn();
 
     // When
     ReflectUtil.setValue(DummyTable.class, parsedColumn, null);
   }
 
+  private ParsedColumn createDummyParsedColumn() {
+    return new ParsedColumn(String.class, "this is not an attribute",
+        false, null, false);
+  }
+
   @Test(expected = IllegalStateException.class)
   public void testGetValueFailsOnBadAttribute() {
     // Given
-    ParsedColumn parsedColumn = new ParsedColumn(String.class, "this is not an attribute", false);
+    ParsedColumn parsedColumn = createDummyParsedColumn();
 
     // When
     ReflectUtil.getValue(DummyTable.class, parsedColumn);

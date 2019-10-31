@@ -8,12 +8,10 @@ public class ParsedColumn {
   private final String name;
   private final boolean primary;
   private final Class<?> foreignReference;
+  private final boolean nullable;
 
-  public ParsedColumn(Class<?> type, String name, boolean primary) {
-    this(type, name, primary, null);
-  }
-
-  public ParsedColumn(Class<?> type, String name, boolean primary, Class<?> foreignReference) {
+  public ParsedColumn(Class<?> type, String name, boolean primary,
+      Class<?> foreignReference, boolean nullable) {
     if (primary && (type != Integer.class || !"id".equals(name))) {
       throw new IllegalStateException("Primary keys must be integers named ID");
     }
@@ -22,6 +20,7 @@ public class ParsedColumn {
     this.name = name;
     this.primary = primary;
     this.foreignReference = foreignReference;
+    this.nullable = nullable;
   }
 
   public Class<?> getType() {
@@ -50,5 +49,9 @@ public class ParsedColumn {
 
   public Class<?> getForeignReference() {
     return foreignReference;
+  }
+
+  public boolean isNullable() {
+    return nullable;
   }
 }

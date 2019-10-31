@@ -12,17 +12,17 @@ public class User {
   @Column()
   private transient String name;
 
-  @Column()
+  @Column(nullable = true)
   private transient String email;
 
   // todo: encrypt this
-  @Column()
+  @Column(nullable = true)
   private transient String password;
 
-  @Column()
+  @Column(nullable = true)
   private transient String address;
 
-  @Column()
+  @Column(nullable = true)
   private transient String status;
 
   public User() {
