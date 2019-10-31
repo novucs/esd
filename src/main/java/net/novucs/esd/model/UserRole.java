@@ -7,13 +7,13 @@ import net.novucs.esd.orm.Table;
 public class UserRole {
 
   @Column(primary = true)
-  private transient Integer id;
+  private Integer id;
 
   @Column(foreign = User.class)
-  private transient Integer userId;
+  private Integer userId;
 
   @Column(foreign = Role.class)
-  private transient Integer roleId;
+  private Integer roleId;
 
   public UserRole() {
     // This constructor is intentionally empty.

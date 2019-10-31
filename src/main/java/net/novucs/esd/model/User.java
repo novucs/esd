@@ -7,23 +7,23 @@ import net.novucs.esd.orm.Table;
 public class User {
 
   @Column(primary = true)
-  private transient Integer id;
+  private Integer id;
 
   @Column()
-  private transient String name;
+  private String name;
 
   @Column(nullable = true)
-  private transient String email;
+  private String email;
 
   // todo: encrypt this
   @Column(nullable = true)
-  private transient String password;
+  private String password;
 
   @Column(nullable = true)
-  private transient String address;
+  private String address;
 
   @Column(nullable = true)
-  private transient String status;
+  private String status;
 
   public User() {
     // This constructor is intentionally empty.

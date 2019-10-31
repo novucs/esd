@@ -7,10 +7,10 @@ import net.novucs.esd.orm.Table;
 public class Role {
 
   @Column(primary = true)
-  private transient Integer id;
+  private Integer id;
 
   @Column()
-  private transient String name;
+  private String name;
 
   public Role() {
     // This constructor is intentionally empty.
