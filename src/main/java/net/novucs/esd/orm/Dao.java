@@ -44,7 +44,7 @@ public class Dao<M> {
     deleteJoiner.add("DELETE FROM");
     deleteJoiner.add(model.getSQLTableName());
     deleteJoiner.add("WHERE");
-    deleteJoiner.add(primaryKeyColumn.getName());
+    deleteJoiner.add(primaryKeyColumn.getSQLName());
     deleteJoiner.add("=");
     deleteJoiner.add(primaryKey.toString());
     return deleteJoiner.toString();
@@ -61,9 +61,9 @@ public class Dao<M> {
           continue;
         }
         Object value = ReflectUtil.getValue(toUpdate, column);
-        if (value instanceof String) {
+        if (column.getType() == String.class) {
           statement.setString(i, (String) value);
-        } else if (value instanceof Integer) {
+        } else if (column.getType() == Integer.class) {
           statement.setInt(i, (Integer) value);
         }
         i++;
@@ -81,17 +81,18 @@ public class Dao<M> {
     updateJoiner.add(model.getSQLTableName());
 
     updateJoiner.add("SET");
+    StringJoiner setJoiner = new StringJoiner(", ");
     for (ParsedColumn column : model.getColumns().values()) {
       if (column.isPrimary()) {
         continue;
       }
-      updateJoiner.add(column.getName());
-      updateJoiner.add("= ?");
+      setJoiner.add(column.getSQLName() + " = ?");
     }
+    updateJoiner.merge(setJoiner);
 
     updateJoiner.add("WHERE");
     ParsedColumn primaryKeyColumn = model.getPrimaryKey();
-    updateJoiner.add(primaryKeyColumn.getName());
+    updateJoiner.add(primaryKeyColumn.getSQLName());
     updateJoiner.add("=");
     Integer primaryKey = ReflectUtil.getValue(toUpdate, primaryKeyColumn);
     updateJoiner.add(primaryKey.toString());
@@ -114,6 +115,9 @@ public class Dao<M> {
         if (column.getType() == String.class) {
           String value = ReflectUtil.getValue(toInsert, column);
           statement.setString(i, value);
+        } else if (column.getType() == Integer.class) {
+          Integer value = ReflectUtil.getValue(toInsert, column);
+          statement.setInt(i, value);
         }
         i++;
       }
@@ -139,7 +143,7 @@ public class Dao<M> {
     StringJoiner columnJoiner = new StringJoiner(", ", "(", ")");
     for (ParsedColumn column : model.getColumns().values()) {
       if (!column.isPrimary()) {
-        columnJoiner.add(column.getName());
+        columnJoiner.add(column.getSQLName());
       }
     }
 
@@ -186,21 +190,16 @@ public class Dao<M> {
 
     StringJoiner contentsJoiner = new StringJoiner(", ", "(", ")");
 
-    for (Entry<String, ParsedColumn> entry : model.getColumns().entrySet()) {
-      String columnName = entry.getKey();
-      ParsedColumn column = entry.getValue();
+    for (ParsedColumn column : model.getColumns().values()) {
       StringJoiner columnJoiner = new StringJoiner(" ");
-      columnJoiner.add(columnName);
+      columnJoiner.add(column.getSQLName());
 
       if (column.isPrimary()) {
-        if (column.getType() != Integer.class) {
-          throw new IllegalStateException("Primary keys must be of the type Integer. "
-              + model.getTableName() + "." + columnName + " was found to be a(n) " + column
-              .getType());
-        }
-
         columnJoiner.add("INT NOT NULL GENERATED ALWAYS AS IDENTITY");
         columnJoiner.add("(START WITH 1, INCREMENT BY 1)");
+      } else if (column.isForeignKey()) {
+        columnJoiner.add("INT REFERENCES");
+        columnJoiner.add(column.foreignKeySQL());
       } else if (column.getType() == String.class) {
         columnJoiner.add("VARCHAR(255)");
       } else if (column.getType() == Integer.class) {

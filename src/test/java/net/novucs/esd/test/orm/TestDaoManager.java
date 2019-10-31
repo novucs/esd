@@ -3,11 +3,11 @@ package net.novucs.esd.test.orm;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
@@ -18,39 +18,24 @@ public class TestDaoManager {
 
   private static final String ALICE = "alice";
   private static final String BOB = "bob";
-  private static ConnectionSource connectionSource;
-  private static Dao<User> userDao;
+  private transient Dao<User> userDao;
+  private transient Dao<Role> roleDao;
+  private transient Dao<UserRole> userRoleDao;
 
   @Before
   public void setUp() throws SQLException {
     String dbUrl = "jdbc:derby:memory:testDB;create=true";
     String dbUser = "impact";
     String dbPass = "derbypass";
-    connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
-  }
+    ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
 
-  @Test
-  public void testCreateTable() throws SQLException {
-    // Given
     userDao = new Dao<>(connectionSource, User.class);
-    userDao.createTable();
+    roleDao = new Dao<>(connectionSource, Role.class);
+    userRoleDao = new Dao<>(connectionSource, UserRole.class);
 
-    // Assert
-    try (PreparedStatement statement = connectionSource.getConnection().prepareStatement(
-        "SELECT TABLEID FROM SYS.SYSTABLES WHERE TABLENAME=?"
-    )) {
-      statement.setString(1, User.class.getSimpleName());
-      statement.execute();
-      try (ResultSet rs = statement.getResultSet()) {
-        int rowCount = rs.getFetchSize();
-        assertEquals(
-            "Expected one table to be create as " + User.class.getSimpleName()
-                + ", none were found.",
-            1,
-            rowCount
-        );
-      }
-    }
+    userDao.createTable();
+    roleDao.createTable();
+    userRoleDao.createTable();
   }
 
   @Test
@@ -97,5 +82,25 @@ public class TestDaoManager {
     userDao.delete(bob);
     User deletedUser = userDao.select().where(new Where().eq("id", bob.getId())).first();
     assertNull("The user bob should be deleted", deletedUser);
+  }
+
+  @Test
+  public void testForeignRelationsSupported() throws SQLException {
+    User user = new User(BOB);
+    userDao.insert(user);
+
+    Role role = new Role("admin");
+    roleDao.insert(role);
+
+    UserRole userRole = new UserRole();
+    userRole.setUserId(user.getId());
+    userRole.setRoleId(role.getId());
+    userRoleDao.insert(userRole);
+
+    UserRole selectedUserRole = userRoleDao.selectById(userRole.getId());
+    User selectedUser = userDao.selectById(selectedUserRole.getUserId());
+
+    assertEquals("Foreign key reference expected to be established",
+        BOB, selectedUser.getName());
   }
 }

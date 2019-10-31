@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class TestReflectUtil {
 
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructFailsOnBadAttributes() {
     ReflectUtil.constructModel(DummyTable.class, Arrays.asList(1, 2, 3));
   }

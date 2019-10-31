@@ -38,7 +38,7 @@ public class Select<M> {
     StringJoiner columnJoiner = new StringJoiner(", ");
     ParsedModel parsedModel = ParsedModel.of(dao.getModelClass());
     for (ParsedColumn column : parsedModel.getColumns().values()) {
-      columnJoiner.add(column.getName());
+      columnJoiner.add(column.getSQLName());
     }
 
     selectorJoiner.add(columnJoiner.toString());
@@ -124,6 +124,8 @@ public class Select<M> {
         attributes.add(resultSet.getInt(i));
       } else if (column.getType() == String.class) {
         attributes.add(resultSet.getString(i));
+      } else if (column.getType() == Integer.class) {
+        attributes.add(resultSet.getInt(i));
       }
       i++;
     }

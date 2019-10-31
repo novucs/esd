@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
   boolean primary() default false;
+  Class<?> foreign() default void.class;
 }

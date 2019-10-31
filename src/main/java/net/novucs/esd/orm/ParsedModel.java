@@ -54,9 +54,11 @@ public class ParsedModel {
       }
       if (columns.length == 1) {
         Column column = columns[0];
-        String columnName = camelToSnake(field.getName());
         Class<?> type = field.getType();
-        fields.put(columnName, new ParsedColumn(type, columnName, column.primary()));
+        Class<?> foreignReference = column.foreign() == void.class ? null : column.foreign();
+        ParsedColumn parsedColumn = new ParsedColumn(
+            type, field.getName(), column.primary(), foreignReference);
+        fields.put(field.getName(), parsedColumn);
       }
     }
 
