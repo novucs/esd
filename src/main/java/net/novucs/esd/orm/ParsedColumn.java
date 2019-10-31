@@ -2,7 +2,11 @@ package net.novucs.esd.orm;
 
 import static net.novucs.esd.util.StringUtil.camelToSnake;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.StringJoiner;
+import net.novucs.esd.util.ReflectUtil;
 
 public class ParsedColumn {
 
@@ -75,5 +79,36 @@ public class ParsedColumn {
       columnJoiner.add("NOT NULL");
     }
     return columnJoiner.toString();
+  }
+
+  public boolean write(PreparedStatement statement, Object model, int index)
+      throws SQLException {
+    if (this.isPrimary()) {
+      return false;
+    }
+
+    if (this.getType() == String.class) {
+      statement.setString(index, ReflectUtil.getValue(model, this));
+      return true;
+    }
+
+    if (this.getType() == Integer.class) {
+      statement.setInt(index, ReflectUtil.getValue(model, this));
+      return true;
+    }
+
+    throw new IllegalArgumentException("Unsupported write data type: " + this.getType());
+  }
+
+  public Object read(ResultSet resultSet, int index) throws SQLException {
+    if (this.getType() == String.class) {
+      return resultSet.getString(index);
+    }
+
+    if (this.getType() == Integer.class) {
+      return resultSet.getInt(index);
+    }
+
+    throw new IllegalArgumentException("Unsupported read data type: " + this.getType());
   }
 }

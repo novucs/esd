@@ -13,10 +13,12 @@ public class Dao<M> {
 
   private final ConnectionSource connectionSource;
   private final Class<M> modelClass;
+  private final ParsedModel<M> parsedModel;
 
-  public Dao(ConnectionSource connectionSource, Class<M> model) {
+  public Dao(ConnectionSource connectionSource, Class<M> modelClass) {
     this.connectionSource = connectionSource;
-    this.modelClass = model;
+    this.modelClass = modelClass;
+    this.parsedModel = ParsedModel.of(modelClass);
   }
 
   public M selectById(int id) throws SQLException {
@@ -35,13 +37,12 @@ public class Dao<M> {
     }
   }
 
-  private String deleteSQL(M toDelete) {
-    ParsedModel model = ParsedModel.of(modelClass);
-    ParsedColumn primaryKeyColumn = model.getPrimaryKey();
-    Integer primaryKey = ReflectUtil.getValue(toDelete, primaryKeyColumn);
+  private String deleteSQL(M model) {
+    ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
+    Integer primaryKey = ReflectUtil.getValue(model, primaryKeyColumn);
     StringJoiner deleteJoiner = new StringJoiner(" ");
     deleteJoiner.add("DELETE FROM");
-    deleteJoiner.add(model.getSQLTableName());
+    deleteJoiner.add(parsedModel.getSQLTableName());
     deleteJoiner.add("WHERE");
     deleteJoiner.add(primaryKeyColumn.getSQLName());
     deleteJoiner.add("=");
@@ -49,39 +50,24 @@ public class Dao<M> {
     return deleteJoiner.toString();
   }
 
-  public void update(M toUpdate) throws SQLException {
-    String query = updateSQL(toUpdate);
+  public void update(M model) throws SQLException {
+    String query = updateSQL(model);
     try (Connection connection = connectionSource.getConnection();
         PreparedStatement statement = connection.prepareStatement(query)) {
-      ParsedModel model = ParsedModel.of(modelClass);
-      int i = 1;
-      for (ParsedColumn column : model.getColumns().values()) {
-        if (column.isPrimary()) {
-          continue;
-        }
-        Object value = ReflectUtil.getValue(toUpdate, column);
-        if (column.getType() == String.class) {
-          statement.setString(i, (String) value);
-        } else if (column.getType() == Integer.class) {
-          statement.setInt(i, (Integer) value);
-        }
-        i++;
-      }
+      parsedModel.setStatementValues(statement, model);
       statement.executeUpdate();
     }
   }
 
   private String updateSQL(M toUpdate) {
-    ParsedModel model = ParsedModel.of(modelClass);
-
     StringJoiner updateJoiner = new StringJoiner(" ");
 
     updateJoiner.add("UPDATE");
-    updateJoiner.add(model.getSQLTableName());
+    updateJoiner.add(parsedModel.getSQLTableName());
 
     updateJoiner.add("SET");
     StringJoiner setJoiner = new StringJoiner(", ");
-    for (ParsedColumn column : model.getColumns().values()) {
+    for (ParsedColumn column : parsedModel.getColumns().values()) {
       if (!column.isPrimary()) {
         setJoiner.add(column.getSQLName() + " = ?");
       }
@@ -89,7 +75,7 @@ public class Dao<M> {
     updateJoiner.merge(setJoiner);
 
     updateJoiner.add("WHERE");
-    ParsedColumn primaryKeyColumn = model.getPrimaryKey();
+    ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
     updateJoiner.add(primaryKeyColumn.getSQLName());
     updateJoiner.add("=");
     Integer primaryKey = ReflectUtil.getValue(toUpdate, primaryKeyColumn);
@@ -98,48 +84,32 @@ public class Dao<M> {
     return updateJoiner.toString();
   }
 
-  public void insert(M toInsert) throws SQLException {
+  public void insert(M model) throws SQLException {
     String query = insertSQL();
     try (Connection connection = this.connectionSource.getConnection();
         PreparedStatement statement = connection
             .prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-      ParsedModel model = ParsedModel.of(modelClass);
 
-      int i = 1;
-      for (ParsedColumn column : model.getColumns().values()) {
-        if (column.isPrimary()) {
-          continue;
-        }
-        if (column.getType() == String.class) {
-          String value = ReflectUtil.getValue(toInsert, column);
-          statement.setString(i, value);
-        } else if (column.getType() == Integer.class) {
-          Integer value = ReflectUtil.getValue(toInsert, column);
-          statement.setInt(i, value);
-        }
-        i++;
-      }
-
+      parsedModel.setStatementValues(statement, model);
       statement.executeUpdate();
 
       try (ResultSet rs = statement.getGeneratedKeys()) {
         if (rs.next()) {
-          ParsedColumn primaryKeyColumn = model.getPrimaryKey();
+          ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
           int primaryKey = rs.getInt(1);
-          ReflectUtil.setValue(toInsert, primaryKeyColumn, primaryKey);
+          ReflectUtil.setValue(model, primaryKeyColumn, primaryKey);
         }
       }
     }
   }
 
   private String insertSQL() {
-    ParsedModel model = ParsedModel.of(modelClass);
     StringJoiner queryJoiner = new StringJoiner(" ");
     queryJoiner.add("INSERT INTO");
-    queryJoiner.add(model.getSQLTableName());
+    queryJoiner.add(parsedModel.getSQLTableName());
 
     StringJoiner columnJoiner = new StringJoiner(", ", "(", ")");
-    for (ParsedColumn column : model.getColumns().values()) {
+    for (ParsedColumn column : parsedModel.getColumns().values()) {
       if (!column.isPrimary()) {
         columnJoiner.add(column.getSQLName());
       }
@@ -149,7 +119,7 @@ public class Dao<M> {
     queryJoiner.add("VALUES");
 
     StringJoiner valueJoiner = new StringJoiner(",", "(", ")");
-    for (ParsedColumn column : model.getColumns().values()) {
+    for (ParsedColumn column : parsedModel.getColumns().values()) {
       if (!column.isPrimary()) {
         valueJoiner.add("?");
       }
@@ -181,18 +151,17 @@ public class Dao<M> {
   }
 
   private String createTableSQL() {
-    ParsedModel model = ParsedModel.of(modelClass);
     StringJoiner tableJoiner = new StringJoiner(" ");
     tableJoiner.add("CREATE TABLE");
-    tableJoiner.add(model.getSQLTableName());
+    tableJoiner.add(parsedModel.getSQLTableName());
 
     StringJoiner contentsJoiner = new StringJoiner(", ", "(", ")");
 
-    for (ParsedColumn column : model.getColumns().values()) {
+    for (ParsedColumn column : parsedModel.getColumns().values()) {
       contentsJoiner.add(column.createSQL());
     }
 
-    for (ParsedColumn column : model.getColumns().values()) {
+    for (ParsedColumn column : parsedModel.getColumns().values()) {
       StringJoiner constraintJoiner = new StringJoiner("");
       if (column.isPrimary()) {
         constraintJoiner.add("PRIMARY KEY (");
@@ -212,5 +181,9 @@ public class Dao<M> {
 
   public Class<M> getModelClass() {
     return modelClass;
+  }
+
+  public ParsedModel<M> getParsedModel() {
+    return parsedModel;
   }
 }

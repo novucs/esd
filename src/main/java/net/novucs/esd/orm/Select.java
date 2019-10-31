@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import net.novucs.esd.util.ReflectUtil;
 
 // todo: support joins
 public class Select<M> {
@@ -36,14 +35,13 @@ public class Select<M> {
     StringJoiner selectorJoiner = new StringJoiner(" ");
     selectorJoiner.add("SELECT");
     StringJoiner columnJoiner = new StringJoiner(", ");
-    ParsedModel parsedModel = ParsedModel.of(dao.getModelClass());
-    for (ParsedColumn column : parsedModel.getColumns().values()) {
+    for (ParsedColumn column : dao.getParsedModel().getColumns().values()) {
       columnJoiner.add(column.getSQLName());
     }
 
     selectorJoiner.add(columnJoiner.toString());
     selectorJoiner.add("FROM");
-    selectorJoiner.add(parsedModel.getSQLTableName());
+    selectorJoiner.add(dao.getParsedModel().getSQLTableName());
 
     List<SQLParameter> parameters = new ArrayList<>();
     if (this.where != null) {
@@ -107,28 +105,11 @@ public class Select<M> {
       try (ResultSet resultSet = statement.executeQuery()) {
         List<M> models = new ArrayList<>();
         while (resultSet.next()) {
-          M model = getModel(resultSet);
+          M model = dao.getParsedModel().read(resultSet);
           models.add(model);
         }
         return models;
       }
     }
-  }
-
-  private M getModel(ResultSet resultSet) throws SQLException {
-    List<Object> attributes = new ArrayList<>();
-    ParsedModel model = ParsedModel.of(dao.getModelClass());
-    int i = 1;
-    for (ParsedColumn column : model.getColumns().values()) {
-      if (column.isPrimary()) {
-        attributes.add(resultSet.getInt(i));
-      } else if (column.getType() == String.class) {
-        attributes.add(resultSet.getString(i));
-      } else if (column.getType() == Integer.class) {
-        attributes.add(resultSet.getInt(i));
-      }
-      i++;
-    }
-    return ReflectUtil.constructModel(dao.getModelClass(), attributes);
   }
 }
