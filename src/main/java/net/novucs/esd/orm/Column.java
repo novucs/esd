@@ -8,7 +8,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
+
   boolean primary() default false;
+
   Class<?> foreign() default void.class;
+
   boolean nullable() default false;
 }
