@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
+import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.orm.Where;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +30,12 @@ public class TestDaoManager {
     String dbUser = "impact";
     String dbPass = "derbypass";
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
+    DaoManager daoManager = new DaoManager(connectionSource);
+    daoManager.init(Arrays.asList(User.class, Role.class, UserRole.class));
 
-    userDao = new Dao<>(connectionSource, User.class);
-    roleDao = new Dao<>(connectionSource, Role.class);
-    userRoleDao = new Dao<>(connectionSource, UserRole.class);
-
-    userDao.createTable();
-    roleDao.createTable();
-    userRoleDao.createTable();
+    userDao = daoManager.get(User.class);
+    roleDao = daoManager.get(Role.class);
+    userRoleDao = daoManager.get(UserRole.class);
   }
 
   @Test
