@@ -14,9 +14,9 @@ import org.junit.Test;
 
 public class TestReflectUtil {
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testConstructFailsOnBadAttributes() {
-    ReflectUtil.constructModel(DummyTable.class, Arrays.asList(1, 2, 3));
+  @Test(expected = IllegalStateException.class)
+  public void testConstructFailsOnNoEmptyConstructor() {
+    ReflectUtil.constructModel(NoEmptyConstructor.class, Collections.emptyList());
   }
 
   @Test(expected = IllegalStateException.class)
@@ -57,6 +57,20 @@ public class TestReflectUtil {
   public void testConstructModelTooLittleAttributes() {
     DummyTable table = ReflectUtil.constructModel(DummyTable.class, Collections.emptyList());
     assertNotNull("Creates empty table", table);
+  }
+
+  @Table
+  public static class NoEmptyConstructor {
+
+    private final int ignored;
+
+    public NoEmptyConstructor(int ignore) {
+      this.ignored = ignore;
+    }
+
+    public int getIgnored() {
+      return ignored;
+    }
   }
 
   @Table
