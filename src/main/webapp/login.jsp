@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<body>
 <div class="container">
     <div class="row">
         <div id="login-component-container" class="col s6 push-s3 rounded-container">
@@ -16,7 +15,8 @@
                         <div class="row">
                             <div class="col s12">
                                 <div class="input-field">
-                                    <input name="username" placeholder="" id="username" type="email" class="validate" required/>
+                                    <input name="username" placeholder="" id="username" type="email" class="validate"
+                                           required/>
                                     <label for="username">Username</label>
                                 </div>
                             </div>
@@ -24,14 +24,16 @@
                         <div class="row">
                             <div class="col  s12">
                                 <div class="input-field">
-                                    <input placeholder="" name="password" id="password" type="password" class="validate" minlength="3" required/>
+                                    <input placeholder="" name="password" id="password" type="password" class="validate"
+                                           minlength="3" required/>
                                     <label for="password">Password</label>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col s12 left">
-                                <button id="login-button" class="waves-effect btn secondary-content left-align" type="submit" name="login">
+                                <button id="login-button" class="waves-effect btn secondary-content left-align"
+                                        type="submit" name="login">
                                     Submit
                                 </button>
                             </div>
@@ -46,5 +48,5 @@
             Not have an account? Register <a href="register">here</a>.
         </div>
     </div>
-</body>
+</div>
 
