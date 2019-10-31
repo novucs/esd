@@ -2,6 +2,7 @@ package net.novucs.esd.model;
 
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
+import net.novucs.esd.util.Password;
 
 @Table
 public class User {
@@ -15,9 +16,8 @@ public class User {
   @Column(nullable = true)
   private String email;
 
-  // todo: encrypt this
-  @Column(nullable = true)
-  private String password;
+  @Column
+  private Password password;
 
   @Column(nullable = true)
   private String address;
@@ -57,11 +57,11 @@ public class User {
     this.email = email;
   }
 
-  public String getPassword() {
+  public Password getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(Password password) {
     this.password = password;
   }
 
