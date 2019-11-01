@@ -3,59 +3,31 @@
 <html lang="en">
     <head>
         <title>Homepage</title>
-
-        <style type="text/css">
-            .h1 a {
-                color: inherit;
-                text-decoration: none;
-                font-weight: inherit;
-                text-align: center;
-                padding: 10px;
-            }
-
-            a {
-                color: black;
-                cursor: pointer;
-                text-decoration: none;
-                font-weight: bold;
-                text-transform: uppercase;
-                display: block;
-                font: 16px "lato";
-            }
-
-            li {
-                display: inline-block;
-                margin-bottom: 0;
-                vertical-align: middle;
-                padding: 40px;
-            }
-
-            .site-header_logo-link {
-                display: inline-block;
-                word-break: break-word;
-                font: 60px "Source Code Pro";
-            }
-
-            .site-nav {
-                padding: 3px 10px;
-            }
-        </style>
+        <link rel="stylesheet" href="css/login.css">
     </head>
     <body>
-        <header class="site-header" role="banner">
-            <h1>
-                <a class="site-header_logo-link" href=".">
-                    XYZ Drivers Association
-                </a>
-            </h1>
-        </header>
-        <ul>
-            <li>
-                <a class="site-nav" href="/members">Member Dashboard</a>
-            </li>
-            <li>
-                <a class="site-nav" href="/admin">Admin Dashboard</a>
-            </li>
+        <!-- Dropdown Structure -->
+        <ul id="dropdown" class="dropdown-content">
+            <li><a href="#!">one</a></li>
+            <li><a href="#!">two</a></li>
+            <li class="divider"></li>
+            <li><a href="#!">three</a></li>
         </ul>
+        <nav class="navigation-bar">
+            <div class="nav-wrapper">
+                <a href="#!" class="brand-logo">XYZ Drivers Association</a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="/members">Member Dashboard</a></li>
+                    <li><a href="/admin">Admin Dashboard</a></li>
+                    <!-- Dropdown Trigger -->
+                    <li><a class="dropdown-trigger" href="" data-target="dropdown">Dropdown<i class="material-icons right"></i></a></li>
+                </ul>
+            </div>
+        </nav>
+
     </body>
 </html>
+
+
+
+<script src="js/homepage.js"></script>
