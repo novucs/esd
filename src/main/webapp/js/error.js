@@ -10,5 +10,5 @@ const errorModule = (function() {
 
     return {
         displayError
-    }
+    };
 })();
