@@ -6,6 +6,9 @@ import static net.novucs.esd.util.StringUtil.quoted;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.StringJoiner;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
@@ -76,6 +79,8 @@ public class ParsedColumn {
       columnJoiner.add("VARCHAR(255)");
     } else if (type == Integer.class) {
       columnJoiner.add("INT");
+    } else if (type == ZonedDateTime.class) {
+      columnJoiner.add("TIMESTAMP");
     }
     if (!isNullable()) {
       columnJoiner.add("NOT NULL");
@@ -105,6 +110,12 @@ public class ParsedColumn {
       return true;
     }
 
+    if (type == ZonedDateTime.class) {
+      ZonedDateTime zonedDateTime = ReflectUtil.getValue(model, this);
+      statement.setTimestamp(index, Timestamp.from(zonedDateTime.toInstant()));
+      return true;
+    }
+
     throw new IllegalArgumentException("Unsupported write data type: " + type);
   }
 
@@ -120,6 +131,11 @@ public class ParsedColumn {
     if (type == Password.class) {
       String hashAndSalt = resultSet.getString(index);
       return Password.fromHashAndSalt(hashAndSalt);
+    }
+
+    if (type == ZonedDateTime.class) {
+      Timestamp timestamp = resultSet.getTimestamp(index);
+      return ZonedDateTime.ofInstant(timestamp.toInstant(), ZoneOffset.UTC);
     }
 
     throw new IllegalArgumentException("Unsupported read data type: " + type);

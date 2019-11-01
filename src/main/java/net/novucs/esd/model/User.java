@@ -13,24 +13,28 @@ public class User {
   @Column
   private String name;
 
-  @Column(nullable = true)
+  @Column
   private String email;
 
   @Column
   private Password password;
 
-  @Column(nullable = true)
+  @Column
   private String address;
 
-  @Column(nullable = true)
+  @Column
   private String status;
 
   public User() {
     // This constructor is intentionally empty.
   }
 
-  public User(String name) {
+  public User(String name, String email, Password password, String address, String status) {
     this.name = name;
+    this.email = email;
+    this.password = password;
+    this.address = address;
+    this.status = status;
   }
 
   public Integer getId() {
