@@ -25,16 +25,14 @@
         </div>
     </nav>
 </main>
-</body>
 <script src="js/homepage.js"></script>
-
-
 <footer class="page-footer">
     <div class="container">
         <a class="grey-text text-lighten-4 right" href="/app/login">Login</a>
         Version 1.0.0
     </div>
 </footer>
+</body>
 </html>
 
 
