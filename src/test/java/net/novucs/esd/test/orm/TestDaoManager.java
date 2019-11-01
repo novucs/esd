@@ -189,11 +189,11 @@ public class TestDaoManager {
         return false;
       }
       AllFieldsTable that = (AllFieldsTable) o;
-      return Objects.equals(id, that.id) &&
-          Objects.equals(string, that.string) &&
-          Objects.equals(password, that.password) &&
-          Objects.equals(integer, that.integer) &&
-          Objects.equals(zonedDateTime, that.zonedDateTime);
+      return Objects.equals(id, that.id)
+          && Objects.equals(string, that.string)
+          && Objects.equals(password, that.password)
+          && Objects.equals(integer, that.integer)
+          && Objects.equals(zonedDateTime, that.zonedDateTime);
     }
 
     @Override
@@ -203,13 +203,13 @@ public class TestDaoManager {
 
     @Override
     public String toString() {
-      return "AllFieldsTable{" +
-          "id=" + id +
-          ", string='" + string + '\'' +
-          ", password=" + password +
-          ", integer=" + integer +
-          ", zonedDateTime=" + zonedDateTime +
-          '}';
+      return "AllFieldsTable{"
+          + "id=" + id
+          + ", string='" + string + '\''
+          + ", password=" + password
+          + ", integer=" + integer
+          + ", zonedDateTime=" + zonedDateTime
+          + '}';
     }
   }
 }

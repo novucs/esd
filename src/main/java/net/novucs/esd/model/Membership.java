@@ -12,8 +12,9 @@ public class Membership {
   @Column(foreign = User.class)
   private Integer userId;
 
-  // Pounds and pence integers make up balance, we do not want to store monetary values as floating
-  // point numbers to prevent the possibility of rounding errors.
+  // Pounds and pence integers make up balance, we do not want to store
+  // monetary values as floating point numbers to prevent the possibility
+  // of rounding errors.
   @Column
   private Integer pounds;
 

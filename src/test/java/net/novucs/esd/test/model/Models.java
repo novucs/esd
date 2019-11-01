@@ -36,14 +36,14 @@ public class Models {
         UserSession.class);
     daoManager.init(modelClasses);
 
-    List<Class<?>> registeredModelClasses = new ArrayList<>();
+    List<Class<?>> registered = new ArrayList<>();
     for (Class<?> modelClass : modelClasses) {
       if (daoManager.get(modelClass) != null) {
-        registeredModelClasses.add(modelClass);
+        registered.add(modelClass);
       }
     }
 
     Assert.assertEquals("DAO Manager must have initialised all the provided models "
-        + "successfully", modelClasses, registeredModelClasses);
+        + "successfully", modelClasses, registered);
   }
 }
