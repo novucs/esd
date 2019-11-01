@@ -1,7 +1,7 @@
 package net.novucs.esd.enums;
 
 public enum LoginStatus {
-  LoggedIn,
-  IncorrectCredentials,
-  LoginFailed
+  LOGGED_IN,
+  INCORRECT_CREDENTIALS,
+  LOGIN_FAILED
 }

@@ -13,6 +13,7 @@
     </head>
     <body>
         <!-- INSERT NAVIGATION BAR -->
+
         <jsp:include page="<%= request.getAttribute("page").toString()%>" />
     </body>
     <footer>

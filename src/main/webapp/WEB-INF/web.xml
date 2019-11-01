@@ -29,7 +29,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>net.novucs.esd.servlets.LoginServlet</servlet-class>
+        <servlet-class>net.novucs.esd.controllers.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
