@@ -1,5 +1,6 @@
 package net.novucs.esd.model;
 
+import java.math.BigDecimal;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
@@ -51,20 +52,14 @@ public class Membership {
     this.userId = userId;
   }
 
-  public Integer getPounds() {
-    return pounds;
+  public BigDecimal getBalance() {
+    return BigDecimal.valueOf(pounds + (pence / 100f));
   }
 
-  public void setPounds(Integer pounds) {
-    this.pounds = pounds;
-  }
-
-  public Integer getPence() {
-    return pence;
-  }
-
-  public void setPence(Integer pence) {
-    this.pence = pence;
+  public void setBalance(BigDecimal balance) {
+    double doubleBalance = balance.doubleValue();
+    pounds = (int) doubleBalance;
+    pence = (int) ((doubleBalance - pounds) * 100);
   }
 
   public String getStatus() {
