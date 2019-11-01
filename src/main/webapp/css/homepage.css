@@ -7,16 +7,17 @@ body:before {
   width: 60vw;
   background: #000;
   transform: skew(-30deg);
-  z-index:-1
+  z-index: -1
 }
 
-.nav-wrapper{
+.nav-wrapper {
   color: black;
 }
 
-.navigation-bar{
+.navigation-bar {
   background-color: black;
 }
+
 body {
   display: flex;
   min-height: 100vh;
@@ -27,6 +28,6 @@ main {
   flex: 1 0 auto;
 }
 
-.page-footer{
+.page-footer {
   background-color: black;
 }
