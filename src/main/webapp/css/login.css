@@ -13,7 +13,6 @@ body:before {
     width: 60vw;
     background: #000;
     transform: skew(-30deg);
-    z-index:-1
 }
 
 #login-component-container {
