@@ -1,23 +1,33 @@
-package net.novucs.esd.lifecycle;
+package net.novucs.esd.util;
 
-
-import net.novucs.esd.model.*;
-import net.novucs.esd.orm.ConnectionSource;
-import net.novucs.esd.orm.DaoManager;
-
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
+import net.novucs.esd.model.Application;
+import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.Role;
+import net.novucs.esd.model.RolePermission;
+import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserLog;
+import net.novucs.esd.model.UserRole;
+import net.novucs.esd.model.UserSession;
+import net.novucs.esd.orm.ConnectionSource;
+import net.novucs.esd.orm.DaoManager;
 
-@Startup
-@Singleton
-public class Shared {
+public final class DBUtil {
 
   private static DaoManager dbManager;
 
-  public Shared() throws SQLException {
+  private DBUtil() {
+    throw new IllegalStateException();
+  }
+
+  public static DaoManager get() throws SQLException {
+    if (dbManager != null) {
+      return dbManager;
+    }
+
     Map<String, String> env = System.getenv();
     String dbUrl = env.getOrDefault("DB_URL", "jdbc:derby://localhost:1527/esd;create=true");
     String dbUser = env.getOrDefault("DB_USER", "impact");
@@ -27,9 +37,6 @@ public class Shared {
         User.class, Role.class, UserRole.class, Application.class, Claim.class, Membership.class,
         RolePermission.class, UserSession.class, UserLog.class
     ));
-  }
-
-  public static DaoManager db() {
     return dbManager;
   }
 }
