@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class homeServlet extends HttpServlet {
+public class MemberServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
@@ -25,8 +25,8 @@ public class homeServlet extends HttpServlet {
 
     // Setting the title and the location of the page you would like to view
     // while dispatching to the layout will ensure consistent UI.
-    request.setAttribute("title", "Homepage");
-    request.setAttribute("page", "/homepage.jsp");
+    request.setAttribute("title", "Members");
+    request.setAttribute("page", "/members.jsp");
     request.getRequestDispatcher("/layout.jsp").forward(request, response);
   }
 
@@ -38,6 +38,6 @@ public class homeServlet extends HttpServlet {
 
   @Override
   public String getServletInfo() {
-    return "Homepage is loaded";
+    return "members dashboard";
   }
 }
