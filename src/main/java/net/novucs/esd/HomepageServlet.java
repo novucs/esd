@@ -1,9 +1,6 @@
 package net.novucs.esd;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,15 +10,9 @@ public class HomepageServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
-  @Resource(lookup = "java:app/AppName")
-  private transient String appName;
-
   private void processRequest(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     response.setContentType("text/html;charset=UTF-8");
-    Map<String, String> anExampleMap = new ConcurrentHashMap<>();
-    anExampleMap.put("appname", this.appName);
-    request.setAttribute("anExampleMap", anExampleMap);
 
     // Setting the title and the location of the page you would like to view
     // while dispatching to the layout will ensure consistent UI.
@@ -38,6 +29,6 @@ public class HomepageServlet extends HttpServlet {
 
   @Override
   public String getServletInfo() {
-    return "homepage is loaded";
+    return "Homepage Servlet";
   }
 }

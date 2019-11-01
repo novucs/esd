@@ -51,7 +51,7 @@
         </header>
         <ul>
             <li>
-                <a class="site-nav" href="/app/members">Member's Dashboard</a>
+                <a class="site-nav" href="/members">Member Dashboard</a>
             </li>
             <li>
                 <a class="site-nav" href="/admin">Admin Dashboard</a>
