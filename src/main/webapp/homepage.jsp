@@ -7,10 +7,9 @@
     </head>
    <main>
        <body>
-       <!-- Dropdown Structure -->
        <ul id="dropdown" class="dropdown-content">
-           <li><a href="#!">User</a></li>
-           <li><a href="#!">Admin</a></li>
+           <li><a>User</a></li>
+           <li><a>Admin</a></li>
        </ul>
        <nav class="navigation-bar">
            <div class="nav-wrapper">
