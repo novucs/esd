@@ -14,17 +14,17 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.ExampleServerlet;
+import net.novucs.esd.ExampleServlet;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
-public class TestExampleServerlet {
+public class TestExampleServlet {
 
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException, ReflectiveOperationException {
     // Given
-    ExampleServerlet serverlet = new ExampleServerlet();
+    ExampleServlet serverlet = new ExampleServlet();
     setFieldValue(serverlet, "appName", "dummyApp");
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
@@ -41,7 +41,7 @@ public class TestExampleServerlet {
   @Test
   public void testExampleInServerlettInfo() {
     // Given
-    ExampleServerlet serverlet = new ExampleServerlet();
+    ExampleServlet serverlet = new ExampleServlet();
 
     // When
     String serverletInfo = serverlet.getServletInfo();

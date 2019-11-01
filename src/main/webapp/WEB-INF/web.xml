@@ -5,7 +5,7 @@
          version="4.0">
     <servlet>
         <servlet-name>ExampleServerlet</servlet-name>
-        <servlet-class>net.novucs.esd.ExampleServerlet</servlet-class>
+        <servlet-class>net.novucs.esd.ExampleServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ExampleServerlet</servlet-name>
