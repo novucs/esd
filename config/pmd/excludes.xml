@@ -25,6 +25,7 @@
     <exclude name="CommentRequired"/>
   </rule>
   <rule ref="category/java/errorprone.xml">
+    <exclude name="BeanMembersShouldSerialize"/>
     <exclude name="DataflowAnomalyAnalysis"/>
     <exclude name="MoreThanOneLogger"/>
   </rule>

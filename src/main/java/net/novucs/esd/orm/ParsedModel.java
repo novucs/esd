@@ -1,6 +1,7 @@
 package net.novucs.esd.orm;
 
 import static net.novucs.esd.util.StringUtil.camelToSnake;
+import static net.novucs.esd.util.StringUtil.quoted;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -31,7 +32,7 @@ public class ParsedModel<M> {
   }
 
   public String getSQLTableName() {
-    return "\"" + tableName + "\"";
+    return quoted(tableName);
   }
 
   public ParsedColumn getPrimaryKey() {
