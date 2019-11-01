@@ -51,63 +51,13 @@ NetBeans for UWE machines:
 To debug requests coming into Servelets you must enable remote debugging on Glassfish then connect to the remote
 instance in your IDE
 
-1. Connect to glassfish within the container
-   
-   `docker exec -it esd_app_1 /bin/bash`
-
-2. Enter bin directory
-    
-    `cd ./glassfish/bin`
- 
-3. We must first setup the admin account
-
-    `./asadmin --user admin`
-    
-     `change-admin-password`
-
-4. Change the admin password in the prompt that comes up.
-
-    `Enter the admin password>` (Default is blank so press enter).
-    
-    `Enter the new admin password> NEWPASSWORD`
-    
-    `Enter the new admin password again> NEWPASSWORD`
-    
-    `Exit`
- 
-5. Enable remote admin login via
-    
-    `./asadmin --host localhost --port 4848 enable-secure-admin`
-    
-    NOTE: You will be prompted to put in the username and password you have just modified in the above step
-    e.g. username=admin password=NEWPASSWORD
-    
-6. Exit out of the container shell and Restart the container
-
-    `CTRL+D`
-    `docker restart esd_app_1`
-
-7. Login to the Glassfish admin panel with the credentials set in step 4
-    
-    http://localhost:4848
-
-8. Enable Debugging
-    
-    Go to Configurations > server-config > JVM settings
-    
-    Check the debug checkbox
-    
-9. Restart Glassfish
-
-    Go to Server > Click Restart
-
-10. Set up remote debug configuration in IntelliJ
+1. Set up remote debug configuration in IntelliJ
     
     Go to Run > Edit Configurations and add a new Remote configuration.
     
     Set the port to 9009 and the classpath to esd and save.
     
-11. Run the Debugger
+2. Run the Debugger
 
     From within Intellij, run the remote debug configuration you have just setup. The debug window will
     popup and say.  

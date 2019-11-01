@@ -10,6 +10,7 @@ services:
 
   app:
     build: .
+    command: ./glassfish/bin/asadmin start-domain --verbose --debug
     depends_on:
       - db
     environment:
@@ -17,7 +18,7 @@ services:
     ports:
       - "8080:8080"
       - "4848:4848"
-      - "9090:9090"
+      - "9009:9009"
     volumes:
       - ./build/app.war:/app/glassfish/domains/domain1/autodeploy/app.war
 
