@@ -1,10 +1,13 @@
 package net.novucs.esd.test.orm;
 
+import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +15,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import net.novucs.esd.orm.Column;
-import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.orm.Table;
@@ -30,11 +32,7 @@ public class TestDaoManager {
 
   @Before
   public void setUp() throws SQLException {
-    String dbUrl = "jdbc:derby:memory:testDB;create=true";
-    String dbUser = "impact";
-    String dbPass = "derbypass";
-    ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
-    DaoManager daoManager = new DaoManager(connectionSource);
+    DaoManager daoManager = createTestDaoManager();
     daoManager.init(Arrays.asList(TableA.class, TableAB.class, TableB.class, AllFieldsTable.class));
 
     tableADao = daoManager.get(TableA.class);
@@ -168,6 +166,9 @@ public class TestDaoManager {
     @Column
     public Integer integer;
 
+    @Column
+    public ZonedDateTime zonedDateTime;
+
     public AllFieldsTable() {
       this(UUID.randomUUID().toString());
     }
@@ -176,6 +177,7 @@ public class TestDaoManager {
       this.string = UUID.randomUUID().toString();
       this.password = Password.fromPlaintext(password);
       this.integer = ThreadLocalRandom.current().nextInt();
+      this.zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC);
     }
 
     @Override
@@ -187,25 +189,27 @@ public class TestDaoManager {
         return false;
       }
       AllFieldsTable that = (AllFieldsTable) o;
-      return Objects.equals(id, that.id)
-          && Objects.equals(string, that.string)
-          && Objects.equals(password, that.password)
-          && Objects.equals(integer, that.integer);
+      return Objects.equals(id, that.id) &&
+          Objects.equals(string, that.string) &&
+          Objects.equals(password, that.password) &&
+          Objects.equals(integer, that.integer) &&
+          Objects.equals(zonedDateTime, that.zonedDateTime);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(id, string, password, integer);
+      return Objects.hash(id, string, password, integer, zonedDateTime);
     }
 
     @Override
     public String toString() {
-      return "AllFieldsTable{"
-          + "id=" + id
-          + ", string='" + string + '\''
-          + ", password=" + password
-          + ", integer=" + integer
-          + '}';
+      return "AllFieldsTable{" +
+          "id=" + id +
+          ", string='" + string + '\'' +
+          ", password=" + password +
+          ", integer=" + integer +
+          ", zonedDateTime=" + zonedDateTime +
+          '}';
     }
   }
 }
