@@ -38,6 +38,9 @@
                                         type="submit" name="login">
                                     Submit
                                 </button>
+                                <span id="forgot-password"><a href="forgotpassword">
+                                    Forgot password?
+                                </a></span>
                             </div>
                         </div>
                     </form>

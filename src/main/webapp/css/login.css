@@ -31,6 +31,15 @@ body:before {
     border-radius: 5px;
 }
 
+#forgot-password > a{
+    color: black;
+    padding-left: 20px;
+}
+
+#forgot-password > a:hover{
+    color: grey;
+    text-decoration: underline;
+}
 
 @keyframes bounce-in-top {
     0% {
