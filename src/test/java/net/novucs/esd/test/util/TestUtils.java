@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import net.novucs.esd.orm.ConnectionSource;
+import net.novucs.esd.orm.DaoManager;
 
 public final class TestUtils {
 
@@ -22,5 +24,13 @@ public final class TestUtils {
       return;
     }
     fail("Construction must fail");
+  }
+
+  public static DaoManager createTestDaoManager() {
+    String dbUrl = "jdbc:derby:memory:testDB;create=true";
+    String dbUser = "impact";
+    String dbPass = "derbypass";
+    ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
+    return new DaoManager(connectionSource);
   }
 }

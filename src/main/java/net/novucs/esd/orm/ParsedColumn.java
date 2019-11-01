@@ -1,11 +1,16 @@
 package net.novucs.esd.orm;
 
 import static net.novucs.esd.util.StringUtil.camelToSnake;
+import static net.novucs.esd.util.StringUtil.quoted;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.StringJoiner;
+import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 
 public class ParsedColumn {
@@ -38,7 +43,7 @@ public class ParsedColumn {
   }
 
   public String getSQLName() {
-    return camelToSnake(name);
+    return quoted(camelToSnake(name));
   }
 
   public boolean isPrimary() {
@@ -50,7 +55,7 @@ public class ParsedColumn {
   }
 
   public String foreignKeySQL() {
-    return "\"" + camelToSnake(foreignReference.getSimpleName()) + "\"(id)";
+    return quoted(camelToSnake(foreignReference.getSimpleName())) + "(\"id\")";
   }
 
   public Class<?> getForeignReference() {
@@ -63,19 +68,21 @@ public class ParsedColumn {
 
   public String createSQL() {
     StringJoiner columnJoiner = new StringJoiner(" ");
-    columnJoiner.add(this.getSQLName());
-    if (this.isPrimary()) {
+    columnJoiner.add(getSQLName());
+    if (isPrimary()) {
       columnJoiner.add("INT NOT NULL GENERATED ALWAYS AS IDENTITY");
       columnJoiner.add("(START WITH 1, INCREMENT BY 1)");
-    } else if (this.isForeignKey()) {
+    } else if (isForeignKey()) {
       columnJoiner.add("INT REFERENCES");
-      columnJoiner.add(this.foreignKeySQL());
-    } else if (this.getType() == String.class) {
+      columnJoiner.add(foreignKeySQL());
+    } else if (type == String.class || type == Password.class) {
       columnJoiner.add("VARCHAR(255)");
-    } else if (this.getType() == Integer.class) {
+    } else if (type == Integer.class) {
       columnJoiner.add("INT");
+    } else if (type == ZonedDateTime.class) {
+      columnJoiner.add("TIMESTAMP");
     }
-    if (!this.isNullable()) {
+    if (!isNullable()) {
       columnJoiner.add("NOT NULL");
     }
     return columnJoiner.toString();
@@ -83,32 +90,54 @@ public class ParsedColumn {
 
   public boolean write(PreparedStatement statement, Object model, int index)
       throws SQLException {
-    if (this.isPrimary()) {
+    if (isPrimary()) {
       return false;
     }
 
-    if (this.getType() == String.class) {
+    if (type == String.class) {
       statement.setString(index, ReflectUtil.getValue(model, this));
       return true;
     }
 
-    if (this.getType() == Integer.class) {
+    if (type == Integer.class) {
       statement.setInt(index, ReflectUtil.getValue(model, this));
       return true;
     }
 
-    throw new IllegalArgumentException("Unsupported write data type: " + this.getType());
+    if (type == Password.class) {
+      Password password = ReflectUtil.getValue(model, this);
+      statement.setString(index, password.toHashAndSalt());
+      return true;
+    }
+
+    if (type == ZonedDateTime.class) {
+      ZonedDateTime zonedDateTime = ReflectUtil.getValue(model, this);
+      statement.setTimestamp(index, Timestamp.from(zonedDateTime.toInstant()));
+      return true;
+    }
+
+    throw new IllegalArgumentException("Unsupported write data type: " + type);
   }
 
   public Object read(ResultSet resultSet, int index) throws SQLException {
-    if (this.getType() == String.class) {
+    if (type == String.class) {
       return resultSet.getString(index);
     }
 
-    if (this.getType() == Integer.class) {
+    if (type == Integer.class) {
       return resultSet.getInt(index);
     }
 
-    throw new IllegalArgumentException("Unsupported read data type: " + this.getType());
+    if (type == Password.class) {
+      String hashAndSalt = resultSet.getString(index);
+      return Password.fromHashAndSalt(hashAndSalt);
+    }
+
+    if (type == ZonedDateTime.class) {
+      Timestamp timestamp = resultSet.getTimestamp(index);
+      return ZonedDateTime.ofInstant(timestamp.toInstant(), ZoneOffset.UTC);
+    }
+
+    throw new IllegalArgumentException("Unsupported read data type: " + type);
   }
 }

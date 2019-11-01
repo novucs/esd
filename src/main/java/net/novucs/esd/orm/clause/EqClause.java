@@ -1,5 +1,7 @@
 package net.novucs.esd.orm.clause;
 
+import static net.novucs.esd.util.StringUtil.quoted;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -27,7 +29,7 @@ public class EqClause implements Clause {
   @Override
   public SQLBuilder sql() {
     StringJoiner clauseJoiner = new StringJoiner(" ");
-    clauseJoiner.add(this.getColumnName());
+    clauseJoiner.add(quoted(this.getColumnName()));
     clauseJoiner.add("= ?");
 
     List<SQLParameter> parameters = new ArrayList<>();

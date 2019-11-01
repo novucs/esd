@@ -13,4 +13,8 @@ public final class StringUtil {
     String replacement = "$1_$2";
     return name.replaceAll(regex, replacement).toLowerCase(Locale.UK);
   }
+
+  public static String quoted(String string) {
+    return "\"" + string + "\"";
+  }
 }

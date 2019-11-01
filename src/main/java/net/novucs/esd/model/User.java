@@ -2,6 +2,7 @@ package net.novucs.esd.model;
 
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
+import net.novucs.esd.util.Password;
 
 @Table
 public class User {
@@ -12,25 +13,28 @@ public class User {
   @Column
   private String name;
 
-  @Column(nullable = true)
+  @Column
   private String email;
 
-  // todo: encrypt this
-  @Column(nullable = true)
-  private String password;
+  @Column
+  private Password password;
 
-  @Column(nullable = true)
+  @Column
   private String address;
 
-  @Column(nullable = true)
+  @Column
   private String status;
 
   public User() {
     // This constructor is intentionally empty.
   }
 
-  public User(String name) {
+  public User(String name, String email, Password password, String address, String status) {
     this.name = name;
+    this.email = email;
+    this.password = password;
+    this.address = address;
+    this.status = status;
   }
 
   public Integer getId() {
@@ -57,11 +61,11 @@ public class User {
     this.email = email;
   }
 
-  public String getPassword() {
+  public Password getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(Password password) {
     this.password = password;
   }
 
