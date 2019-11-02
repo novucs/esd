@@ -1,12 +1,15 @@
 package net.novucs.esd.controllers;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.novucs.esd.enums.LoginStatus;
+import net.novucs.esd.model.User;
+import net.novucs.esd.orm.Dao;
+import net.novucs.esd.orm.Where;
 
 @WebServlet(name = "LoginServlet")
 public class LoginServlet extends BaseServlet {
@@ -16,27 +19,30 @@ public class LoginServlet extends BaseServlet {
   private static final String LOGIN_PATH = "/login";
   private static final String LOGIN_TITLE = "Login";
 
+  @Inject
+  private Dao<User> userDao;
+
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    // String username = request.getParameter("username");
-    // String password = request.getParameter("password");
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+    boolean loggedIn;
 
-    LoginStatus status = LoginStatus.INCORRECT_CREDENTIALS;
-
-    if (status == LoginStatus.LOGGED_IN) {
-      super.forward(request, response, "Homepage", "/homepage");
-    } else if (status == LoginStatus.INCORRECT_CREDENTIALS) {
-      super.addResponseError("IncorrectCredentials", "Incorrect username or password");
-      super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
-    } else if (status == LoginStatus.LOGIN_FAILED) {
-      super.addResponseError("FailedLogin", "Failed to login");
-      super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
+    try {
+      User user = userDao.select().where(new Where().eq("email", username)).first();
+      loggedIn = user != null && user.getPassword().authenticate(password);
+    } catch (SQLException e) {
+      throw new IOException("Failed to communicate with database", e);
     }
 
-    super.addResponseError("Error", "Internal error.");
-    super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
+    if (loggedIn) {
+      response.sendRedirect("homepage");
+    } else {
+      super.addResponseError("IncorrectCredentials", "Incorrect username or password");
+      super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
+    }
   }
 
   @Override
