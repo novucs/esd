@@ -13,7 +13,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>HomepageServlet</servlet-name>
-        <servlet-class>net.novucs.esd.HomepageServlet</servlet-class>
+        <servlet-class>net.novucs.esd.controllers.HomepageServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HomepageServlet</servlet-name>
