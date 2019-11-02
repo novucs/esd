@@ -14,7 +14,7 @@ services:
     depends_on:
       - db
     environment:
-      DB_HOST: db
+      DB_URL: jdbc:derby://db:1527/esd;create=true
       DEVELOPMENT_MODE: 1
     ports:
       - "8080:8080"
