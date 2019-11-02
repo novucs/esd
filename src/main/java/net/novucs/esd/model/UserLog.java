@@ -1,10 +1,11 @@
 package net.novucs.esd.model;
 
+import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
 @Table
-public class UserLog {
+public final class UserLog {
 
   @Column(primary = true)
   private Integer id;
@@ -58,5 +59,25 @@ public class UserLog {
 
   public void setIp(String ip) {
     this.ip = ip;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    UserLog userLog = (UserLog) o;
+    return Objects.equals(getId(), userLog.getId())
+        && Objects.equals(getUserId(), userLog.getUserId())
+        && Objects.equals(getMessage(), userLog.getMessage())
+        && Objects.equals(getIp(), userLog.getIp());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getUserId(), getMessage(), getIp());
   }
 }
