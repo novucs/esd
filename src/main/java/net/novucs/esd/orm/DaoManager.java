@@ -19,6 +19,14 @@ public class DaoManager {
     this.connectionSource = connectionSource;
   }
 
+  public Map<Class<?>, Dao<?>> getDaos() {
+    return daos;
+  }
+
+  public ConnectionSource getConnectionSource() {
+    return connectionSource;
+  }
+
   public <M> Dao<M> get(Class<M> modelClass) {
     //noinspection unchecked
     return (Dao<M>) daos.getOrDefault(modelClass, null);
