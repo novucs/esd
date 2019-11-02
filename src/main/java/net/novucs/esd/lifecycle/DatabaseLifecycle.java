@@ -2,6 +2,8 @@ package net.novucs.esd.lifecycle;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,10 +52,19 @@ public class DatabaseLifecycle {
     String dbUrl = env.getOrDefault("DB_URL", "jdbc:derby://localhost:1527/esd;create=true");
     String dbUser = env.getOrDefault("DB_USER", "impact");
     String dbPass = env.getOrDefault("DB_PASS", "derbypass");
-    daoManager = new DaoManager(new ConnectionSource(dbUrl, dbUser, dbPass));
+    boolean developmentMode = env.getOrDefault("DEVELOPMENT_MODE", "0").equals("1");
+    ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
+    daoManager = new DaoManager(connectionSource);
     try {
+      if (developmentMode) {
+        clearDatabase();
+      }
+
       daoManager.init(MODEL_CLASSES);
-      populate();
+
+      if (developmentMode) {
+        setupDevelopmentData();
+      }
     } catch (SQLException e) {
       throw new IllegalStateException("Failed to connect to database", e);
     }
@@ -74,7 +85,25 @@ public class DatabaseLifecycle {
     return daoManager.get(clazz);
   }
 
-  private void populate() throws SQLException {
+  private void clearDatabase() throws SQLException {
+    try (Connection connection = daoManager.getConnectionSource().getConnection()) {
+      String schema = connection.getSchema();
+      try (PreparedStatement dropSchema = connection
+          .prepareStatement("DROP SCHEMA " + schema + " RESTRICT")) {
+        dropSchema.execute();
+      } catch (SQLException ignore) {  // NOPMD
+      }
+
+      try (PreparedStatement createSchema = connection
+          .prepareStatement("CREATE SCHEMA " + schema)) {
+
+        createSchema.execute();
+      } catch (SQLException ignore) {  // NOPMD
+      }
+    }
+  }
+
+  private void setupDevelopmentData() throws SQLException {
     daoManager.get(User.class).insert(new User(
         "bob",
         "bob@bob.net",

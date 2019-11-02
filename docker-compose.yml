@@ -15,6 +15,7 @@ services:
       - db
     environment:
       DB_URL: jdbc:derby://db:1527/esd;create=true
+      DEVELOPMENT_MODE: 1
     ports:
       - "8080:8080"
       - "4848:4848"

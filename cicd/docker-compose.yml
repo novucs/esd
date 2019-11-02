@@ -10,10 +10,12 @@ services:
   app:
     image: novucs/glassfish:5.1.0-jdk8-slim
     restart: always
+    command: ./glassfish/bin/asadmin start-domain
     depends_on:
       - db
     environment:
-      DB_HOST: db
+      DB_URL: jdbc:derby://db:1527/esd;create=true
+      DEVELOPMENT_MODE: 1
     ports:
       - "8080:8080"
 

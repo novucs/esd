@@ -27,6 +27,7 @@ public class TestDatabaseLifecycle {
   public void testDatabaseIsCreatedOnInit() throws SQLException {
     // Given
     ENVIRONMENT.set("DB_URL", DB_URL);
+    ENVIRONMENT.set("DEVELOPMENT_MODE", "1");
     DatabaseLifecycle lifecycle = new DatabaseLifecycle();
 
     // When
