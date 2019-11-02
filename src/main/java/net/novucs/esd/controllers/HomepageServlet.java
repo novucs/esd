@@ -1,15 +1,12 @@
 package net.novucs.esd.controllers;
 
-import net.novucs.esd.controllers.BaseServlet;
-import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.User;
-
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.User;
 
 public class HomepageServlet extends BaseServlet {
 

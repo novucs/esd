@@ -1,13 +1,13 @@
 package net.novucs.esd.lifecycle;
 
-import net.novucs.esd.model.User;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import net.novucs.esd.model.User;
+
 public class Session {
-  private Stack<String> errors = new Stack<>();
+  private final Stack<String> errors = new Stack<>();
   private User user;
 
   public void pushError(String message) {
