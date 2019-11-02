@@ -10,7 +10,7 @@ services:
   app:
     image: novucs/glassfish:5.1.0-jdk8-slim
     restart: always
-    command: ./glassfish/bin/asadmin start-domain --verbose --debug
+    command: ./glassfish/bin/asadmin start-domain
     depends_on:
       - db
     environment:
