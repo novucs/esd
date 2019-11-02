@@ -19,7 +19,6 @@ import net.novucs.esd.model.RolePermission;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserLog;
 import net.novucs.esd.model.UserRole;
-import net.novucs.esd.model.UserSession;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
@@ -42,7 +41,7 @@ public class DatabaseLifecycle {
     try {
       daoManager.init(Arrays.asList(
           User.class, Role.class, UserRole.class, Application.class, Claim.class, Membership.class,
-          RolePermission.class, UserSession.class, UserLog.class));
+          RolePermission.class, UserLog.class));
       populate();
     } catch (SQLException e) {
       throw new IllegalStateException("Failed to connect to database", e);

@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
@@ -27,20 +29,22 @@ public class LoginServlet extends BaseServlet {
       throws ServletException, IOException {
 
     String username = request.getParameter("username");
-    String password = request.getParameter("password");
-    boolean loggedIn;
+    User user;
 
     try {
-      User user = userDao.select().where(new Where().eq("email", username)).first();
-      loggedIn = user != null && user.getPassword().authenticate(password);
+      user = userDao.select().where(new Where().eq("email", username)).first();
     } catch (SQLException e) {
       throw new IOException("Failed to communicate with database", e);
     }
 
-    if (loggedIn) {
+    String password = request.getParameter("password");
+    Session session = getSession(request);
+
+    if (user != null && user.getPassword().authenticate(password)) {
+      session.setUser(user);
       response.sendRedirect("homepage");
     } else {
-      super.addResponseError("IncorrectCredentials", "Incorrect username or password");
+      session.pushError("Incorrect username or password");
       super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
     }
   }
@@ -48,6 +52,14 @@ public class LoginServlet extends BaseServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    Session session = getSession(request);
+
+    // Check if user is already logged in
+    if (session.getUser() != null) {
+      response.sendRedirect("homepage");
+      return;
+    }
+
     response.setContentType("text/html;charset=UTF-8");
     super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
   }

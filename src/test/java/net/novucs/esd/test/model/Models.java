@@ -14,7 +14,6 @@ import net.novucs.esd.model.RolePermission;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserLog;
 import net.novucs.esd.model.UserRole;
-import net.novucs.esd.model.UserSession;
 import net.novucs.esd.orm.DaoManager;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,8 +31,7 @@ public class Models {
         RolePermission.class,
         User.class,
         UserLog.class,
-        UserRole.class,
-        UserSession.class);
+        UserRole.class);
     daoManager.init(modelClasses);
 
     List<Class<?>> registered = new ArrayList<>();

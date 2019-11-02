@@ -1,4 +1,5 @@
 <%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -43,9 +44,9 @@
         <!-- Scripts -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
         <script src="js/error.js"></script>
-        <%Map<String, String> errors = (Map<String, String>) request.getAttribute("errors");%>
+        <% List<String> errors = (List<String>) request.getAttribute("errors"); %>
         <% if (errors != null && errors.size() > 0) { %>
-            <% for (String message : errors.values()) { %>
+            <% for (String message : errors) { %>
                 <script type="application/javascript">
                   errorModule.displayError('<%=message%>');
                 </script>
