@@ -4,11 +4,18 @@ import java.security.SecureRandom;
 import net.novucs.esd.model.User;
 import java.util.UUID;
 
-public class Session {
+public class SessionHandler {
 
-  private static final String alphabet =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  private static SecureRandom random = new SecureRandom();
+  public enum SESSION_RESPONSE {
+    INVALID_SESSION,
+    INVALID_SESSION_NOUSER,
+    INVALID_SESSION_EXPIRED,
+    VALID_SESSION
+  }
+
+  public SessionHandler(String sessionId) {
+    // Do stuff
+  }
 
   public void validateUserSession(User user) {
     // Check if the user has a session
@@ -26,16 +33,9 @@ public class Session {
     // -> If has session, update the expiry time in the database table to be 20min from current unix ts
   }
 
-  /**
-   * Generate a Session Key
-   *
-   * @return String
-   */
-  private String generateSessionKey() {
-    StringBuilder key = new StringBuilder(32);
-    for (int i = 0; i < 32; i++) {
-      key.append(alphabet.charAt(random.nextInt(alphabet.length())));
-    }
-    return key.toString();
+  public boolean doesSessionExist(String sessionId) {
+    // Check if the session exists by doing a count lookup on the 'UserSession' model
+    // If the session exists and isn't expired, get our user, otherwise return enum
+    return false;
   }
 }
