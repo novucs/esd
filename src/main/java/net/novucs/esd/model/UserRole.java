@@ -1,10 +1,11 @@
 package net.novucs.esd.model;
 
+import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
 @Table
-public class UserRole {
+public final class UserRole {
 
   @Column(primary = true)
   private Integer id;
@@ -46,5 +47,24 @@ public class UserRole {
 
   public void setRoleId(Integer roleId) {
     this.roleId = roleId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    UserRole userRole = (UserRole) o;
+    return Objects.equals(getId(), userRole.getId())
+        && Objects.equals(getUserId(), userRole.getUserId())
+        && Objects.equals(getRoleId(), userRole.getRoleId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getUserId(), getRoleId());
   }
 }

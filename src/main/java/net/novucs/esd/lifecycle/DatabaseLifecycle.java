@@ -4,6 +4,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -28,20 +30,29 @@ import net.novucs.esd.util.Password;
 @Singleton
 public class DatabaseLifecycle {
 
+  public static final List<Class<?>> MODEL_CLASSES = Collections.unmodifiableList(Arrays.asList(
+      Application.class,
+      Claim.class,
+      Membership.class,
+      Role.class,
+      RolePermission.class,
+      User.class,
+      UserLog.class,
+      UserRole.class
+  ));
+
   private DaoManager daoManager;
 
   @PostConstruct
   @SuppressWarnings("PMD.UnusedPrivateMethod")
-  private void init() {
+  public void init() {
     Map<String, String> env = System.getenv();
     String dbUrl = env.getOrDefault("DB_URL", "jdbc:derby://localhost:1527/esd;create=true");
     String dbUser = env.getOrDefault("DB_USER", "impact");
     String dbPass = env.getOrDefault("DB_PASS", "derbypass");
     daoManager = new DaoManager(new ConnectionSource(dbUrl, dbUser, dbPass));
     try {
-      daoManager.init(Arrays.asList(
-          User.class, Role.class, UserRole.class, Application.class, Claim.class, Membership.class,
-          RolePermission.class, UserLog.class));
+      daoManager.init(MODEL_CLASSES);
       populate();
     } catch (SQLException e) {
       throw new IllegalStateException("Failed to connect to database", e);
@@ -50,7 +61,7 @@ public class DatabaseLifecycle {
 
   @PreDestroy
   @SuppressWarnings("PMD.UnusedPrivateMethod")
-  private void cleanUp() {
+  public void cleanUp() {
     // Perform app cleanup tasks here
   }
 
@@ -70,5 +81,9 @@ public class DatabaseLifecycle {
         Password.fromPlaintext("bob"),
         "boblane",
         "great"));
+  }
+
+  public DaoManager getDaoManager() {
+    return daoManager;
   }
 }

@@ -1,11 +1,12 @@
 package net.novucs.esd.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
 @Table
-public class Membership {
+public final class Membership {
 
   @Column(primary = true)
   private Integer id;
@@ -29,11 +30,10 @@ public class Membership {
     // This constructor is intentionally empty.
   }
 
-  public Membership(Integer userId, Integer pounds, Integer pence, String status) {
+  public Membership(Integer userId, BigDecimal balance, String status) {
     this.userId = userId;
-    this.pounds = pounds;
-    this.pence = pence;
     this.status = status;
+    setBalance(balance);
   }
 
   public Integer getId() {
@@ -68,5 +68,26 @@ public class Membership {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Membership that = (Membership) o;
+    return Objects.equals(getId(), that.getId())
+        && Objects.equals(getUserId(), that.getUserId())
+        && Objects.equals(pounds, that.pounds)
+        && Objects.equals(pence, that.pence)
+        && Objects.equals(getStatus(), that.getStatus());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getUserId(), pounds, pence, getStatus());
   }
 }
