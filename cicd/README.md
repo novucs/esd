@@ -1,5 +1,5 @@
 # ESD - CI/CD Pipeline
-Here has all the necessary components for setting up the Jenkins CI/CD pipeline for the 
+Here contains all the necessary components for setting up the Jenkins CI/CD pipeline for the 
 ESD project.
 
 ## Requirements
