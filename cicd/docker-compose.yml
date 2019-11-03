@@ -17,8 +17,8 @@ services:
       DEVELOPMENT_MODE: 1
     ports:
       - "8080:8080"
-    volumes:
-      - deployments:/app/glassfish/domains/domain1/autodeploy
+#    volumes:
+#      - deployments:/app/glassfish/domains/domain1/autodeploy
 
   jenkins:
     build: jenkins
