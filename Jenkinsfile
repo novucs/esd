@@ -12,6 +12,13 @@ pipeline {
             steps {
                 sh './gradlew autodeploy'
                 sh 'cp build/app.war /deployments/latest.war'
+                script {
+                    if (BRANCH_NAME == 'master') {
+                        sh "echo hi"
+                    } else {
+                        sh "echo not hi"
+                    }
+                }
             }
         }
 //        stage('Build') {
