@@ -31,7 +31,7 @@ services:
       - github_user
       - github_pass
     volumes:
-      - autodeploy:/var/jenkins_home/autodeploy
+      - autodeploy:/var/jenkins_home/autodeploy:jenkins:jenkins
 
 volumes:
   db-data:
