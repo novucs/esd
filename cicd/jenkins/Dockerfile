@@ -7,4 +7,3 @@ COPY --chown=jenkins:jenkins jenkins.model.JenkinsLocationConfiguration.xml /var
 COPY --chown=jenkins:jenkins esd-job.xml /var/jenkins_home/jobs/esd/config.xml
 USER root
 RUN mkdir /deployments && chown jenkins:jenkins /deployments
-USER jenkins
