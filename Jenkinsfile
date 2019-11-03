@@ -10,8 +10,8 @@ pipeline {
     stages {
         stage('Testing') {
             steps {
-                sh 'mkdir -p ~/autodeploy'
-                sh 'echo "hi" >> ~/autodeploy/file.txt'
+                sh './gradlew autodeploy'
+                sh 'cp build/app.war ~/autodeploy/latest.war'
             }
         }
 //        stage('Build') {
