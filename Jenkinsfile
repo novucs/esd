@@ -128,7 +128,13 @@ pipeline {
                 }
             }
             steps {
-                sh "ssh billy@esd.novucs.net ./esd/cicd/redeploy.sh ${pwd()} ${BRANCH_NAME == 'master' ? 'latest' : 'stable'}"
+                script {
+                    if (BRANCH_NAME == 'master') {
+                        sh 'cp build/app.war /deployments/latest.war'
+                    } else {
+                        sh 'cp build/app.war /deployments/stable.war'
+                    }
+                }
             }
         }
     }

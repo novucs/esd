@@ -34,6 +34,5 @@ def github_credentials = new UsernamePasswordCredentialsImpl(
         github_pass
 )
 store.addCredentials(domain, github_credentials)
-
-Jenkins.getInstance.setNumExecutors(1)
-Jenkins.getInstance.save()
+Jenkins.instance.setNumExecutors(1)
+Jenkins.instance.save()
