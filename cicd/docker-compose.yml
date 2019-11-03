@@ -18,7 +18,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - deployments:/app/glassfish/domains/domain1/autodeploy:rw
+      - deployments:/app/glassfish/domains/domain1/autodeploy
 
   jenkins:
     build: jenkins
@@ -31,12 +31,11 @@ services:
       - github_user
       - github_pass
     volumes:
-      - deployments:/deployments:rw
+      - deployments:/deployments
 
 volumes:
   db-data:
   deployments:
-    driver: local
 
 secrets:
   jenkins_user:
