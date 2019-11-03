@@ -11,7 +11,7 @@ pipeline {
         stage('Testing') {
             steps {
                 sh './gradlew autodeploy'
-                sh 'cp build/app.war ~/autodeploy/latest.war'
+                sh 'cp build/app.war /deployments/latest.war'
             }
         }
 //        stage('Build') {
