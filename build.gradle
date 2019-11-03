@@ -32,6 +32,12 @@ task autodeploy(type: Copy) {
     rename "esd-${project.version}.war", "app.war"
 }
 
+task windowsdeploy(type: Exec) {
+    commandLine 'windowsdeploy.bat'
+}
+
+windowsdeploy.dependsOn autodeploy
+
 task netbeansdeploy(type: Copy) {
     from war.archiveFile
     // TODO: Change this glassfish installation location to whichever machine is
@@ -42,7 +48,7 @@ task netbeansdeploy(type: Copy) {
 
 checkstyle {
     toolVersion '8.24'
-    configFile file('config/checkstyle/checkstyle.xml');
+    configFile file('config/checkstyle/checkstyle.xml')
 }
 
 pmd {
