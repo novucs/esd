@@ -6,4 +6,3 @@ COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 COPY --chown=jenkins:jenkins jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home/jenkins.model.JenkinsLocationConfiguration.xml
 COPY --chown=jenkins:jenkins esd-job.xml /var/jenkins_home/jobs/esd/config.xml
-RUN sed -i 's/<numExecutors>[0-9]\+<\/numExecutors>/<numExecutors>1<\/numExecutors>/g' /var/jenkins_home/config.xml
