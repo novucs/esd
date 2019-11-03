@@ -10,7 +10,6 @@ services:
   app:
     image: novucs/glassfish:5.1.0-jdk8-slim
     restart: always
-    command: ./glassfish/bin/asadmin start-domain
     depends_on:
       - db
     environment:
@@ -27,6 +26,8 @@ services:
     secrets:
       - jenkins_user
       - jenkins_pass
+      - github_user
+      - github_pass
 
 volumes:
   db-data:
@@ -36,3 +37,7 @@ secrets:
     file: jenkins_user.txt
   jenkins_pass:
     file: jenkins_pass.txt
+  github_user:
+    file: github_user.txt
+  github_pass:
+    file: github_pass.txt

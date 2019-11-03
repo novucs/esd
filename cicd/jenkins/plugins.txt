@@ -2,3 +2,5 @@ workflow-aggregator:2.6
 workflow-multibranch:2.21
 github-oauth:0.33
 htmlpublisher:1.21
+blueocean:1.19.0
+github-pullrequest:0.2.6
