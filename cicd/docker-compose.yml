@@ -17,6 +17,8 @@ services:
       DEVELOPMENT_MODE: 1
     ports:
       - "8080:8080"
+    volumes:
+      - ./autodeploy:/app/glassfish/domains/domain1/autodeploy
 
   jenkins:
     build: jenkins
@@ -28,6 +30,8 @@ services:
       - jenkins_pass
       - github_user
       - github_pass
+    volumes:
+      - ./autodeploy:/var/jenkins_home/autodeploy
 
 volumes:
   db-data:
