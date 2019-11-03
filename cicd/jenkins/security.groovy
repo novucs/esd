@@ -17,7 +17,6 @@ Jenkins.instance.setSecurityRealm(hudson_realm)
 
 def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
 Jenkins.instance.setAuthorizationStrategy(strategy)
-Jenkins.instance.save()
 Jenkins.instance.getInjector().getInstance(AdminWhitelistRule.class).setMasterKillSwitch(false)
 
 def github_user = new File("/run/secrets/github_user").text.trim()
@@ -35,3 +34,6 @@ def github_credentials = new UsernamePasswordCredentialsImpl(
         github_pass
 )
 store.addCredentials(domain, github_credentials)
+
+Jenkins.getInstance.setNumExecutors(1)
+Jenkins.getInstance.save()
