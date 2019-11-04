@@ -34,6 +34,11 @@
       <property name="ignoreMagicNumbers" value="-1,0,1" />
     </properties>
   </rule>
+  <rule ref="category/java/codestyle.xml/LongVariable">
+    <properties>
+      <property name="minimum" value="32" />
+    </properties>
+  </rule>
   <rule ref="category/java/multithreading.xml">
     <exclude name="UseConcurrentHashMap"/>
   </rule>

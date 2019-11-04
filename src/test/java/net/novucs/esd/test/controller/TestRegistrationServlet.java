@@ -26,8 +26,9 @@ import net.novucs.esd.util.ReflectUtil;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
-
 public class TestRegistrationServlet {
+
+  private static final String LAYOUT_PAGE = "/layout.jsp";
 
   @Test
   public void testRequestGetsRegistrationPage()
@@ -35,7 +36,7 @@ public class TestRegistrationServlet {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestDispatcher(LAYOUT_PAGE)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession()).thenReturn(session);
     when(request.getMethod()).thenReturn("GET");
@@ -45,7 +46,7 @@ public class TestRegistrationServlet {
     servlet.doGet(request, response);
     verify(request, times(1)).getMethod();
     verify(request).setAttribute("page", "register.jsp");
-    verify(request).getRequestDispatcher("/layout.jsp");
+    verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
 
   @Test
@@ -65,7 +66,7 @@ public class TestRegistrationServlet {
     when(request.getMethod()).thenReturn("POST");
     when(request.getSession()).thenReturn(session);
 
-    String password = "password";
+    String password = "pass123";
     User userToCreate = new User(
         "Name",
         "email@email.com",
@@ -90,8 +91,8 @@ public class TestRegistrationServlet {
 
     User userThatWasCreated = userDao.select().where(new Where().eq("name", "Name")).first();
     verify(request).setAttribute("page", "registersuccess.jsp");
-    verify(request).getRequestDispatcher("/layout.jsp");
-    assertEquals(userToCreate, userThatWasCreated);
+    verify(request).getRequestDispatcher(LAYOUT_PAGE);
+    assertEquals("The right user is returned",userToCreate.getId(), userThatWasCreated.getId());
   }
 
   @Test
@@ -100,7 +101,7 @@ public class TestRegistrationServlet {
     // Given
     DaoManager daoManager = createTestDaoManager();
     daoManager.init(DatabaseLifecycle.MODEL_CLASSES);
-    String password = "password";
+    String password = "pass123";
     User targetUser = new User(
         "Name",
         "email@email.com",
@@ -120,8 +121,6 @@ public class TestRegistrationServlet {
     when(request.getMethod()).thenReturn("POST");
     when(request.getSession()).thenReturn(session);
 
-
-
     when(request.getParameter("full-name")).thenReturn(targetUser.getName());
     when(request.getParameter("username")).thenReturn(targetUser.getEmail());
     when(request.getParameter("password")).thenReturn(password);
@@ -136,6 +135,6 @@ public class TestRegistrationServlet {
     servlet.doPost(request, response);
 
     verify(request).setAttribute("page", "registerfail.jsp");
-    verify(request).getRequestDispatcher("/layout.jsp");
+    verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
 }
