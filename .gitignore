@@ -7,3 +7,4 @@ derby.log
 # SASS Compiling
 **/node_modules/**
 package-lock.json
+src/main/webapp/css/
