@@ -6,7 +6,7 @@ import net.novucs.esd.orm.Table;
 import net.novucs.esd.util.Password;
 
 @Table
-public final class User {
+public class User {
 
   @Column(primary = true)
   private Integer id;

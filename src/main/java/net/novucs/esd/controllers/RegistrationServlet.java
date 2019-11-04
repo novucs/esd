@@ -2,7 +2,6 @@ package net.novucs.esd.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,31 +15,23 @@ import net.novucs.esd.util.Password;
 
 public class RegistrationServlet extends BaseServlet {
 
-  private static String addressBuilder(String addressName, String street, String city,
-      String county, String postcode) {
-    return addressName + "," + street + "," + city + "," + county + "," + postcode;
-  }
-
-  @Resource(lookup = "java:app/AppName")
-  private transient String appName;
   private static final long serialVersionUID = 1426082847044519303L;
 
-  private static final String REGISTER_TITLE = "Register";
-  private static final String REGISTER_SUCCESS_TITLE = "Registration Success";
-  private static final String REGISTER_FAIL_TITLE = "Registration Unsuccessful";
+  private static final String TITLE = "Register";
+  private static final String SUCCESS_TITLE = "Registration Success";
+  private static final String FAIL_TITLE = "Registration Unsuccessful";
 
-  private static final String REGISTER_PAGE = "register";
-  private static final String REGISTER_SUCCESS_PAGE = REGISTER_PAGE + "success";
-  private static final String REGISTER_FAIL_PAGE = REGISTER_PAGE + "fail";
+  private static final String PAGE = "register";
+  private static final String SUCCESS_PAGE = PAGE + "success";
+  private static final String FAIL_PAGE = PAGE + "fail";
+
   @Inject
   private Dao<User> userDao;
 
   private void processRequest(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException, SQLException {
-    System.out.println("RegistrationServlet | Method: " + request.getMethod());
-
+      throws IOException, ServletException {
     if (request.getMethod().equalsIgnoreCase("GET")) {
-      super.forward(request, response, REGISTER_TITLE, REGISTER_PAGE);
+      super.forward(request, response, TITLE, PAGE);
     } else {
       String username = request.getParameter("username");
       User user;
@@ -50,14 +41,8 @@ public class RegistrationServlet extends BaseServlet {
         throw new IOException("Failed to communicate with database", e);
       }
 
-      // User with email address already exists
-      if (user != null) {
-        // Delete reference to user as security measure
-        user = null;
-        super.forward(request, response, REGISTER_FAIL_TITLE, REGISTER_FAIL_PAGE);
-      }
       // New user can be stored in database
-      else {
+      if (user == null) {
         // No validation required as handled on page
         String name = request.getParameter("full-name");
         String email = request.getParameter("username");
@@ -75,13 +60,20 @@ public class RegistrationServlet extends BaseServlet {
         String address = addressBuilder(addressName, street, city, county, postcode);
 
         // Create user and insert into DB
-        user = new User(name, email, hashedPassword, address, "APPLICATION");
-        userDao.insert(user);
-        user = null;
-        user = userDao.select().where(new Where().eq("email", username)).first();
-        if(user != null){
-          super.forward(request, response, REGISTER_SUCCESS_TITLE, REGISTER_SUCCESS_PAGE);
-        } else throw new SQLException("Create User failed: Expected one result, found none.");
+        try {
+          user = new User(name, email, hashedPassword, address, "APPLICATION");
+          userDao.insert(user);
+          user = userDao.select().where(new Where().eq("email", username)).first();
+          if (user == null) {
+            throw new SQLException("Create User failed: Expected one result, found none.");
+          } else {
+            super.forward(request, response, SUCCESS_TITLE, SUCCESS_PAGE);
+          }
+        } catch (SQLException ignore) {  // NOPMD
+        }
+      } else {
+        // User with email address already exists
+        super.forward(request, response, FAIL_TITLE, FAIL_PAGE);
       }
     }
   }
@@ -89,21 +81,18 @@ public class RegistrationServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    try {
-      processRequest(request, response);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+    processRequest(request, response);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    try {
-      processRequest(request, response);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+    processRequest(request, response);
+  }
+
+  private static String addressBuilder(String addressName, String street, String city,
+      String county, String postcode) {
+    return addressName + "," + street + "," + city + "," + county + "," + postcode;
   }
 
   @Override
