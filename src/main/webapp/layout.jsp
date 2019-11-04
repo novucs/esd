@@ -1,6 +1,9 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
+<%@ page import="net.novucs.esd.lifecycle.Session" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<% Boolean hasSession = ((Session) (request.getSession().getAttribute("session"))).getUser() != null; %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,14 +23,23 @@
         <header>
             <nav class="navigation-bar">
                 <div class="nav-wrapper">
-                    <a href="#!" class="brand-logo">XYZ Drivers Association</a>
-                    <ul class="right hide-on-med-and-down">
-                        <li><a href="/members">Member Dashboard</a></li>
-                        <li><a href="/admin">Admin Dashboard</a></li>
-                        <!-- Dropdown Trigger -->
-                        <li><a class="dropdown-trigger" href="" data-target="dropdown">Switch View<i
-                                class="material-icons right"></i></a></li>
-                    </ul>
+                    <a href="/homepage" class="brand-logo">
+                        <span>
+                            XYZ
+                        </span>
+                        <span>
+                            Drivers Association
+                        </span>
+                    </a>
+                    <% if(hasSession) { %>
+                        <ul class="right hide-on-med-and-down">
+                            <li><a href="/members">Member Dashboard</a></li>
+                            <li><a href="/admin">Admin Dashboard</a></li>
+                            <!-- Dropdown Trigger -->
+                            <li><a class="dropdown-trigger" href="" data-target="dropdown">Switch View<i
+                                    class="material-icons right"></i></a></li>
+                        </ul>
+                    <% } %>
                 </div>
             </nav>
         </header>
@@ -35,9 +47,12 @@
             <jsp:include page="<%= request.getAttribute("page").toString()%>"/>
         </main>
         <footer class="page-footer">
-            <div class="container">
-                <a class="grey-text text-lighten-4 right" href="/app/login">Login</a>
-                Version 1.0.0
+            <div class="row">
+                <div class="col s12 center-align">
+                    <span id="group-info">
+                        UFCF85-30-3 - Group 10 - Assignment
+                    </span>
+                </div>
             </div>
         </footer>
 
