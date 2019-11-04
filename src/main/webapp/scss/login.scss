@@ -1,8 +1,9 @@
 body {
   height: 100vh;
   margin: 0;
-  background: white; }
-  body:before {
+  background: white;
+
+  &:before {
     content: "";
     position: absolute;
     top: 0;
@@ -11,52 +12,76 @@ body {
     width: 60vw;
     background: #000;
     transform: skew(-30deg);
-    z-index: 0; }
+    z-index: 0;
+  }
+}
 
 #login-component-container {
-  margin-top: 30px; }
+  margin-top: 30px;
+}
 
 #login-title {
   animation: 1.2s ease 0s 1 normal backwards running bounce-in-top;
   font-weight: 700;
-  font-style: italic; }
+  font-style: italic;
+}
 
 #login-button {
   background-color: #909090;
   float: left;
-  border-radius: 5px; }
+  border-radius: 5px;
+}
 
 #forgot-password > a {
   color: black;
-  padding-left: 20px; }
-  #forgot-password > a:hover {
+  padding-left: 20px;
+
+  &:hover {
     color: grey;
-    text-decoration: underline; }
+    text-decoration: underline;
+  }
+}
 
 @keyframes bounce-in-top {
   0% {
     transform: translateY(-500px);
     animation-timing-function: ease-in;
-    opacity: 0; }
+    opacity: 0;
+  }
+
   38% {
     transform: translateY(0);
     animation-timing-function: ease-out;
-    opacity: 1; }
+    opacity: 1;
+  }
+
   55% {
     transform: translateY(-65px);
-    animation-timing-function: ease-in; }
+    animation-timing-function: ease-in;
+  }
+
   72% {
     transform: translateY(0);
-    animation-timing-function: ease-out; }
+    animation-timing-function: ease-out;
+  }
+
   81% {
     transform: translateY(-28px);
-    animation-timing-function: ease-in; }
+    animation-timing-function: ease-in;
+  }
+
   90% {
     transform: translateY(0);
-    animation-timing-function: ease-out; }
+    animation-timing-function: ease-out;
+  }
+
   95% {
     transform: translateY(-8px);
-    animation-timing-function: ease-in; }
+    animation-timing-function: ease-in;
+  }
+
   100% {
     transform: translateY(0);
-    animation-timing-function: ease-out; } }
+    animation-timing-function: ease-out;
+  }
+}
