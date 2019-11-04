@@ -34,7 +34,6 @@ public class TestDatabaseLifecycle {
 
     // When
     lifecycle.init();
-    BOB = "bob";
     User bob = lifecycle.getDaoManager().get(User.class).select()
         .where(new Where().eq("name", BOB)).first();
 
