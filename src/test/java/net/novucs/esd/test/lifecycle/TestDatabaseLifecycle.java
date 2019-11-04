@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.model.User;
+import net.novucs.esd.orm.Where;
 import org.apache.derby.jdbc.EmbeddedDriver;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -17,6 +18,7 @@ public class TestDatabaseLifecycle {
   @ClassRule
   public static final EnvironmentVariables ENVIRONMENT = new EnvironmentVariables();
   private static final String DB_URL = "jdbc:derby:memory:testDB;create=true";
+  private static final String BOB = "bob";
 
   @Before
   public void setUp() throws SQLException {
@@ -32,9 +34,11 @@ public class TestDatabaseLifecycle {
 
     // When
     lifecycle.init();
-    User bob = lifecycle.getDaoManager().get(User.class).selectById(1);
+    BOB = "bob";
+    User bob = lifecycle.getDaoManager().get(User.class).select()
+        .where(new Where().eq("name", BOB)).first();
 
     // Assert
-    assertEquals("Database must be created on init", bob.getName(), "bob");
+    assertEquals("Database must be created on init", BOB, bob.getName());
   }
 }
