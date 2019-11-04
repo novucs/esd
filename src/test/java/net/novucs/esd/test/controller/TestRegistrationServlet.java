@@ -97,4 +97,49 @@ public class TestRegistrationServlet {
     verify(request).getRequestDispatcher("/layout.jsp");
     assertEquals(userToCreate, userThatWasCreated);
   }
+
+  @Test
+  public void testRequestPostsRegistrationPageFail()
+      throws ServletException, IOException, ReflectiveOperationException, SQLException {
+    // Given
+    DaoManager daoManager = createTestDaoManager();
+    daoManager.init(DatabaseLifecycle.MODEL_CLASSES);
+    String password = "password";
+    User targetUser = new User(
+        "Name",
+        "email@email.com",
+        Password.fromPlaintext(password),
+        "House, A Street, A city, County, AB12 C34",
+        "APPLICATION"
+    );
+    Dao<User> userDao = daoManager.get(User.class);
+    userDao.insert(targetUser);
+
+    RegistrationServlet servlet = new RegistrationServlet();
+    ReflectUtil.setFieldValue(servlet, "userDao", userDao);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    HttpSession session = mock(HttpSession.class);
+    when(request.getSession()).thenReturn(session);
+    when(request.getMethod()).thenReturn("POST");
+    when(request.getSession()).thenReturn(session);
+
+
+
+    when(request.getParameter("full-name")).thenReturn(targetUser.getName());
+    when(request.getParameter("username")).thenReturn(targetUser.getEmail());
+    when(request.getParameter("password")).thenReturn(password);
+    when(request.getParameter("address-name")).thenReturn("House");
+    when(request.getParameter("address-street")).thenReturn("A Street");
+    when(request.getParameter("address-city")).thenReturn("A city");
+    when(request.getParameter("address-county")).thenReturn("County");
+    when(request.getParameter("address-postcode")).thenReturn("AB12 C34");
+    when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    servlet.doPost(request, response);
+
+    verify(request).setAttribute("page", "registerfail.jsp");
+    verify(request).getRequestDispatcher("/layout.jsp");
+  }
 }
