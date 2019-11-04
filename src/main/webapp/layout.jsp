@@ -14,11 +14,13 @@
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
         <link rel="stylesheet" href="css/site.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
     <body>
         <ul id="dropdown" class="dropdown-content">
-            <li><a>User</a></li>
-            <li><a>Admin</a></li>
+            <li><a>User Settings</a></li>
+            <li><a>Reset Password</a></li>
+            <li><a href="/app/logout">Logout</a></li>
         </ul>
         <header>
             <nav class="navigation-bar">
@@ -36,8 +38,7 @@
                             <li><a href="/members">Member Dashboard</a></li>
                             <li><a href="/admin">Admin Dashboard</a></li>
                             <!-- Dropdown Trigger -->
-                            <li><a class="dropdown-trigger" href="" data-target="dropdown">Switch View<i
-                                    class="material-icons right"></i></a></li>
+                            <li><a class="dropdown-trigger" href="" data-target="dropdown"><i class="large material-icons">account_box</i></a></li>
                         </ul>
                     <% } %>
                 </div>
