@@ -65,19 +65,19 @@ public class TestRegistrationServlet {
     when(request.getMethod()).thenReturn("POST");
     when(request.getSession()).thenReturn(session);
 
-    String password = "password";
+    String passwordPlaintext = "password";
+    Password password = Password.fromPlaintext(passwordPlaintext);
     User userToCreate = new User(
-        "Name",
+        "RegistrationServlet Test User 1",
         "email@email.com",
-        Password.fromPlaintext(password),
+        password,
         "House,A Street,A city,County,AB12 C34",
         "APPLICATION"
     );
-    userToCreate.setId(1);
 
     when(request.getParameter("full-name")).thenReturn(userToCreate.getName());
     when(request.getParameter("username")).thenReturn(userToCreate.getEmail());
-    when(request.getParameter("password")).thenReturn(password);
+    when(request.getParameter("password")).thenReturn(passwordPlaintext);
     when(request.getParameter("address-name")).thenReturn("House");
     when(request.getParameter("address-street")).thenReturn("A Street");
     when(request.getParameter("address-city")).thenReturn("A city");
@@ -88,7 +88,11 @@ public class TestRegistrationServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doPost(request, response);
 
-    User userThatWasCreated = userDao.select().where(new Where().eq("name", "Name")).first();
+    User userThatWasCreated = userDao.select()
+        .where(new Where().eq("name", "RegistrationServlet Test User 1"))
+        .first();
+    userToCreate.setId(userThatWasCreated.getId());
+    userThatWasCreated.setPassword(password);
     verify(request).setAttribute("page", "registersuccess.jsp");
     verify(request).getRequestDispatcher("/layout.jsp");
     assertEquals(userToCreate, userThatWasCreated);
