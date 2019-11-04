@@ -1,6 +1,7 @@
 package net.novucs.esd.test.controller;
 
 import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -19,6 +20,7 @@ import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
+import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Test;
@@ -64,16 +66,17 @@ public class TestRegistrationServlet {
     when(request.getSession()).thenReturn(session);
 
     String password = "password";
-    User targetUser = new User(
+    User userToCreate = new User(
         "Name",
         "email@email.com",
         Password.fromPlaintext(password),
-        "House, A Street, A city, County, AB12 C34",
+        "House,A Street,A city,County,AB12 C34",
         "APPLICATION"
     );
+    userToCreate.setId(1);
 
-    when(request.getParameter("full-name")).thenReturn(targetUser.getName());
-    when(request.getParameter("username")).thenReturn(targetUser.getEmail());
+    when(request.getParameter("full-name")).thenReturn(userToCreate.getName());
+    when(request.getParameter("username")).thenReturn(userToCreate.getEmail());
     when(request.getParameter("password")).thenReturn(password);
     when(request.getParameter("address-name")).thenReturn("House");
     when(request.getParameter("address-street")).thenReturn("A Street");
@@ -85,7 +88,9 @@ public class TestRegistrationServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doPost(request, response);
 
+    User userThatWasCreated = userDao.select().where(new Where().eq("name", "Name")).first();
     verify(request).setAttribute("page", "registersuccess.jsp");
     verify(request).getRequestDispatcher("/layout.jsp");
+    assertEquals(userToCreate, userThatWasCreated);
   }
 }
