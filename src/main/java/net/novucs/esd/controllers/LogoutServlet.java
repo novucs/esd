@@ -1,12 +1,10 @@
 package net.novucs.esd.controllers;
 
 import java.io.IOException;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.lifecycle.Session;
 
 @WebServlet(name = "LogoutServlet")
 public class LogoutServlet extends BaseServlet {
@@ -14,7 +12,7 @@ public class LogoutServlet extends BaseServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     HttpSession session = request.getSession(false);
 
     if (session != null) {
