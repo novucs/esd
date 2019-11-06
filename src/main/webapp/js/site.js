@@ -6,6 +6,5 @@
       closeOnClick: true,
       coverTrigger: false
     });
-
   });
 })();

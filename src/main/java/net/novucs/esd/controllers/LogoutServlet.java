@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.novucs.esd.lifecycle.Session;
 
 @WebServlet(name = "LogoutServlet")
@@ -14,9 +15,10 @@ public class LogoutServlet extends BaseServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Session session = getSession(request);
+    HttpSession session = request.getSession(false);
+
     if (session != null) {
-      request.getSession(false).invalidate();
+      session.invalidate();
     }
     response.sendRedirect("login");
   }
