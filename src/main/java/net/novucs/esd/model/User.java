@@ -1,5 +1,6 @@
 package net.novucs.esd.model;
 
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
@@ -24,17 +25,22 @@ public class User {
   private String address;
 
   @Column
+  private ZonedDateTime dateOfBirth;
+
+  @Column
   private String status;
 
   public User() {
     // This constructor is intentionally empty.
   }
 
-  public User(String name, String email, Password password, String address, String status) {
+  public User(String name, String email, Password password, String address,
+      ZonedDateTime dateOfBirth, String status) {
     this.name = name;
     this.email = email;
     this.password = password;
     this.address = address;
+    this.dateOfBirth = dateOfBirth;
     this.status = status;
   }
 
@@ -78,6 +84,14 @@ public class User {
     this.address = address;
   }
 
+  public ZonedDateTime getDateOfBirth() {
+    return dateOfBirth;
+  }
+
+  public void setDateOfBirth(ZonedDateTime dateOfBirth) {
+    this.dateOfBirth = dateOfBirth;
+  }
+
   public String getStatus() {
     return status;
   }
@@ -100,6 +114,7 @@ public class User {
         && Objects.equals(getEmail(), user.getEmail())
         && Objects.equals(getPassword(), user.getPassword())
         && Objects.equals(getAddress(), user.getAddress())
+        && Objects.equals(getDateOfBirth(), user.getDateOfBirth())
         && Objects.equals(getStatus(), user.getStatus());
   }
 

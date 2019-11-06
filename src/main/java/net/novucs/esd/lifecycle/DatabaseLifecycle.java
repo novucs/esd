@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
+import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
 
 @Startup
@@ -104,11 +106,14 @@ public class DatabaseLifecycle {
   }
 
   private void setupDevelopmentData() throws SQLException {
+    DateUtil dateUtil = new DateUtil();
+    ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
     daoManager.get(User.class).insert(new User(
         "bob",
         "bob@bob.net",
         Password.fromPlaintext("bob"),
         "boblane",
+        dateOfBirth,
         "great"));
   }
 

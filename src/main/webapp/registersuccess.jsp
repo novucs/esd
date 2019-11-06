@@ -13,7 +13,17 @@
             <div class="row">
                 <div class="col s12">
                     <div class="col s12 center-align">
-                      Check emails for <%= request.getParameter("username") %> to confirm your account and <a href="login">proceed to login</a>.
+                      Account created for <strong><%= request.getParameter("username") %></strong>
+                    </div>
+                    <br></br>
+                    <div class="col s12 center-align">
+                      Your temporary password is: <strong><%= request.getAttribute("password") %></strong>
+                    </div>
+                    <br></br>
+                    <div class="col s12 center-align">
+                        <div style="color: red;">
+                          Please ensure you make a note of this password before proceeding to <a href="login">login</a>
+                        <div>
                     </div>
                 </div>
             </div>
