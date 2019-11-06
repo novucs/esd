@@ -56,15 +56,11 @@ public class RegistrationServlet extends BaseServlet {
   }
 
   private User parseUser(HttpServletRequest request) {
-    User user;// No validation required as handled on page
     String name = request.getParameter("full-name");
     String email = request.getParameter("username");
     Password password = Password.fromPlaintext(request.getParameter("password"));
     String address = parseAddress(request);
-
-    // Create user and insert into DB
-    user = new User(name, email, password, address, "APPLICATION");
-    return user;
+    return new User(name, email, password, address, "APPLICATION");
   }
 
   private String parseAddress(HttpServletRequest request) {
