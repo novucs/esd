@@ -36,6 +36,18 @@ nav .brand-logo:hover {
     color: #d2d2d2;
 }
 
+body:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -250px;
+    width: 60vw;
+    background: #000;
+    transform: skew(-30deg);
+    z-index: 2;
+}
+
 body {
     display: flex;
     min-height: 100vh;
