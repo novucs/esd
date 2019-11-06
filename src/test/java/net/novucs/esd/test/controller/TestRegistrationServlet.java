@@ -4,7 +4,6 @@ import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,8 +30,7 @@ public class TestRegistrationServlet {
   private static final String LAYOUT_PAGE = "/layout.jsp";
 
   @Test
-  public void testRequestGetsRegistrationPage()
-      throws ServletException, IOException {
+  public void testRequestGetsRegistrationPage() throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
@@ -44,7 +42,6 @@ public class TestRegistrationServlet {
     RegistrationServlet servlet = new RegistrationServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
-    verify(request, times(1)).getMethod();
     verify(request).setAttribute("page", "register.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
@@ -96,7 +93,7 @@ public class TestRegistrationServlet {
     userThatWasCreated.setPassword(password);
     verify(request).setAttribute("page", "registersuccess.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
-    assertEquals("The right user is returned",userToCreate.getId(), userThatWasCreated.getId());
+    assertEquals("The right user is returned", userToCreate.getId(), userThatWasCreated.getId());
   }
 
   @Test
