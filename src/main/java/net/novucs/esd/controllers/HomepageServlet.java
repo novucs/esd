@@ -26,7 +26,7 @@ public class HomepageServlet extends BaseServlet {
     response.setContentType("text/html;charset=UTF-8");
     request.setAttribute("title", "Homepage - " + user.getName());
     request.setAttribute("page", "/homepage.jsp");
-    request.getRequestDispatcher("/layout.jsp").forward(request, response);
+    request.getRequestDispatcher("/homepage.jsp").forward(request, response);
   }
 
   @Override
