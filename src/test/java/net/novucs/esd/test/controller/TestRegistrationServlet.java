@@ -4,7 +4,6 @@ import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,20 +30,21 @@ public class TestRegistrationServlet {
   private static final String LAYOUT_PAGE = "/layout.jsp";
 
   @Test
-  public void testRequestGetsRegistrationPage()
-      throws ServletException, IOException {
+  public void testRequestGetsRegistrationPage() throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     when(request.getRequestDispatcher(LAYOUT_PAGE)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(session);
+    when(request.getSession()).thenReturn(mock(HttpSession.class));
     when(request.getMethod()).thenReturn("GET");
 
     RegistrationServlet servlet = new RegistrationServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
+
+    // When
     servlet.doGet(request, response);
-    verify(request, times(1)).getMethod();
+
+    // Assert
     verify(request).setAttribute("page", "register.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
@@ -59,12 +59,6 @@ public class TestRegistrationServlet {
 
     RegistrationServlet servlet = new RegistrationServlet();
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
-    HttpSession session = mock(HttpSession.class);
-    when(request.getSession()).thenReturn(session);
-    when(request.getMethod()).thenReturn("POST");
-    when(request.getSession()).thenReturn(session);
 
     String passwordPlaintext = "password";
     Password password = Password.fromPlaintext(passwordPlaintext);
@@ -72,23 +66,22 @@ public class TestRegistrationServlet {
         "RegistrationServlet Test User 1",
         "email@email.com",
         password,
-        "House,A Street,A city,County,AB12 C34",
+        "House, A Street, A city, County, AB12 C34",
         "APPLICATION"
     );
 
-    when(request.getParameter("full-name")).thenReturn(userToCreate.getName());
-    when(request.getParameter("username")).thenReturn(userToCreate.getEmail());
-    when(request.getParameter("password")).thenReturn(passwordPlaintext);
-    when(request.getParameter("address-name")).thenReturn("House");
-    when(request.getParameter("address-street")).thenReturn("A Street");
-    when(request.getParameter("address-city")).thenReturn("A city");
-    when(request.getParameter("address-county")).thenReturn("County");
-    when(request.getParameter("address-postcode")).thenReturn("AB12 C34");
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    setupRequest(request, passwordPlaintext, userToCreate);
+    when(request.getMethod()).thenReturn("POST");
+    when(request.getSession()).thenReturn(mock(HttpSession.class));
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
 
     HttpServletResponse response = mock(HttpServletResponse.class);
+
+    // When
     servlet.doPost(request, response);
 
+    // Assert
     User userThatWasCreated = userDao.select()
         .where(new Where().eq("name", "RegistrationServlet Test User 1"))
         .first();
@@ -96,49 +89,58 @@ public class TestRegistrationServlet {
     userThatWasCreated.setPassword(password);
     verify(request).setAttribute("page", "registersuccess.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
-    assertEquals("The right user is returned",userToCreate.getId(), userThatWasCreated.getId());
+    assertEquals("The right user is returned", userToCreate, userThatWasCreated);
   }
 
   @Test
-  public void testRequestPostsRegistrationPageFail()
+  public void testRequestPostsRegistrationPageFailsIfUserExists()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
     // Given
     DaoManager daoManager = createTestDaoManager();
     daoManager.init(DatabaseLifecycle.MODEL_CLASSES);
-    String password = "pass123";
+
+    String passwordPlaintext = "password";
+    Password password = Password.fromPlaintext(passwordPlaintext);
     User targetUser = new User(
-        "Name",
+        "RegistrationServlet Test User 2",
         "email@email.com",
-        Password.fromPlaintext(password),
+        password,
         "House, A Street, A city, County, AB12 C34",
         "APPLICATION"
     );
+
     Dao<User> userDao = daoManager.get(User.class);
     userDao.insert(targetUser);
 
     RegistrationServlet servlet = new RegistrationServlet();
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
+
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    HttpSession session = mock(HttpSession.class);
-    when(request.getSession()).thenReturn(session);
+    setupRequest(request, passwordPlaintext, targetUser);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getSession()).thenReturn(session);
-
-    when(request.getParameter("full-name")).thenReturn(targetUser.getName());
-    when(request.getParameter("username")).thenReturn(targetUser.getEmail());
-    when(request.getParameter("password")).thenReturn(password);
-    when(request.getParameter("address-name")).thenReturn("House");
-    when(request.getParameter("address-street")).thenReturn("A Street");
-    when(request.getParameter("address-city")).thenReturn("A city");
-    when(request.getParameter("address-county")).thenReturn("County");
-    when(request.getParameter("address-postcode")).thenReturn("AB12 C34");
+    when(request.getSession()).thenReturn(mock(HttpSession.class));
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
 
     HttpServletResponse response = mock(HttpServletResponse.class);
+
+    // When
     servlet.doPost(request, response);
 
+    // Assert
     verify(request).setAttribute("page", "registerfail.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
+  }
+
+  private void setupRequest(HttpServletRequest request, String password, User user) {
+    when(request.getParameter("full-name")).thenReturn(user.getName());
+    when(request.getParameter("username")).thenReturn(user.getEmail());
+    when(request.getParameter("password")).thenReturn(password);
+
+    String[] address = user.getAddress().split(", ");
+    when(request.getParameter("address-name")).thenReturn(address[0]);
+    when(request.getParameter("address-street")).thenReturn(address[1]);
+    when(request.getParameter("address-city")).thenReturn(address[2]);
+    when(request.getParameter("address-county")).thenReturn(address[3]);
+    when(request.getParameter("address-postcode")).thenReturn(address[4]);
   }
 }

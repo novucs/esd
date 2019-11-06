@@ -15,6 +15,27 @@
     z-index: 2;
 }
 
+nav .brand-logo {
+    font-weight: lighter;
+    padding-left: 15px;
+}
+
+nav .brand-logo > span:first-child {
+    font-weight: bolder;
+    border: solid white 2px;
+    padding-left: 7px;
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+nav .brand-logo > span:last-child {
+    font-size: smaller;
+}
+
+nav .brand-logo:hover {
+    color: #d2d2d2;
+}
+
 body:before {
     content: "";
     position: absolute;
@@ -40,4 +61,5 @@ main {
 .page-footer {
     background-color: black;
     z-index: 5;
+    font-size: 12px;
 }
