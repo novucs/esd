@@ -10,6 +10,10 @@ Requirements:
 * [docker](https://docs.docker.com/get-started/)
 * [docker-compose](https://docs.docker.com/compose/)
 
+Optional development dependencies:
+* [node (lts)](https://nodejs.org/en/)
+* [gulp](https://gulpjs.com/)
+
 Steps:
 1. Clone the repo `git clone https://github.com/novucs/esd.git && cd esd`
 2. Build the repo `./gradlew autodeploy` (for UNIX) or `gradlew.bat autodeploy` (for Windows)
@@ -26,6 +30,15 @@ During development, to run all CI checks locally you may perform the following c
 
 All the reports for any check/test failures will be saved into the relevant directory under:
 `./build/reports/`
+
+#### Compile with SCSS
+
+In order to compile your SCSS files to CSS, please make sure you've installed Node and NPM.
+
+1. Install Node via `apt-get install node`
+2. Run `npm install -g gulp` to install Gulp for your system.
+3. Run `npm install` in the repository root to install the dependencies required for Gulp.
+4. Run `gulp` to compile SCSS.
 
 ## IDE Setup
 IntelliJ:
