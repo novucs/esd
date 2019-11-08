@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import net.novucs.esd.lifecycle.Session;
 
 public abstract class BaseServlet extends HttpServlet {
@@ -18,16 +17,23 @@ public abstract class BaseServlet extends HttpServlet {
   private static final long serialVersionUID = 1426081247044519303L;
 
   public Session getSession(HttpServletRequest request) {
-    HttpSession httpSession = request.getSession();
-    Session session = (Session) httpSession.getAttribute("session");
+    HttpSession httpSession = request.getSession(false);
 
-    // Create a new session
-    if (session == null) {
-      session = new Session();
-      httpSession.setAttribute("session", session);
+    // If a session doesn't exist, request GlassFish make a new one
+    if (httpSession == null) {
+      httpSession = request.getSession(true);
     }
 
-    return session;
+    // Check if we have a session handler in our session
+    Session sessionHandler = (Session) httpSession.getAttribute("session");
+
+    // Create a new session
+    if (sessionHandler == null) {
+      sessionHandler = new Session();
+      httpSession.setAttribute("session", sessionHandler);
+    }
+
+    return sessionHandler;
   }
 
   protected void forward(HttpServletRequest request, HttpServletResponse response,
