@@ -19,11 +19,6 @@
     <exclude name="TooManyStaticImports"/>
     <exclude name="UnnecessaryFullyQualifiedName"/>
   </rule>
-  <rule ref="category/java/codestyle.xml/LongVariable">
-    <properties>
-      <property name="minimum" value="32" />
-    </properties>
-  </rule>
   <rule ref="category/java/design.xml">
     <exclude name="DataClass"/>
     <exclude name="LawOfDemeter"/>
