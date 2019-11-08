@@ -1,6 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java"  %>
 
-<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="${baseUrl}/css/login.css">
 <div class="container">
     <div class="row">
         <div id="login-component-container" class="col s6 push-s3 rounded-container">

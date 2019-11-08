@@ -1,19 +1,18 @@
-<%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<% Boolean hasSession = ((Session) (request.getSession().getAttribute("session"))).getUser() != null; %>
-
+<% Boolean hasSession =
+        ((Session) (request.getSession().getAttribute("session"))).getUser() != null; %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title><%= request.getAttribute("title")%>
-        </title>
+        <title>${title}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <!-- Compiled and minified CSS -->
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-        <link rel="stylesheet" href="css/site.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+        <link rel="stylesheet" href="${baseUrl}/css/site.css" />
+        <link rel="stylesheet" href="${baseUrl}/css/${name}.css" />
     </head>
     <body>
         <ul id="dropdown" class="dropdown-content">
@@ -23,28 +22,27 @@
         <header>
             <nav class="navigation-bar">
                 <div class="nav-wrapper">
-                    <a href="/homepage" class="brand-logo">
-                        <span>
-                            XYZ
-                        </span>
-                        <span>
-                            Drivers Association
-                        </span>
+                    <a href="${baseUrl}/homepage" class="brand-logo">
+                        <span>XYZ</span>
+                        <span>Drivers Association</span>
                     </a>
-                    <% if(hasSession) { %>
-                        <ul class="right hide-on-med-and-down">
-                            <li><a href="/members">Member Dashboard</a></li>
-                            <li><a href="/admin">Admin Dashboard</a></li>
-                            <!-- Dropdown Trigger -->
-                            <li><a class="dropdown-trigger" href="" data-target="dropdown">Switch View<i
-                                    class="material-icons right"></i></a></li>
-                        </ul>
+                    <% if (hasSession) { %>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a href="${baseUrl}/dashboard">Member Dashboard</a></li>
+                        <li><a href="${baseUrl}/admin/dashboard">Admin Dashboard</a></li>
+                        <li>
+                            <a class="dropdown-trigger" href="" data-target="dropdown">
+                                Switch View
+                                <i class="material-icons right"></i>
+                            </a>
+                        </li>
+                    </ul>
                     <% } %>
                 </div>
             </nav>
         </header>
-        <main>
-            <jsp:include page="<%= request.getAttribute("page").toString()%>"/>
+        <main class="container">
+            <jsp:include page="${page}" />
         </main>
         <footer class="page-footer">
             <div class="row">
@@ -57,10 +55,10 @@
         </footer>
 
         <!-- Scripts -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <script src="js/error.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="${baseUrl}/js/error.js"></script>
         <% List<String> errors = (List<String>) request.getAttribute("errors"); %>
-        <% if (errors != null && errors.size() > 0) { %>
+            <% if (errors != null && errors.size() > 0) { %>
             <% for (String message : errors) { %>
                 <script type="application/javascript">
                   errorModule.displayError('<%=message%>');

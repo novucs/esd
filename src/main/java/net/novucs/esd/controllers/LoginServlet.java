@@ -42,7 +42,7 @@ public class LoginServlet extends BaseServlet {
 
     if (user != null && user.getPassword().authenticate(password)) {
       session.setUser(user);
-      response.sendRedirect("homepage");
+      response.sendRedirect("dashboard");
     } else {
       session.pushError("Incorrect username or password");
       super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);

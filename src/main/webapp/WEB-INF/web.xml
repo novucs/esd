@@ -12,14 +12,6 @@
         <url-pattern>/homepage</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>MemberServlet</servlet-name>
-        <servlet-class>net.novucs.esd.MemberServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>MemberServlet</servlet-name>
-        <url-pattern>/app/members</url-pattern>
-    </servlet-mapping>
-    <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>net.novucs.esd.controllers.LoginServlet</servlet-class>
     </servlet>
@@ -34,6 +26,30 @@
     <servlet-mapping>
         <servlet-name>RegistrationServlet</servlet-name>
         <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>MemberDashboardServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.member.MemberDashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MemberDashboardServlet</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.admin.AdminDashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <url-pattern>/admin/dashboard</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UserSettingsServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.UserSettingsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserSettingsServlet</servlet-name>
+        <url-pattern>/settings</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

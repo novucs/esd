@@ -36,13 +36,15 @@ public abstract class BaseServlet extends HttpServlet {
     return sessionHandler;
   }
 
-  protected void forward(HttpServletRequest request, HttpServletResponse response,
+  public void forward(HttpServletRequest request, HttpServletResponse response,
       String title, String page) throws IOException, ServletException {
-
     Session session = getSession(request);
+    response.setContentType("text/html;charset=UTF-8");
     request.setAttribute("errors", session.getErrors());
-    request.setAttribute("title", String.format("%s - %s", appName, title));
+    request.setAttribute("title", String.format("%s", title));
     request.setAttribute("page", String.format("%s.jsp", page));
+    request.setAttribute("name", page);
+    request.setAttribute("baseUrl", "/" + appName);
     request.getRequestDispatcher("/layout.jsp").forward(request, response);
   }
 }
