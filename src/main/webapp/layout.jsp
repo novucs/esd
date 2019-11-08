@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
         <link rel="stylesheet" href="${baseUrl}/css/site.css" />
         <link rel="stylesheet" href="${baseUrl}/css/${name}.css" />
+        <link rel="stylesheet" href="${baseUrl}/css/overrides.css" />
     </head>
     <body>
         <ul id="dropdown" class="dropdown-content">
@@ -42,6 +43,7 @@
             </nav>
         </header>
         <main class="container">
+            <jsp:include page="breadcrumb.jsp" />
             <jsp:include page="${page}" />
         </main>
         <footer class="page-footer">

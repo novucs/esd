@@ -27,7 +27,7 @@ public class AdminDashboardServlet extends BaseServlet {
       return;
     }
 
-    super.forward(request, response, "Administration Dashboard", "admin.dashboard");
+    super.forward(request, response, "Dashboard", "admin.dashboard");
   }
 
   @Override
