@@ -1,6 +1,12 @@
 # Enterprise Systems Development Project
-*[Link to planning/spec document](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)*
-*This project currently provides tooling for the ESD tech stack that is compatible with Docker, IntelliJ, and NetBeans.*
+_This project currently provides tooling for the ESD tech stack that is compatible with Docker, IntelliJ, and NetBeans._
+
+Other Documents:
+
+* [Planning and Specification Documents](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)
+* **Sprint 1**
+    * [Presentation Slides](https://docs.google.com/presentation/d/1YE8q5Ss_eXeBY88T_o1lAt124U194z2HVEm3Ye2s6Zc/edit#slide=id.g65affc0ea7_0_26)
+    * [Gantt Chart](https://docs.google.com/spreadsheets/d/1CuMzPxT09XPu4rKxUHP4BeWPx02Qsc_23hW29At_4mM/edit?usp=sharing)
 
 ## Quickstart
 Requirements:
@@ -107,3 +113,4 @@ There are currently two types of deployments accessible from the CI/CD pipeline:
 * [stable](http://esd.novucs.net:8080/stable/) - Updated on every release
 
 All repository releases are marked via tags, and are accessible [here](https://github.com/novucs/esd/releases).
+
