@@ -42,10 +42,16 @@
                 </div>
             </nav>
         </header>
+        <% if (hasSession) { %>
         <main class="container">
             <jsp:include page="breadcrumb.jsp" />
             <jsp:include page="${page}" />
         </main>
+        <% } else { %>
+        <main>
+            <jsp:include page="${page}" />
+        </main>
+        <% } %>
         <footer class="page-footer">
             <div class="row">
                 <div class="col s12 center-align">

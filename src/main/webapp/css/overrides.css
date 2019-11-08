@@ -27,3 +27,11 @@
   font-size: 12px;
   line-height: 22px;
 }
+
+main.container {
+  box-shadow: 0 0 15px #959595;
+}
+
+.container {
+  width: 100%;
+}
