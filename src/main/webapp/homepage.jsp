@@ -28,7 +28,7 @@
                     <span>Drivers Association</span>
                 </h1>
             </div>
-            <div id="started">
+            <div class="started">
                 <a href="/app/logout" class="waves-effect waves-light btn-large started">Get
                     Started</a>
             </div>
