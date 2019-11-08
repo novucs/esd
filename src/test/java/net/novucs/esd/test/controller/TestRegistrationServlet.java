@@ -3,6 +3,8 @@ package net.novucs.esd.test.controller;
 import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,7 +41,8 @@ public class TestRegistrationServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getRequestDispatcher(LAYOUT_PAGE)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(mock(HttpSession.class));
+    when(request.getSession(eq(false))).thenReturn(mock(HttpSession.class));
+    when(request.getSession(eq(true))).thenReturn(mock(HttpSession.class));
     when(request.getMethod()).thenReturn("GET");
 
     RegistrationServlet servlet = new RegistrationServlet();
@@ -82,7 +85,7 @@ public class TestRegistrationServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     setupRequest(request, passwordPlaintext, userToCreate, DOB);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getSession()).thenReturn(mock(HttpSession.class));
+    when(request.getSession(anyBoolean())).thenReturn(mock(HttpSession.class));
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
     when(request.getRemoteAddr()).thenReturn("127.0.0.1");
 
@@ -133,7 +136,7 @@ public class TestRegistrationServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     setupRequest(request, passwordPlaintext, targetUser, DOB);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getSession()).thenReturn(mock(HttpSession.class));
+    when(request.getSession(anyBoolean())).thenReturn(mock(HttpSession.class));
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
 
     HttpServletResponse response = mock(HttpServletResponse.class);
@@ -159,6 +162,5 @@ public class TestRegistrationServlet {
     when(request.getParameter("address-county")).thenReturn(address[3]);
     when(request.getParameter("address-postcode")).thenReturn(address[4]);
     when(request.getParameter("dob")).thenReturn(dateOfBirth);
-
   }
 }
