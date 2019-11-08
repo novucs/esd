@@ -5,8 +5,8 @@ services:
     image: novucs/derby:10.14.2.0-jdk11-slim
     ports:
       - 1527:1527
-    volumes:
-      - db-data:/dbs
+  #    volumes:
+  #      - db-data:/dbs
 
   app:
     build: .

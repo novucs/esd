@@ -1,6 +1,12 @@
 # Enterprise Systems Development Project
-*[Link to planning/spec document](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)*
-*This project currently provides tooling for the ESD tech stack that is compatible with Docker, IntelliJ, and NetBeans.*
+_This project currently provides tooling for the ESD tech stack that is compatible with Docker, IntelliJ, and NetBeans._
+
+Other Documents:
+
+* [Planning and Specification Documents](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)
+* **Sprint 1**
+    * [Presentation Slides](https://docs.google.com/presentation/d/1YE8q5Ss_eXeBY88T_o1lAt124U194z2HVEm3Ye2s6Zc/edit#slide=id.g65affc0ea7_0_26)
+    * [Gantt Chart](https://docs.google.com/spreadsheets/d/1CuMzPxT09XPu4rKxUHP4BeWPx02Qsc_23hW29At_4mM/edit?usp=sharing)
 
 ## Quickstart
 Requirements:
@@ -9,6 +15,10 @@ Requirements:
 * [git](https://git-scm.com/)
 * [docker](https://docs.docker.com/get-started/)
 * [docker-compose](https://docs.docker.com/compose/)
+
+Optional development dependencies:
+* [node (lts)](https://nodejs.org/en/)
+* [gulp](https://gulpjs.com/)
 
 Steps:
 1. Clone the repo `git clone https://github.com/novucs/esd.git && cd esd`
@@ -26,6 +36,15 @@ During development, to run all CI checks locally you may perform the following c
 
 All the reports for any check/test failures will be saved into the relevant directory under:
 `./build/reports/`
+
+#### Compile with SCSS
+
+In order to compile your SCSS files to CSS, please make sure you've installed Node and NPM.
+
+1. Install Node via `apt-get install node`
+2. Run `npm install -g gulp` to install Gulp for your system.
+3. Run `npm install` in the repository root to install the dependencies required for Gulp.
+4. Run `gulp` to compile SCSS.
 
 ## IDE Setup
 IntelliJ:
@@ -94,3 +113,4 @@ There are currently two types of deployments accessible from the CI/CD pipeline:
 * [stable](http://esd.novucs.net:8080/stable/) - Updated on every release
 
 All repository releases are marked via tags, and are accessible [here](https://github.com/novucs/esd/releases).
+

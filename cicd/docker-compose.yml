@@ -4,8 +4,8 @@ services:
   db:
     image: novucs/derby:10.14.2.0-jdk11-slim
     restart: always
-    volumes:
-      - db-data:/dbs
+  #    volumes:
+  #      - db-data:/dbs
 
   app:
     image: novucs/glassfish:5.1.0-jdk8-slim

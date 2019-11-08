@@ -1,7 +1,9 @@
 package net.novucs.esd.test.lifecycle;
 
+import java.time.ZonedDateTime;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.User;
+import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,11 +32,15 @@ public class TestSession {
 
   @Test
   public void testSessionHandlesUser() {
+    DateUtil dateUtil = new DateUtil();
+    ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
+
     User u = new User(
         "bob",
         "bob@bob.net",
         Password.fromPlaintext("bob"),
         "bob lane",
+        dateOfBirth,
         "great");
     session.setUser(u);
 
