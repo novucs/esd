@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Stack;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +57,7 @@ public class TestLoginServlet {
     User userToCreate = new User(
         "LoginTestUser1",
         "user@test.com",
-        Password.fromPlaintext("password"),
+        Password.fromPlaintext("testPassword"),
         "House,A Street,A city,County,AB12 C34",
         "APPLICATION"
     );
@@ -68,7 +69,7 @@ public class TestLoginServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
 
     User userToLogin = userDao.select().where(new Where().eq("name", "LoginTestUser1")).first();
-    String password = "password";
+    String password = "testPassword";
 
     when(request.getParameter("username")).thenReturn(userToLogin.getEmail());
     when(request.getParameter("password")).thenReturn(password);
@@ -84,6 +85,83 @@ public class TestLoginServlet {
     verify(session).setAttribute(eq("session"), argument.capture());
 
     verify(response).sendRedirect("homepage");
-    assertEquals(userToLogin.getId(), argument.getValue().getUser().getId());
+    assertEquals("Has user been correctly stored in session.",
+        userToLogin.getId(), argument.getValue().getUser().getId());
+  }
+
+  @Test
+  public void testPasswordIncorrect()
+      throws SQLException, ReflectiveOperationException, ServletException, IOException {
+    DaoManager dm = createTestDaoManager();
+    dm.init(DatabaseLifecycle.MODEL_CLASSES);
+    Dao<User> userDao = dm.get(User.class);
+
+    User userToCreate = new User(
+        "LoginTestUser2",
+        "user@test.com",
+        Password.fromPlaintext("pwd"),
+        "House,A Street,A city,County,AB12 C34",
+        "APPLICATION"
+    );
+    userDao.insert(userToCreate);
+
+    LoginServlet loginServlet = new LoginServlet();
+    ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    User userToLogin = userDao.select().where(new Where().eq("name", "LoginTestUser2")).first();
+    String incorrectPassword = "incorrectPassword";
+
+    when(request.getParameter("username")).thenReturn(userToLogin.getEmail());
+    when(request.getParameter("password")).thenReturn(incorrectPassword);
+
+    HttpSession session = mock(HttpSession.class);
+    when(request.getSession()).thenReturn(session);
+    when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
+    when(session.getAttribute(any())).thenReturn(null);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    loginServlet.doPost(request, response);
+
+    verify(request).getRequestDispatcher(LAYOUT_PAGE);
+    verify(request).setAttribute(eq("errors"), any(Stack.class));
+  }
+
+  @Test
+  public void testUsernameIncorrect()
+      throws SQLException, ReflectiveOperationException, ServletException, IOException {
+    DaoManager dm = createTestDaoManager();
+    dm.init(DatabaseLifecycle.MODEL_CLASSES);
+    Dao<User> userDao = dm.get(User.class);
+
+    User userToCreate = new User(
+        "LoginTestUser3",
+        "user@test.com",
+        Password.fromPlaintext("correctPassword"),
+        "House,A Street,A city,County,AB12 C34",
+        "APPLICATION"
+    );
+    userDao.insert(userToCreate);
+
+    LoginServlet loginServlet = new LoginServlet();
+    ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    User userToLogin = userDao.select().where(new Where().eq("name", "LoginTestUser3")).first();
+    String password = "correctPassword";
+
+    when(request.getParameter("username")).thenReturn(userToLogin.getEmail() + "invalid");
+    when(request.getParameter("password")).thenReturn(password);
+
+    HttpSession session = mock(HttpSession.class);
+    when(request.getSession()).thenReturn(session);
+    when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
+    when(session.getAttribute(any())).thenReturn(null);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    loginServlet.doPost(request, response);
+
+    verify(request).getRequestDispatcher(LAYOUT_PAGE);
+    verify(request).setAttribute(eq("errors"), any(Stack.class));
   }
 }
