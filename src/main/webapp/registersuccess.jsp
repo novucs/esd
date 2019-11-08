@@ -13,20 +13,28 @@
             <div class="row">
                 <div class="col s12">
                     <div class="col s12 center-align">
-                      Account created for <strong><%= request.getParameter("username") %></strong>
+                        Account created for
+                        <strong>
+                            <%= request.getParameter("username") %>
+                        </strong>
                     </div>
-                    <br></br>
+                    <br/>
                     <div class="col s12 center-align">
-                      Your temporary password is: <strong><%= request.getAttribute("password") %></strong>
+                        Your temporary password is:
+                        <strong>
+                            <%= request.getAttribute("password") %>
+                        </strong>
                     </div>
-                    <br></br>
+                    <br/>
                     <div class="col s12 center-align">
-                        <div style="color: red;">
-                          Please ensure you make a note of this password before proceeding to <a href="login">login</a>
-                        <div>
+                        <div class="red-text">
+                            Please ensure you make a note of this password before proceeding to
+                            <a href="login">login</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>

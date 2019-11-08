@@ -5,16 +5,13 @@
         <div id="register-fail-component-container" class="col s6 push-s3 rounded-container">
             <div class="row">
                 <div class="col s12 center-align">
-                    <h4>
-                        Registration Unsuccessful
-                    </h4>
+                    <h4>Registration Unsuccessful</h4>
                 </div>
             </div>
             <div class="row">
-                <div class="col s12">
-                    <div class="col s12 center-align">
-                      An account already exists for for <%= request.getParameter("username") %> try logging in with it <a href="login">here</a>.
-                    </div>
+                <div class="col s12 center-align">
+                    An account already exists for <%= request.getParameter("username") %> try
+                    logging in with it <a href="login">here</a>.
                 </div>
             </div>
         </div>
