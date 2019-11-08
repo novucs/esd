@@ -2,8 +2,6 @@ package net.novucs.esd.lifecycle;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -58,10 +56,6 @@ public class DatabaseLifecycle {
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
     daoManager = new DaoManager(connectionSource);
     try {
-      if (developmentMode) {
-        clearDatabase();
-      }
-
       daoManager.init(MODEL_CLASSES);
 
       if (developmentMode) {
@@ -85,24 +79,6 @@ public class DatabaseLifecycle {
     @SuppressWarnings("unchecked")
     Class<T> clazz = (Class<T>) argType;
     return daoManager.get(clazz);
-  }
-
-  private void clearDatabase() throws SQLException {
-    try (Connection connection = daoManager.getConnectionSource().getConnection()) {
-      String schema = connection.getSchema();
-      try (PreparedStatement dropSchema = connection
-          .prepareStatement("DROP SCHEMA " + schema + " RESTRICT")) {
-        dropSchema.execute();
-      } catch (SQLException ignore) {  // NOPMD
-      }
-
-      try (PreparedStatement createSchema = connection
-          .prepareStatement("CREATE SCHEMA " + schema)) {
-
-        createSchema.execute();
-      } catch (SQLException ignore) {  // NOPMD
-      }
-    }
   }
 
   private void setupDevelopmentData() throws SQLException {
