@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.User;
 
 public class HomepageServlet extends BaseServlet {
 
@@ -22,7 +21,6 @@ public class HomepageServlet extends BaseServlet {
       return;
     }
 
-    User user = session.getUser();
     response.setContentType("text/html;charset=UTF-8");
     request.getRequestDispatcher("/homepage.jsp").forward(request, response);
   }
