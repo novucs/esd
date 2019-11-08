@@ -1,0 +1,24 @@
+{
+  "name": "esd",
+  "version": "1.0.0",
+  "description": "*[Link to planning/spec document](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)* *This project currently provides tooling for the ESD tech stack that is compatible with Docker, IntelliJ, and NetBeans.*",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/novucs/esd.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/novucs/esd/issues"
+  },
+  "homepage": "https://github.com/novucs/esd#readme",
+  "dependencies": {
+    "gulp": "^4.0.2"
+  },
+  "devDependencies": {
+    "gulp-sass": "^4.0.2"
+  }
+}
