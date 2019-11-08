@@ -25,7 +25,7 @@ public class LoginServlet extends BaseServlet {
   private Dao<User> userDao;
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     String username = request.getParameter("username");
@@ -50,7 +50,7 @@ public class LoginServlet extends BaseServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     Session session = getSession(request);
 
