@@ -1,6 +1,12 @@
+
 .waves-effect{
   background-color: black;
-  padding-left: 20px;
+}
+
+.started{
+  position:relative;
+  width: 50%;
+  margin: 0 auto;
 }
 
 .card{
@@ -16,7 +22,7 @@
   border-radius: 10px;
   background-color: #fdfdfd;
   box-shadow: 0px 0px 3px 4px #efefef;
-  z-index: 10;
+  z-index: 5;
 }
 
 .nav-wrapper {
@@ -75,10 +81,8 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-}
-
-main {
-  flex: 1 0 auto;
+  background-repeat:no-repeat;
+  background-size: 1500px 800px;
 }
 
 .page-footer {
