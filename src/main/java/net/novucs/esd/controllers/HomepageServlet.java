@@ -16,10 +16,11 @@ public class HomepageServlet extends BaseServlet {
       throws IOException, ServletException {
 
     Session session = getSession(request);
-    if (session.getUser() == null) {
-      response.sendRedirect("login");
-      return;
-    }
+//    if (session.getUser() == null) {
+//      System.out.println("Hello we are being called!");
+//      response.sendRedirect("login");
+//      return;
+//    }
 
     response.setContentType("text/html;charset=UTF-8");
     request.getRequestDispatcher("/homepage.jsp").forward(request, response);
