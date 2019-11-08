@@ -6,15 +6,13 @@
 </head>
 
 
-<body background="city%20and%20car.jpeg">
+<body background="city_and_car.jpeg">
 <div>
-    <!-- Navbar goes here -->
     <nav class="navigation-bar">
         <div class="nav-wrapper">
-            <a href="/app/homepage" class="brand-logo"></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="/app/logout">Login</a></li>
-                <li><a href="/app/registeration">Register</a></li>
+                <li><a href="logout">Login</a></li>
+                <li><a href="registration">Register</a></li>
             </ul>
         </div>
     </nav>
@@ -22,14 +20,14 @@
     <div>
         <div class="rounded-container">
             <div>
-                <h1 href="/homepage" class="brand-logo">
+                <h1 href="homepage" class="brand-logo">
                     <span>Welcome to</span>
                     <span>XYZ</span>
                     <span>Drivers Association</span>
                 </h1>
             </div>
             <div class="started">
-                <a href="/app/logout" class="waves-effect waves-light btn-large started">Get
+                <a href="logout" class="waves-effect waves-light btn-large started">Get
                     Started</a>
             </div>
         </div>
