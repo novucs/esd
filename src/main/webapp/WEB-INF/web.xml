@@ -36,12 +36,84 @@
         <url-pattern>/dashboard</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>MemberMyClaimsServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.member.MemberMyClaimsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MemberMyClaimsServlet</servlet-name>
+        <url-pattern>/claims</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>MemberMyPaymentsServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.member.MemberMyPaymentsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MemberMyPaymentsServlet</servlet-name>
+        <url-pattern>/payments</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>MemberMakePaymentServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.member.MemberMakePaymentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MemberMakePaymentServlet</servlet-name>
+        <url-pattern>/makepayment</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>AdminDashboardServlet</servlet-name>
         <servlet-class>net.novucs.esd.controllers.admin.AdminDashboardServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>AdminDashboardServlet</servlet-name>
         <url-pattern>/admin/dashboard</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminManageApplicationsServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.admin.AdminManageApplicationsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminManageApplicationsServlet</servlet-name>
+        <url-pattern>/admin/applications</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminManageClaimsServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.admin.AdminManageClaimsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminManageClaimsServlet</servlet-name>
+        <url-pattern>/admin/claims</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminManagePaymentsServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.admin.AdminManagePaymentsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminManagePaymentsServlet</servlet-name>
+        <url-pattern>/admin/payments</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminManageUsersServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.admin.AdminManageUsersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminManageUsersServlet</servlet-name>
+        <url-pattern>/admin/users</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminSearchUsersServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.admin.AdminSearchUsersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminSearchUsersServlet</servlet-name>
+        <url-pattern>/admin/users/search</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminViewUserServlet</servlet-name>
+        <servlet-class>net.novucs.esd.controllers.admin.AdminViewUserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminViewUserServlet</servlet-name>
+        <url-pattern>/admin/user/*</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>UserSettingsServlet</servlet-name>
