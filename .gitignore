@@ -3,7 +3,3 @@ build
 workspace.xml
 derby.log
 /.nb-gradle/
-
-# SASS Compiling
-**/node_modules/**
-package-lock.json
