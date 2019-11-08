@@ -66,7 +66,7 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
         <script src="${baseUrl}/js/error.js"></script>
         <% List<String> errors = (List<String>) request.getAttribute("errors"); %>
-            <% if (errors != null && errors.size() > 0) { %>
+        <% if (errors != null && errors.size() > 0) { %>
             <% for (String message : errors) { %>
                 <script type="application/javascript">
                   errorModule.displayError('<%=message%>');
