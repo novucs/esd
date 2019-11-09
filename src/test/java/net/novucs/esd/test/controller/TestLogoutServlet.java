@@ -1,8 +1,11 @@
 package net.novucs.esd.test.controller;
 
+import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static net.novucs.esd.util.ReflectUtil.setFieldValue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -14,6 +17,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.novucs.esd.ExampleServlet;
 import net.novucs.esd.controllers.LogoutServlet;
 import org.junit.Test;
@@ -25,18 +29,17 @@ public class TestLogoutServlet {
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException, ReflectiveOperationException {
     // Given
-    ExampleServlet servlet = new ExampleServlet();
-    setFieldValue(servlet, "appName", "dummyApp");
+    LogoutServlet servlet = new LogoutServlet();
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
 
     // When
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+    when(request.getSession(true)).thenReturn(mock(HttpSession.class));
+    when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
     servlet.doGet(request, response);
 
     // Assert
-    verify(request, times(3)).setAttribute(any(String.class), any(Map.class));
+    verify(response, times(1)).sendRedirect(eq("login"));
   }
 
   @Test
