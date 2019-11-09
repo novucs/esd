@@ -45,6 +45,7 @@
 }
 
 body {
+  background-image: url("../assets/city_and_car.jpeg");
   display: flex;
   min-height: 100vh;
   flex-direction: column;

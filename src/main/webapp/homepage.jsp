@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <link rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -7,7 +9,7 @@
 </head>
 
 
-<body background="city_and_car.jpeg">
+<body>
 <div>
     <nav class="navigation-bar">
         <div class="nav-wrapper">
@@ -43,3 +45,4 @@
     </footer>
 </div>
 </body>
+</html>
