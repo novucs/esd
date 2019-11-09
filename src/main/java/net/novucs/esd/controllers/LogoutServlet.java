@@ -21,7 +21,6 @@ public class LogoutServlet extends HttpServlet {
       session.invalidate();
     }
     response.sendRedirect("login");
-    request.getRequestDispatcher("/login.jsp").forward(request, response);
   }
 
   @Override
