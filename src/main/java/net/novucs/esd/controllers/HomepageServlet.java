@@ -2,10 +2,11 @@ package net.novucs.esd.controllers;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class HomepageServlet extends BaseServlet {
+public class HomepageServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
