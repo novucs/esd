@@ -19,6 +19,6 @@ public class HomepageServlet extends HttpServlet {
 
   @Override
   public String getServletInfo() {
-    return " Homepage ";
+    return "Homepage Servlet";
   }
 }

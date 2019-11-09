@@ -31,7 +31,7 @@ public class TestHomepageServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
 
     // When
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestDispatcher("/homepage.jsp")).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doGet(request, response);
 
