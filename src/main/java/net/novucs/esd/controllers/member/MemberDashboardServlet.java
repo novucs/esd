@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.User;
 
 public class MemberDashboardServlet extends BaseServlet {
 
