@@ -1,14 +1,12 @@
 package net.novucs.esd.test.controller;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +31,7 @@ public class TestHomepageServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request, times(3)).setAttribute(any(String.class), any(Map.class));
+    verify(request).getRequestDispatcher(eq("/homepage.jsp"));
   }
 
   @Test
