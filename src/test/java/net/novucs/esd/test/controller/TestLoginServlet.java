@@ -55,7 +55,7 @@ public class TestLoginServlet {
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
-
+    // Create test user
     User userToCreate = new User(
         "LoginTestUser1",
         "user@test.com",
