@@ -2,17 +2,21 @@ package net.novucs.esd.test.controller;
 
 import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
-import java.util.Stack;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -86,8 +90,8 @@ public class TestLoginServlet {
 
     ArgumentCaptor<Session> argument = ArgumentCaptor.forClass(Session.class);
     verify(session).setAttribute(eq("session"), argument.capture());
-
     verify(response).sendRedirect("homepage");
+
     assertEquals("Has user been correctly stored in session.",
         userToLogin.getId(), argument.getValue().getUser().getId());
   }
@@ -102,7 +106,7 @@ public class TestLoginServlet {
     User userToCreate = new User(
         "LoginTestUser2",
         "user@test.com",
-        Password.fromPlaintext("pwd"),
+        Password.fromPlaintext("pass"),
         "House,A Street,A city,County,AB12 C34",
         ZonedDateTime.now(),
         "APPLICATION"
@@ -120,14 +124,17 @@ public class TestLoginServlet {
     when(request.getParameter("password")).thenReturn(incorrectPassword);
 
     HttpSession session = mock(HttpSession.class);
+    Session esdSession = mock(Session.class);
+
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
+    when(session.getAttribute("session")).thenReturn(esdSession);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     loginServlet.doPost(request, response);
 
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
-    verify(request).setAttribute(eq("errors"), any(Stack.class));
+    verify(esdSession).pushError("Incorrect username or password");
   }
 
   @Test
@@ -154,17 +161,19 @@ public class TestLoginServlet {
     User userToLogin = userDao.select().where(new Where().eq("name", "LoginTestUser3")).first();
     String password = "correctPassword";
 
-    when(request.getParameter("username")).thenReturn(userToLogin.getEmail() + "invalid");
+    when(request.getParameter("username")).thenReturn("InvalidEmail@thisshouldnotwork.com");
     when(request.getParameter("password")).thenReturn(password);
 
     HttpSession session = mock(HttpSession.class);
+    Session esdSession = mock(Session.class);
+
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
-
     HttpServletResponse response = mock(HttpServletResponse.class);
-    loginServlet.doPost(request, response);
+    when(session.getAttribute(eq("session"))).thenReturn(esdSession);
 
+    loginServlet.doPost(request, response);
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
-    verify(request).setAttribute(eq("errors"), any(Stack.class));
+    verify(esdSession).pushError("Incorrect username or password");
   }
 }
