@@ -25,12 +25,14 @@ public abstract class BaseServlet extends HttpServlet {
     }
 
     // Check if we have a session handler in our session
-    Session sessionHandler = (Session) httpSession.getAttribute("session");
-
-    // Create a new session
-    if (sessionHandler == null) {
+    Session sessionHandler;
+    if (httpSession.getAttribute("session") == null) {
+      // Create a session
       sessionHandler = new Session();
       httpSession.setAttribute("session", sessionHandler);
+    } else {
+      // Invoke our old session
+      sessionHandler = (Session) httpSession.getAttribute("session");
     }
 
     return sessionHandler;
