@@ -5,9 +5,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.User;
-
 public class HomepageServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
@@ -15,18 +12,8 @@ public class HomepageServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-
-    Session session = getSession(request);
-    if (session.getUser() == null) {
-      response.sendRedirect("login");
-      return;
-    }
-
-    User user = session.getUser();
     response.setContentType("text/html;charset=UTF-8");
-    request.setAttribute("title", "Homepage - " + user.getName());
-    request.setAttribute("page", "/homepage.jsp");
-    request.getRequestDispatcher("/layout.jsp").forward(request, response);
+    request.getRequestDispatcher("/homepage.jsp").forward(request, response);
   }
 
   @Override
