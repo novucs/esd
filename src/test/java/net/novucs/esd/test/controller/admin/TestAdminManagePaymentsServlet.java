@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.ExampleServlet;
 import net.novucs.esd.controllers.admin.AdminManagePaymentsServlet;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
@@ -28,7 +27,7 @@ public class TestAdminManagePaymentsServlet {
 
   @Test
   public void testRequestGetsMapAttribute()
-      throws ServletException, IOException, ReflectiveOperationException {
+      throws ServletException, IOException {
     // Given
     AdminManagePaymentsServlet servlet = new AdminManagePaymentsServlet();
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -41,13 +40,13 @@ public class TestAdminManagePaymentsServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request, times(3)).setAttribute(any(String.class), any(Map.class));
+    verify(request, times(0)).setAttribute(any(String.class), any(Map.class));
   }
 
   @Test
   public void testServletInfo() {
     // Given
-    ExampleServlet servlet = new ExampleServlet();
+    AdminManagePaymentsServlet servlet = new AdminManagePaymentsServlet();
 
     // When
     String servletInfo = servlet.getServletInfo();
