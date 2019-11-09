@@ -27,6 +27,6 @@ public class MemberMakePaymentServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "Member Make Payments Servlet";
+    return "MemberMakePaymentServlet";
   }
 }

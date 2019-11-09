@@ -91,7 +91,7 @@ public class TestAdminDashboardServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("AdminDashboardServlet must have 'Admin Dashboard' in its info",
-        servletInfo.contains("Admin Dashboard"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }

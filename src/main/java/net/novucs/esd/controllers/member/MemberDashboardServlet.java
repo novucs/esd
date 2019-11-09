@@ -28,6 +28,6 @@ public class MemberDashboardServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "Member Dashboard Servlet";
+    return "MemberDashboardServlet";
   }
 }

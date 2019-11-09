@@ -91,7 +91,7 @@ public class TestMemberMakePaymentServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("MemberMakePaymentServlet must have 'Member Make Payments' in its info",
-        servletInfo.contains("Member Make Payments"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }

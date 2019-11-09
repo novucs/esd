@@ -92,7 +92,7 @@ public class TestAdminManageApplicationsServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("AdminManageApplicationsServlet must have 'Admin Manage Applications' in its info",
-        servletInfo.contains("Admin Manage Applications"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }

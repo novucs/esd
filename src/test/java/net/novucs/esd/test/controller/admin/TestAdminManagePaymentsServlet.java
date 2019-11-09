@@ -91,7 +91,7 @@ public class TestAdminManagePaymentsServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("AdminManagePaymentServlet must have 'Admin Manage Payments' in its info",
-        servletInfo.contains("Admin Manage Payments"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }

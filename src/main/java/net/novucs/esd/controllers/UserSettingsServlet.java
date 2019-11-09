@@ -27,6 +27,6 @@ public class UserSettingsServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "User Account Settings Servlet";
+    return "UserSettingsServlet";
   }
 }

@@ -91,7 +91,7 @@ public class TestMemberDashboardServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("MemberDashboardServlet must have 'Member Dashboard' in its info",
-        servletInfo.contains("Member Dashboard"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }

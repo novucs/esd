@@ -91,7 +91,7 @@ public class TestAdminManageUsersServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("AdminManageUsersServlet must have 'Admin Manage Users' in its info",
-        servletInfo.contains("Admin Manage Users"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }

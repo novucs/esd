@@ -28,6 +28,6 @@ public class AdminDashboardServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "Admin Dashboard Servlet";
+    return "AdminDashboardServlet";
   }
 }

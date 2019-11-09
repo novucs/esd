@@ -27,6 +27,6 @@ public class AdminManagePaymentsServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "Admin Manage Payments Servlet";
+    return "AdminManagePaymentsServlet";
   }
 }

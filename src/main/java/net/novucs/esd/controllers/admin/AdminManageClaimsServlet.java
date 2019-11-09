@@ -27,6 +27,6 @@ public class AdminManageClaimsServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "Admin Manage Claims Servlet";
+    return "AdminManageClaimsServlet";
   }
 }

@@ -91,7 +91,7 @@ public class TestUserSettingsServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("UserSettingsServlet must have 'User Account Settings' in its info",
-        servletInfo.contains("User Account Settings"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }

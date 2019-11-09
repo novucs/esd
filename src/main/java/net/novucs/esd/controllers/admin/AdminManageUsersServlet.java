@@ -27,6 +27,6 @@ public class AdminManageUsersServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "Admin Manage Users Servlet";
+    return "AdminManageUsersServlet";
   }
 }

@@ -27,6 +27,6 @@ public class MemberMyClaimsServlet extends BaseServlet {
 
   @Override
   public String getServletInfo() {
-    return "Member My Claims Servlet";
+    return "MemberMyClaimsServlet";
   }
 }

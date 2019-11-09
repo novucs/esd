@@ -91,7 +91,7 @@ public class TestAdminManageClaimsServlet {
     String servletInfo = servlet.getServletInfo();
 
     // Assert
-    assertTrue("AdminManageClaimsServlet must have 'Admin Manage Claims' in its info",
-        servletInfo.contains("Admin Manage Claims"));
+    assertTrue("getServletInfo must match the class name.",
+        servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
 }
