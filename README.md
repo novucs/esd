@@ -7,7 +7,7 @@ Other Documents:
 * **Sprint 1**
     * [Presentation Slides](https://docs.google.com/presentation/d/1YE8q5Ss_eXeBY88T_o1lAt124U194z2HVEm3Ye2s6Zc/edit#slide=id.g65affc0ea7_0_26)
     * [Gantt Chart](https://docs.google.com/spreadsheets/d/1CuMzPxT09XPu4rKxUHP4BeWPx02Qsc_23hW29At_4mM/edit?usp=sharing)
-    * [Team Meeting Logs](https://docs.google.com/document/d/1q4Wi46mKxkDPqyIe7DRmUnPH_OtVyrsd/edit)
+    * [Team Meeting Logs](https://docs.google.com/document/d/1Sqs76sz8YiU-DdGOzemonaKh34DnCnZv508iSUtr2qY/edit)
     * [Task Delivery Form](https://docs.google.com/document/d/19SZY1v3n6ACvzenNLlKkGHbPsbMHwBsR/edit)
 
 ## Quickstart
