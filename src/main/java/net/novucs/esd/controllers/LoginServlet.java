@@ -42,7 +42,7 @@ public class LoginServlet extends BaseServlet {
 
     if (user != null && user.getPassword().authenticate(password)) {
       session.setUser(user);
-      response.sendRedirect("homepage");
+      loginSuccess(request, response);
     } else {
       session.pushError("Incorrect username or password");
       super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
@@ -56,12 +56,17 @@ public class LoginServlet extends BaseServlet {
 
     // Check if user is already logged in
     if (session.getUser() != null) {
-      response.sendRedirect("homepage");
+      loginSuccess(request, response);
       return;
     }
 
     response.setContentType("text/html;charset=UTF-8");
     super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
+  }
+
+  private void loginSuccess(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    super.forward(request, response, "Login Success", "/loginsuccess");
   }
 
   @Override

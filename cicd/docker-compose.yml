@@ -4,8 +4,8 @@ services:
   db:
     image: novucs/derby:10.14.2.0-jdk11-slim
     restart: always
-  #    volumes:
-  #      - db-data:/dbs
+#    volumes:
+#      - db-data:/dbs
 
   app:
     image: novucs/glassfish:5.1.0-jdk8-slim
@@ -18,7 +18,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - deployments:/app/glassfish/domains/domain1/autodeploy
+      - ./deployments:/app/glassfish/domains/domain1/autodeploy
 
   jenkins:
     build: jenkins
@@ -31,11 +31,10 @@ services:
       - github_user
       - github_pass
     volumes:
-      - deployments:/deployments
+      - ./deployments:/deployments
 
 volumes:
   db-data:
-  deployments:
 
 secrets:
   jenkins_user:

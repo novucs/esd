@@ -6,15 +6,14 @@
           href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/homepage.css">
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>XYZ Drivers Association</title>
 </head>
-
-
 <body>
 <div>
     <nav class="navigation-bar">
         <div class="nav-wrapper">
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="logout">Login</a></li>
+                <li><a href="login">Login</a></li>
                 <li><a href="register">Register</a></li>
             </ul>
         </div>
@@ -29,7 +28,7 @@
                     </h1>
                 </div>
                 <div class="text-center">
-                    <a href="logout" class="waves-effect waves-light btn-large ">Get Started</a>
+                    <a href="login" class="waves-effect waves-light btn-large ">Get Started</a>
                 </div>
             </div>
         </div>
