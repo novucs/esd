@@ -41,8 +41,9 @@ public abstract class BaseServlet extends HttpServlet {
 
     Session session = getSession(request);
     request.setAttribute("errors", session.getErrors());
-    request.setAttribute("title", String.format("%s - %s", appName, title));
+    request.setAttribute("title", title);
     request.setAttribute("page", String.format("%s.jsp", page));
+    request.setAttribute("user", session.getUser());
     request.getRequestDispatcher("/layout.jsp").forward(request, response);
   }
 }

@@ -87,7 +87,7 @@ public class TestLoginServlet {
 
     ArgumentCaptor<Session> argument = ArgumentCaptor.forClass(Session.class);
     verify(session).setAttribute(eq(SESSION), argument.capture());
-    verify(response).sendRedirect("homepage");
+    verify(response).sendRedirect(".");
 
     assertEquals("Has user been correctly stored in session.",
         userToLogin.getId(), argument.getValue().getUser().getId());
