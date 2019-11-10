@@ -5,12 +5,16 @@ import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserLog;
+import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
@@ -30,6 +34,12 @@ public class RegistrationServlet extends BaseServlet {
   @Inject
   private Dao<User> userDao;
 
+  @Inject
+  private Dao<Role> roleDao;
+  
+  @Inject
+  private Dao<UserRole> userRoleDao;
+  
   @Inject
   private Dao<UserLog> userLogDao;
 
@@ -56,12 +66,19 @@ public class RegistrationServlet extends BaseServlet {
         return;
       }
 
+      // Get the 'User' role
+      Role userRole = roleDao.select()
+              .where(new Where().eq("name", "User"))
+              .first();
+      
       // Insert new user to database.
       userDao.insert(user);
       UserLog userLog = parseUserLog(request, user);
-      userLogDao.insert(userLog);
-
+      userLogDao.insert(userLog); 
+      userRoleDao.insert(new UserRole(user.getId(), userRole.getId()));
     } catch (SQLException e) {
+      Logger.getLogger(RegistrationServlet.class.getName())
+              .log(Level.SEVERE, null, e);
       super.forward(request, response, "Database error", FAIL_PAGE);
       return;
     }
