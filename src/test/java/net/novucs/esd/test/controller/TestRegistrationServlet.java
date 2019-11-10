@@ -19,8 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.RegistrationServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
+import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserLog;
+import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.orm.Where;
@@ -60,14 +62,20 @@ public class TestRegistrationServlet {
   public void testRequestPostsRegistrationPageSuccess()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
     // Given
-    DaoManager daoManager = createTestDaoManager();
-    daoManager.init(DatabaseLifecycle.MODEL_CLASSES);
-    Dao<User> userDao = daoManager.get(User.class);
-    Dao<UserLog> userLogDao = daoManager.get(UserLog.class);
+    DaoManager dm = createTestDaoManager();
+    dm.init(DatabaseLifecycle.MODEL_CLASSES);
+
+    DatabaseLifecycle databaseLifecycle = new DatabaseLifecycle();
+    ReflectUtil.setFieldValue(databaseLifecycle, "daoManager", dm);
+    databaseLifecycle.setupDevelopmentData();
+    Dao<User> userDao = dm.get(User.class);
+    Dao<UserLog> userLogDao = dm.get(UserLog.class);
 
     RegistrationServlet servlet = new RegistrationServlet();
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
     ReflectUtil.setFieldValue(servlet, "userLogDao", userLogDao);
+    ReflectUtil.setFieldValue(servlet, "userRoleDao", dm.get(UserRole.class));
+    ReflectUtil.setFieldValue(servlet, "roleDao", dm.get(Role.class));
 
     String passwordPlaintext = "password";
     Password password = Password.fromPlaintext(passwordPlaintext);
