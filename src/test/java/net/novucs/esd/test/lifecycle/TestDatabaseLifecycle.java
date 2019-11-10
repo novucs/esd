@@ -13,18 +13,34 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
+/**
+ * The type Test database lifecycle.
+ */
 public class TestDatabaseLifecycle {
 
+  /**
+   * The constant ENVIRONMENT.
+   */
   @ClassRule
   public static final EnvironmentVariables ENVIRONMENT = new EnvironmentVariables();
   private static final String DB_URL = "jdbc:derby:memory:testDB;create=true";
   private static final String USERNAME = "UserAccount";
 
+  /**
+   * Sets up.
+   *
+   * @throws SQLException the sql exception
+   */
   @Before
   public void setUp() throws SQLException {
     DriverManager.registerDriver(new EmbeddedDriver());
   }
 
+  /**
+   * Test database is created on init.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testDatabaseIsCreatedOnInit() throws SQLException {
     // Given

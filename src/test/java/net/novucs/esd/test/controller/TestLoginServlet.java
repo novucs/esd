@@ -33,12 +33,21 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.stubbing.Answer;
 
+/**
+ * The type Test login servlet.
+ */
 public class TestLoginServlet {
 
   private static final String LAYOUT_PAGE = "/layout.jsp";
 
   private static final String SESSION = "session";
 
+  /**
+   * Test request gets login page.
+   *
+   * @throws ServletException the servlet exception
+   * @throws IOException      the io exception
+   */
   @Test
   public void testRequestGetsLoginPage() throws ServletException, IOException {
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -53,6 +62,14 @@ public class TestLoginServlet {
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
 
+  /**
+   * Test login success.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testLoginSuccess()
       throws SQLException, ReflectiveOperationException, ServletException, IOException {
@@ -89,6 +106,14 @@ public class TestLoginServlet {
         userToLogin.getId(), argument.getAllValues().get(0).getUser().getId());
   }
 
+  /**
+   * Test password incorrect.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testPasswordIncorrect()
       throws SQLException, ReflectiveOperationException, ServletException, IOException {
@@ -130,6 +155,14 @@ public class TestLoginServlet {
     verify(esdSession).pushError("Incorrect username or password");
   }
 
+  /**
+   * Test username incorrect.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUsernameIncorrect()
       throws SQLException, ReflectiveOperationException, ServletException, IOException {

@@ -30,11 +30,20 @@ import net.novucs.esd.util.ReflectUtil;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
+/**
+ * The type Test registration servlet.
+ */
 public class TestRegistrationServlet {
 
   private static final String LAYOUT_PAGE = "/layout.jsp";
   private static final String DOB = "2000-01-01";
 
+  /**
+   * Test request gets registration page.
+   *
+   * @throws ServletException the servlet exception
+   * @throws IOException      the io exception
+   */
   @Test
   public void testRequestGetsRegistrationPage() throws ServletException, IOException {
     // Given
@@ -56,6 +65,14 @@ public class TestRegistrationServlet {
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
 
+  /**
+   * Test request posts registration page success.
+   *
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws SQLException                 the sql exception
+   */
   @Test
   public void testRequestPostsRegistrationPageSuccess()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
@@ -106,6 +123,14 @@ public class TestRegistrationServlet {
         userThatWasCreated.getName());
   }
 
+  /**
+   * Test request posts registration page fails if user exists.
+   *
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws SQLException                 the sql exception
+   */
   @Test
   public void testRequestPostsRegistrationPageFailsIfUserExists()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {

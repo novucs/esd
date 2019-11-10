@@ -28,10 +28,16 @@ import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
 
+/**
+ * The type Database lifecycle.
+ */
 @Startup
 @Singleton
 public class DatabaseLifecycle {
 
+  /**
+   * The constant MODEL_CLASSES.
+   */
   public static final List<Class<?>> MODEL_CLASSES = Collections.unmodifiableList(Arrays.asList(
       Application.class,
       Claim.class,
@@ -45,6 +51,9 @@ public class DatabaseLifecycle {
 
   private DaoManager daoManager;
 
+  /**
+   * Init.
+   */
   @PostConstruct
   @SuppressWarnings("PMD.UnusedPrivateMethod")
   public void init() {
@@ -66,12 +75,22 @@ public class DatabaseLifecycle {
     }
   }
 
+  /**
+   * Clean up.
+   */
   @PreDestroy
   @SuppressWarnings("PMD.UnusedPrivateMethod")
   public void cleanUp() {
     // Perform app cleanup tasks here
   }
 
+  /**
+   * Produce dao dao.
+   *
+   * @param <T>            the type parameter
+   * @param injectionPoint the injection point
+   * @return the dao
+   */
   @Produces
   public <T> Dao<T> produceDao(InjectionPoint injectionPoint) {
     ParameterizedType type = (ParameterizedType) injectionPoint.getType();
@@ -100,6 +119,11 @@ public class DatabaseLifecycle {
     }
   }
 
+  /**
+   * Gets dao manager.
+   *
+   * @return the dao manager
+   */
   public DaoManager getDaoManager() {
     return daoManager;
   }

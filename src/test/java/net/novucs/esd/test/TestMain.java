@@ -24,17 +24,33 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
+/**
+ * The type Test main.
+ */
 public class TestMain {
 
+  /**
+   * The constant ENVIRONMENT.
+   */
   @ClassRule
   public static final EnvironmentVariables ENVIRONMENT = new EnvironmentVariables();
   private static final String DB_URL = "jdbc:derby:memory:testDB;create=true";
 
+  /**
+   * Sets up.
+   *
+   * @throws SQLException the sql exception
+   */
   @Before
   public void setUp() throws SQLException {
     DriverManager.registerDriver(new EmbeddedDriver());
   }
 
+  /**
+   * Test main executes without errors.
+   *
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   @Test
   public void testMainExecutesWithoutErrors() throws ReflectiveOperationException {
     // Given
@@ -49,6 +65,11 @@ public class TestMain {
     verify(logger, times(0)).log(eq(Level.SEVERE), any(String.class), any(SQLException.class));
   }
 
+  /**
+   * Test main excepts with bad database url.
+   *
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   @Test
   public void testMainExceptsWithBadDatabaseUrl() throws ReflectiveOperationException {
     // Given
@@ -63,6 +84,11 @@ public class TestMain {
     verify(logger, times(1)).log(eq(Level.SEVERE), any(String.class), any(SQLException.class));
   }
 
+  /**
+   * Test fails on non exists status code.
+   *
+   * @throws Throwable the throwable
+   */
   @SuppressWarnings("PMD.CloseResource")
   @Test(expected = SQLException.class)
   public void testFailsOnNonExistsStatusCode() throws Throwable {
@@ -79,6 +105,11 @@ public class TestMain {
         new Class[]{Connection.class}, connection);
   }
 
+  /**
+   * Test main prints contents of person.
+   *
+   * @throws Throwable the throwable
+   */
   @Test
   public void testMainPrintsContentsOfPerson() throws Throwable {
     // Given

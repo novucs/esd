@@ -15,8 +15,17 @@ import net.novucs.esd.controllers.HomepageServlet;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
+/**
+ * The type Test homepage servlet.
+ */
 public class TestHomepageServlet {
 
+  /**
+   * Test request gets map attribute.
+   *
+   * @throws ServletException the servlet exception
+   * @throws IOException      the io exception
+   */
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException {
@@ -34,6 +43,9 @@ public class TestHomepageServlet {
     verify(request).getRequestDispatcher(eq("/homepage.jsp"));
   }
 
+  /**
+   * Test homepage in servlet info.
+   */
   @Test
   public void testHomepageInServletInfo() {
     // Given

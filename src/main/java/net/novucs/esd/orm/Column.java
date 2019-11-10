@@ -5,13 +5,31 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * The interface Column.
+ */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
 
+  /**
+   * Primary boolean.
+   *
+   * @return the boolean
+   */
   boolean primary() default false;
 
+  /**
+   * Foreign class.
+   *
+   * @return the class
+   */
   Class<?> foreign() default void.class;
 
+  /**
+   * Nullable boolean.
+   *
+   * @return the boolean
+   */
   boolean nullable() default false;
 }

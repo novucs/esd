@@ -9,12 +9,23 @@ import java.util.List;
 import net.novucs.esd.orm.ParsedColumn;
 import net.novucs.esd.orm.ParsedModel;
 
+/**
+ * The type Reflect util.
+ */
 public final class ReflectUtil {
 
   private ReflectUtil() {
     throw new IllegalStateException();
   }
 
+  /**
+   * Construct model m.
+   *
+   * @param <M>             the type parameter
+   * @param modelClass      the model class
+   * @param modelAttributes the model attributes
+   * @return the m
+   */
   public static <M> M constructModel(Class<M> modelClass, List<Object> modelAttributes) {
     try {
       M model = modelClass.getConstructor().newInstance();
@@ -38,6 +49,14 @@ public final class ReflectUtil {
     }
   }
 
+  /**
+   * Sets value.
+   *
+   * @param <M>    the type parameter
+   * @param model  the model
+   * @param column the column
+   * @param value  the value
+   */
   public static <M> void setValue(M model, ParsedColumn column, Object value) {
     try {
       Field field = model.getClass().getDeclaredField(column.getName());
@@ -49,6 +68,15 @@ public final class ReflectUtil {
     }
   }
 
+  /**
+   * Gets value.
+   *
+   * @param <T>    the type parameter
+   * @param <M>    the type parameter
+   * @param model  the model
+   * @param column the column
+   * @return the value
+   */
   public static <T, M> T getValue(M model, ParsedColumn column) {
     try {
       Field field = model.getClass().getDeclaredField(column.getName());
@@ -88,16 +116,41 @@ public final class ReflectUtil {
     modifiersField.setAccessible(false);
   }
 
+  /**
+   * Sets field value.
+   *
+   * @param object    the object
+   * @param fieldName the field name
+   * @param value     the value
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   public static void setFieldValue(Object object, String fieldName, Object value)
       throws ReflectiveOperationException {
     setFieldValueInner(object.getClass(), object, fieldName, value);
   }
 
+  /**
+   * Sets static field value.
+   *
+   * @param clazz     the clazz
+   * @param fieldName the field name
+   * @param value     the value
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   public static void setStaticFieldValue(Class clazz, String fieldName, Object value)
       throws ReflectiveOperationException {
     setFieldValueInner(clazz, null, fieldName, value);
   }
 
+  /**
+   * Execute private static method.
+   *
+   * @param clazz      the clazz
+   * @param methodName the method name
+   * @param classes    the classes
+   * @param params     the params
+   * @throws Throwable the throwable
+   */
   public static void executePrivateStaticMethod(Class clazz, String methodName, Class[] classes,
       Object... params)
       throws Throwable {

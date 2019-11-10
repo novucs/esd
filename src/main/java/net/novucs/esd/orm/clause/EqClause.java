@@ -8,20 +8,39 @@ import java.util.StringJoiner;
 import net.novucs.esd.orm.SQLBuilder;
 import net.novucs.esd.orm.SQLParameter;
 
+/**
+ * The type Eq clause.
+ */
 public class EqClause implements Clause {
 
   private final String columnName;
   private final Object value;
 
+  /**
+   * Instantiates a new Eq clause.
+   *
+   * @param columnName the column name
+   * @param value      the value
+   */
   public EqClause(String columnName, Object value) {
     this.columnName = columnName;
     this.value = value;
   }
 
+  /**
+   * Gets column name.
+   *
+   * @return the column name
+   */
   public String getColumnName() {
     return columnName;
   }
 
+  /**
+   * Gets value.
+   *
+   * @return the value
+   */
   public Object getValue() {
     return value;
   }

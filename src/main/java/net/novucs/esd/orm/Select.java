@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+/**
+ * The type Select.
+ *
+ * @param <M> the type parameter
+ */
 // todo: support joins
 public class Select<M> {
 
@@ -17,20 +22,42 @@ public class Select<M> {
   @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Where where;
 
+  /**
+   * Instantiates a new Select.
+   *
+   * @param dao the dao
+   */
   public Select(Dao<M> dao) {
     this.dao = dao;
   }
 
+  /**
+   * Where select.
+   *
+   * @param where the where
+   * @return the select
+   */
   public Select<M> where(Where where) {
     this.where = where;
     return this;
   }
 
+  /**
+   * Limit select.
+   *
+   * @param limit the limit
+   * @return the select
+   */
   public Select<M> limit(int limit) {
     this.limit = limit;
     return this;
   }
 
+  /**
+   * Sql sql builder.
+   *
+   * @return the sql builder
+   */
   public SQLBuilder sql() {
     StringJoiner selectorJoiner = new StringJoiner(" ");
     selectorJoiner.add("SELECT");
@@ -60,6 +87,12 @@ public class Select<M> {
     return new SQLBuilder(selectorJoiner.toString(), parameters);
   }
 
+  /**
+   * First m.
+   *
+   * @return the m
+   * @throws SQLException the sql exception
+   */
   public M first() throws SQLException {
     this.limit = 1;
     List<M> models = execute();
@@ -70,6 +103,12 @@ public class Select<M> {
     }
   }
 
+  /**
+   * One m.
+   *
+   * @return the m
+   * @throws SQLException the sql exception
+   */
   public M one() throws SQLException {
     List<M> models = execute();
     if (models.isEmpty()) {
@@ -81,6 +120,12 @@ public class Select<M> {
     return models.get(0);
   }
 
+  /**
+   * All list.
+   *
+   * @return the list
+   * @throws SQLException the sql exception
+   */
   public List<M> all() throws SQLException {
     return execute();
   }
