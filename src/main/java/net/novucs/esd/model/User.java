@@ -37,7 +37,7 @@ public class User {
   public User(String name, String email, Password password, String address,
       ZonedDateTime dateOfBirth, String status) {
     this.name = name;
-    this.email = email;
+    this.email = email.toLowerCase();
     this.password = password;
     this.address = address;
     this.dateOfBirth = dateOfBirth;
@@ -65,7 +65,7 @@ public class User {
   }
 
   public void setEmail(String email) {
-    this.email = email;
+    this.email = email.toLowerCase();
   }
 
   public Password getPassword() {

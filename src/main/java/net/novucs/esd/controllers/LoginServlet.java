@@ -2,6 +2,10 @@ package net.novucs.esd.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 
@@ -23,6 +29,12 @@ public class LoginServlet extends BaseServlet {
 
   @Inject
   private Dao<User> userDao;
+  
+  @Inject
+  private Dao<UserRole> userRoleDao;
+  
+  @Inject
+  private Dao<Role> roleDao;
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -42,7 +54,7 @@ public class LoginServlet extends BaseServlet {
 
     if (user != null && user.getPassword().authenticate(password)) {
       session.setUser(user);
-      loginSuccess(request, response);
+      loginSuccess(request, response, session);
     } else {
       session.pushError("Incorrect username or password");
       super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
@@ -56,7 +68,7 @@ public class LoginServlet extends BaseServlet {
 
     // Check if user is already logged in
     if (session.getUser() != null) {
-      loginSuccess(request, response);
+      loginSuccess(request, response, session);
       return;
     }
 
@@ -64,9 +76,23 @@ public class LoginServlet extends BaseServlet {
     super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
   }
 
-  private void loginSuccess(HttpServletRequest request, HttpServletResponse response)
+  private void loginSuccess(HttpServletRequest request, HttpServletResponse response, Session session)
       throws IOException, ServletException {
-    super.forward(request, response, "Login Success", "/loginsuccess");
+      try {
+          User user = session.getUser();
+          List<UserRole> userRoles = userRoleDao.select().where(new Where().eq("user_id", user.getId())).all();
+          List<Role> roles = new ArrayList<>();
+          
+          for (UserRole userRole : userRoles) {
+            Role role = roleDao.select().where(new Where().eq("id", userRole.getRoleId())).first();
+            roles.add(role);
+          }
+          
+          request.setAttribute("roles", roles);
+          super.forward(request, response, "Login Success", "/loginsuccess");
+      } catch (SQLException ex) {
+          Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }
 
   @Override
