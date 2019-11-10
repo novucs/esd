@@ -84,23 +84,19 @@ public class DatabaseLifecycle {
   private void setupDevelopmentData() throws SQLException {
     DateUtil dateUtil = new DateUtil();
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
-    
-    Dao<Role> roleDao = daoManager.get(Role.class);
-    Dao<User> userDao = daoManager.get(User.class);
-    Dao<UserRole> userRoleDao = daoManager.get(UserRole.class);
-    
+
     for (String roleName : Arrays.asList("User", "Member", "Administrator")) {
-        Role role = new Role(roleName);
-        roleDao.insert(role);
-        User user = new User(
-            roleName + "Account",
-            roleName + "@esd.net",
-            Password.fromPlaintext("password1"),
-            "1 ESD Lane",
-            dateOfBirth,
-            "ACTIVE");
-        userDao.insert(user);
-        userRoleDao.insert(new UserRole(user.getId(), role.getId()));
+      Role role = new Role(roleName);
+      daoManager.get(Role.class).insert(role);
+      User user = new User(
+          roleName + "Account",
+          roleName + "@esd.net",
+          Password.fromPlaintext("password1"),
+          "1 ESD Lane",
+          dateOfBirth,
+          "ACTIVE");
+      daoManager.get(User.class).insert(user);
+      daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
     }
   }
 

@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
@@ -29,10 +28,10 @@ public class LoginServlet extends BaseServlet {
 
   @Inject
   private Dao<User> userDao;
-  
+
   @Inject
   private Dao<UserRole> userRoleDao;
-  
+
   @Inject
   private Dao<Role> roleDao;
 
@@ -76,23 +75,28 @@ public class LoginServlet extends BaseServlet {
     super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
   }
 
-  private void loginSuccess(HttpServletRequest request, HttpServletResponse response, Session session)
+  private void loginSuccess(HttpServletRequest request, HttpServletResponse response,
+      Session session)
       throws IOException, ServletException {
-      try {
-          User user = session.getUser();
-          List<UserRole> userRoles = userRoleDao.select().where(new Where().eq("user_id", user.getId())).all();
-          List<Role> roles = new ArrayList<>();
-          
-          for (UserRole userRole : userRoles) {
-            Role role = roleDao.select().where(new Where().eq("id", userRole.getRoleId())).first();
-            roles.add(role);
-          }
-          
-          request.setAttribute("roles", roles);
-          super.forward(request, response, "Login Success", "/loginsuccess");
-      } catch (SQLException ex) {
-          Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+    try {
+      User user = session.getUser();
+      List<UserRole> userRoles = userRoleDao.select()
+          .where(new Where().eq("user_id", user.getId()))
+          .all();
+      List<Role> roles = new ArrayList<>();
+
+      for (UserRole userRole : userRoles) {
+        Role role = roleDao.select()
+            .where(new Where().eq("id", userRole.getRoleId()))
+            .first();
+        roles.add(role);
       }
+
+      request.setAttribute("roles", roles);
+      super.forward(request, response, "Login Success", "/loginsuccess");
+    } catch (SQLException ex) {
+      Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   @Override
