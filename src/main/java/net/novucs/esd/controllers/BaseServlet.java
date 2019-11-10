@@ -11,9 +11,6 @@ import net.novucs.esd.lifecycle.Session;
 
 public abstract class BaseServlet extends HttpServlet {
 
-  @Resource(lookup = "java:app/AppName")
-  private transient String appName;
-
   private static final long serialVersionUID = 1426081247044519303L;
 
   public Session getSession(HttpServletRequest request) {
