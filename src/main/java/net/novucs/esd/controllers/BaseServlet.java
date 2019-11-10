@@ -1,7 +1,6 @@
 package net.novucs.esd.controllers;
 
 import java.io.IOException;
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
