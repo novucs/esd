@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<body>
 <div class="container">
     <div class="row">
         <div id="register-success-component-container" class="col s6 push-s3 rounded-container">
@@ -37,4 +36,3 @@
         </div>
     </div>
 </div>
-</body>
