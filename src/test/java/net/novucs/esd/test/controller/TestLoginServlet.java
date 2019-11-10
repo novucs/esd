@@ -21,7 +21,9 @@ import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.LoginServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.orm.Where;
@@ -56,28 +58,22 @@ public class TestLoginServlet {
       throws SQLException, ReflectiveOperationException, ServletException, IOException {
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
-    Dao<User> userDao = dm.get(User.class);
-    // Create test user
-    User userToCreate = new User(
-        "LoginTestUser1",
-        "user@test.com",
-        Password.fromPlaintext("testPassword"),
-        "House,A Street,A city,County,AB12 C34",
-        ZonedDateTime.now(),
-        "APPLICATION"
-    );
 
-    userDao.insert(userToCreate);
+    DatabaseLifecycle databaseLifecycle = new DatabaseLifecycle();
+    ReflectUtil.setFieldValue(databaseLifecycle, "daoManager", dm);
+    databaseLifecycle.setupDevelopmentData();
+
+    Dao<User> userDao = dm.get(User.class);
 
     LoginServlet loginServlet = new LoginServlet();
     ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
+    ReflectUtil.setFieldValue(loginServlet, "userRoleDao", dm.get(UserRole.class));
+    ReflectUtil.setFieldValue(loginServlet, "roleDao", dm.get(Role.class));
     HttpServletRequest request = mock(HttpServletRequest.class);
 
-    User userToLogin = userDao.select().where(new Where().eq("name", "LoginTestUser1")).first();
-    String password = "testPassword";
-
+    User userToLogin = userDao.select().where(new Where().eq("name", "UserAccount")).first();
     when(request.getParameter("username")).thenReturn(userToLogin.getEmail());
-    when(request.getParameter("password")).thenReturn(password);
+    when(request.getParameter("password")).thenReturn("password1");
     HttpSession session = mock(HttpSession.class);
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));

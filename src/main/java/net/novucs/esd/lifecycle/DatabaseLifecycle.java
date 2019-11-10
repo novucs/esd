@@ -81,7 +81,7 @@ public class DatabaseLifecycle {
     return daoManager.get(clazz);
   }
 
-  private void setupDevelopmentData() throws SQLException {
+  public void setupDevelopmentData() throws SQLException {
     DateUtil dateUtil = new DateUtil();
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
 
