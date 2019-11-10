@@ -81,16 +81,23 @@ public class DatabaseLifecycle {
     return daoManager.get(clazz);
   }
 
-  private void setupDevelopmentData() throws SQLException {
+  public void setupDevelopmentData() throws SQLException {
     DateUtil dateUtil = new DateUtil();
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
-    daoManager.get(User.class).insert(new User(
-        "bob",
-        "bob@bob.net",
-        Password.fromPlaintext("bob"),
-        "boblane",
-        dateOfBirth,
-        "great"));
+
+    for (String roleName : Arrays.asList("User", "Member", "Administrator")) {
+      Role role = new Role(roleName);
+      daoManager.get(Role.class).insert(role);
+      User user = new User(
+          roleName + "Account",
+          roleName + "@esd.net",
+          Password.fromPlaintext("password1"),
+          "1 ESD Lane",
+          dateOfBirth,
+          "ACTIVE");
+      daoManager.get(User.class).insert(user);
+      daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
+    }
   }
 
   public DaoManager getDaoManager() {

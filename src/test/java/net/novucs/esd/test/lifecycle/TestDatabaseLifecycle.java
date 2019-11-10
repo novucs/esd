@@ -18,7 +18,7 @@ public class TestDatabaseLifecycle {
   @ClassRule
   public static final EnvironmentVariables ENVIRONMENT = new EnvironmentVariables();
   private static final String DB_URL = "jdbc:derby:memory:testDB;create=true";
-  private static final String BOB = "bob";
+  private static final String USERNAME = "UserAccount";
 
   @Before
   public void setUp() throws SQLException {
@@ -34,10 +34,10 @@ public class TestDatabaseLifecycle {
 
     // When
     lifecycle.init();
-    User bob = lifecycle.getDaoManager().get(User.class).select()
-        .where(new Where().eq("name", BOB)).first();
+    User user = lifecycle.getDaoManager().get(User.class).select()
+        .where(new Where().eq("name", USERNAME)).first();
 
     // Assert
-    assertEquals("Database must be created on init", BOB, bob.getName());
+    assertEquals("Database must be created on init", USERNAME, user.getName());
   }
 }

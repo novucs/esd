@@ -16,7 +16,8 @@
     </tr>
     </thead>
     <tbody>
-    <% for (Map.Entry<String, String> entry : ((Map<String, String>) request.getAttribute("anExampleMap")).entrySet()) { %>
+    <% for (Map.Entry<String, String> entry : ((Map<String, String>) request
+            .getAttribute("anExampleMap")).entrySet()) { %>
     <tr>
         <td><%= entry.getKey() %>
         </td>

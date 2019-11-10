@@ -1,4 +1,3 @@
-<%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
