@@ -52,7 +52,7 @@ public class DatabaseLifecycle {
     String dbUrl = env.getOrDefault("DB_URL", "jdbc:derby://localhost:1527/esd;create=true");
     String dbUser = env.getOrDefault("DB_USER", "impact");
     String dbPass = env.getOrDefault("DB_PASS", "derbypass");
-    boolean developmentMode = env.getOrDefault("DEVELOPMENT_MODE", "0").equals("1");
+    boolean developmentMode = env.getOrDefault("DEVELOPMENT_MODE", "1").equals("1");
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
     daoManager = new DaoManager(connectionSource);
     try {
