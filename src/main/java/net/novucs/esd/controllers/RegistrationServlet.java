@@ -72,7 +72,7 @@ public class RegistrationServlet extends BaseServlet {
       userDao.insert(user);
       UserLog userLog = parseUserLog(request, user);
       userLogDao.insert(userLog); 
-     userRoleDao.insert(new UserRole(user.getId(), userRole.getId()));
+      userRoleDao.insert(new UserRole(user.getId(), userRole.getId()));
     } catch (SQLException e) {
       Logger.getLogger(RegistrationServlet.class.getName())
               .log(Level.SEVERE, null, e);

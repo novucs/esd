@@ -45,7 +45,7 @@ public class LoginServlet extends BaseServlet {
     try {
       user = userDao.select().where(new Where().eq("email", username)).first();
     } catch (SQLException e) {
-     throw new IOException("Failed to communicate with database", e);
+      throw new IOException("Failed to communicate with database", e);
     }
 
     String password = request.getParameter("password");
