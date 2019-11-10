@@ -71,10 +71,11 @@ public class RegistrationServlet extends BaseServlet {
       // Insert new user to database.
       userDao.insert(user);
       UserLog userLog = parseUserLog(request, user);
-      userLogDao.insert(userLog);
-      userRoleDao.insert(new UserRole(user.getId(), userRole.getId()));
+      userLogDao.insert(userLog); 
+     userRoleDao.insert(new UserRole(user.getId(), userRole.getId()));
     } catch (SQLException e) {
-      Logger.getLogger(RegistrationServlet.class.getName()).log(Level.SEVERE, null, e);
+      Logger.getLogger(RegistrationServlet.class.getName())
+              .log(Level.SEVERE, null, e);
       super.forward(request, response, "Database error", FAIL_PAGE);
       return;
     }
