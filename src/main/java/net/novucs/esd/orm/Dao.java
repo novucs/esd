@@ -9,26 +9,55 @@ import java.util.StringJoiner;
 import net.novucs.esd.util.ReflectUtil;
 
 
+/**
+ * The type Dao.
+ *
+ * @param <M> the type parameter
+ */
 public class Dao<M> {
 
   private final ConnectionSource connectionSource;
   private final Class<M> modelClass;
   private final ParsedModel<M> parsedModel;
 
+  /**
+   * Instantiates a new Dao.
+   *
+   * @param connectionSource the connection source
+   * @param modelClass       the model class
+   */
   public Dao(ConnectionSource connectionSource, Class<M> modelClass) {
     this.connectionSource = connectionSource;
     this.modelClass = modelClass;
     this.parsedModel = ParsedModel.of(modelClass);
   }
 
+  /**
+   * Select by id m.
+   *
+   * @param id the id
+   * @return the m
+   * @throws SQLException the sql exception
+   */
   public M selectById(int id) throws SQLException {
     return select().where(new Where().eq("id", id)).one();
   }
 
+  /**
+   * Select select.
+   *
+   * @return the select
+   */
   public Select<M> select() {
     return new Select<M>(this);
   }
 
+  /**
+   * Delete.
+   *
+   * @param toDelete the to delete
+   * @throws SQLException the sql exception
+   */
   public void delete(M toDelete) throws SQLException {
     String query = deleteSQL(toDelete);
     try (Connection connection = connectionSource.getConnection();
@@ -50,6 +79,12 @@ public class Dao<M> {
     return deleteJoiner.toString();
   }
 
+  /**
+   * Update.
+   *
+   * @param model the model
+   * @throws SQLException the sql exception
+   */
   public void update(M model) throws SQLException {
     String query = updateSQL(model);
     try (Connection connection = connectionSource.getConnection();
@@ -84,6 +119,12 @@ public class Dao<M> {
     return updateJoiner.toString();
   }
 
+  /**
+   * Insert.
+   *
+   * @param model the model
+   * @throws SQLException the sql exception
+   */
   public void insert(M model) throws SQLException {
     String query = insertSQL();
     try (Connection connection = this.connectionSource.getConnection();
@@ -129,6 +170,11 @@ public class Dao<M> {
     return queryJoiner.toString();
   }
 
+  /**
+   * Create table.
+   *
+   * @throws SQLException the sql exception
+   */
   public void createTable() throws SQLException {
     Table[] tables = this.modelClass.getAnnotationsByType(Table.class);
 
@@ -175,14 +221,29 @@ public class Dao<M> {
     return tableJoiner.toString();
   }
 
+  /**
+   * Gets connection source.
+   *
+   * @return the connection source
+   */
   public ConnectionSource getConnectionSource() {
     return connectionSource;
   }
 
+  /**
+   * Gets model class.
+   *
+   * @return the model class
+   */
   public Class<M> getModelClass() {
     return modelClass;
   }
 
+  /**
+   * Gets parsed model.
+   *
+   * @return the parsed model
+   */
   public ParsedModel<M> getParsedModel() {
     return parsedModel;
   }

@@ -13,6 +13,9 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 
+/**
+ * The type Login servlet.
+ */
 @WebServlet(name = "LoginServlet")
 public class LoginServlet extends BaseServlet {
 

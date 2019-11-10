@@ -14,6 +14,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.novucs.esd.util.ReflectUtil;
 
+/**
+ * The type Parsed model.
+ *
+ * @param <M> the type parameter
+ */
 public class ParsedModel<M> {
 
   private static final Map<Class<?>, ParsedModel> MODEL_CACHE = new ConcurrentHashMap<>();
@@ -21,20 +26,42 @@ public class ParsedModel<M> {
   private final String tableName;
   private final Map<String, ParsedColumn> columns;
 
+  /**
+   * Instantiates a new Parsed model.
+   *
+   * @param modelClass the model class
+   * @param tableName  the table name
+   * @param columns    the columns
+   */
   public ParsedModel(Class<M> modelClass, String tableName, Map<String, ParsedColumn> columns) {
     this.modelClass = modelClass;
     this.tableName = tableName;
     this.columns = columns;
   }
 
+  /**
+   * Gets table name.
+   *
+   * @return the table name
+   */
   public String getTableName() {
     return tableName;
   }
 
+  /**
+   * Gets sql table name.
+   *
+   * @return the sql table name
+   */
   public String getSQLTableName() {
     return quoted(tableName);
   }
 
+  /**
+   * Gets primary key.
+   *
+   * @return the primary key
+   */
   public ParsedColumn getPrimaryKey() {
     for (ParsedColumn column : columns.values()) {
       if (column.isPrimary()) {
@@ -44,10 +71,22 @@ public class ParsedModel<M> {
     throw new IllegalStateException("Table " + tableName + " does not have a primary key");
   }
 
+  /**
+   * Gets columns.
+   *
+   * @return the columns
+   */
   public Map<String, ParsedColumn> getColumns() {
     return columns;
   }
 
+  /**
+   * Of parsed model.
+   *
+   * @param <M>        the type parameter
+   * @param modelClass the model class
+   * @return the parsed model
+   */
   public static <M> ParsedModel<M> of(Class<M> modelClass) {
     if (MODEL_CACHE.containsKey(modelClass)) {
       //noinspection unchecked
@@ -82,6 +121,13 @@ public class ParsedModel<M> {
     return parsedModel;
   }
 
+  /**
+   * Sets statement values.
+   *
+   * @param statement the statement
+   * @param model     the model
+   * @throws SQLException the sql exception
+   */
   public void setStatementValues(PreparedStatement statement, M model) throws SQLException {
     int i = 1;
     for (ParsedColumn column : this.getColumns().values()) {
@@ -91,6 +137,13 @@ public class ParsedModel<M> {
     }
   }
 
+  /**
+   * Read m.
+   *
+   * @param resultSet the result set
+   * @return the m
+   * @throws SQLException the sql exception
+   */
   public M read(ResultSet resultSet) throws SQLException {
     List<Object> attributes = new ArrayList<>();
     int i = 1;
@@ -101,6 +154,11 @@ public class ParsedModel<M> {
     return ReflectUtil.constructModel(modelClass, attributes);
   }
 
+  /**
+   * Gets model class.
+   *
+   * @return the model class
+   */
   public Class<M> getModelClass() {
     return modelClass;
   }

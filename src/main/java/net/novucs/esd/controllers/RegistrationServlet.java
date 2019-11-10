@@ -16,6 +16,9 @@ import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
 
+/**
+ * The type Registration servlet.
+ */
 public class RegistrationServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;

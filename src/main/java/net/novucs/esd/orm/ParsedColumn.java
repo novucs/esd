@@ -13,6 +13,9 @@ import java.util.StringJoiner;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 
+/**
+ * The type Parsed column.
+ */
 public class ParsedColumn {
 
   private final Class<?> type;
@@ -21,6 +24,15 @@ public class ParsedColumn {
   private final Class<?> foreignReference;
   private final boolean nullable;
 
+  /**
+   * Instantiates a new Parsed column.
+   *
+   * @param type             the type
+   * @param name             the name
+   * @param primary          the primary
+   * @param foreignReference the foreign reference
+   * @param nullable         the nullable
+   */
   public ParsedColumn(Class<?> type, String name, boolean primary,
       Class<?> foreignReference, boolean nullable) {
     if (primary && (type != Integer.class || !"id".equals(name))) {
@@ -34,38 +46,83 @@ public class ParsedColumn {
     this.nullable = nullable;
   }
 
+  /**
+   * Gets type.
+   *
+   * @return the type
+   */
   public Class<?> getType() {
     return type;
   }
 
+  /**
+   * Gets name.
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Gets sql name.
+   *
+   * @return the sql name
+   */
   public String getSQLName() {
     return quoted(camelToSnake(name));
   }
 
+  /**
+   * Is primary boolean.
+   *
+   * @return the boolean
+   */
   public boolean isPrimary() {
     return primary;
   }
 
+  /**
+   * Is foreign key boolean.
+   *
+   * @return the boolean
+   */
   public boolean isForeignKey() {
     return foreignReference != null;
   }
 
+  /**
+   * Foreign key sql string.
+   *
+   * @return the string
+   */
   public String foreignKeySQL() {
     return quoted(camelToSnake(foreignReference.getSimpleName())) + "(\"id\")";
   }
 
+  /**
+   * Gets foreign reference.
+   *
+   * @return the foreign reference
+   */
   public Class<?> getForeignReference() {
     return foreignReference;
   }
 
+  /**
+   * Is nullable boolean.
+   *
+   * @return the boolean
+   */
   public boolean isNullable() {
     return nullable;
   }
 
+  /**
+   * Create sql string.
+   *
+   * @return the string
+   */
   public String createSQL() {
     StringJoiner columnJoiner = new StringJoiner(" ");
     columnJoiner.add(getSQLName());
@@ -88,6 +145,15 @@ public class ParsedColumn {
     return columnJoiner.toString();
   }
 
+  /**
+   * Write boolean.
+   *
+   * @param statement the statement
+   * @param model     the model
+   * @param index     the index
+   * @return the boolean
+   * @throws SQLException the sql exception
+   */
   public boolean write(PreparedStatement statement, Object model, int index)
       throws SQLException {
     if (isPrimary()) {
@@ -119,6 +185,14 @@ public class ParsedColumn {
     throw new IllegalArgumentException("Unsupported write data type: " + type);
   }
 
+  /**
+   * Read object.
+   *
+   * @param resultSet the result set
+   * @param index     the index
+   * @return the object
+   * @throws SQLException the sql exception
+   */
   public Object read(ResultSet resultSet, int index) throws SQLException {
     if (type == String.class) {
       return resultSet.getString(index);

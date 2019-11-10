@@ -9,6 +9,9 @@ import java.util.Base64;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+/**
+ * The type Password.
+ */
 public final class Password {
 
   private static final transient String ALGORITHM = "PBKDF2WithHmacSHA512";
@@ -20,6 +23,12 @@ public final class Password {
   private final byte[] hash;
   private final byte[] salt;
 
+  /**
+   * Instantiates a new Password.
+   *
+   * @param hash the hash
+   * @param salt the salt
+   */
   public Password(byte[] hash, byte[] salt) {
     this.hash = Arrays.copyOf(hash, hash.length);
     this.salt = Arrays.copyOf(salt, salt.length);
@@ -42,6 +51,12 @@ public final class Password {
     }
   }
 
+  /**
+   * From plaintext password.
+   *
+   * @param plaintext the plaintext
+   * @return the password
+   */
   public static Password fromPlaintext(String plaintext) {
     byte[] salt = new byte[16];
     RANDOM.nextBytes(salt);
@@ -49,6 +64,12 @@ public final class Password {
     return new Password(hash, salt);
   }
 
+  /**
+   * From hash and salt password.
+   *
+   * @param hashAndSalt the hash and salt
+   * @return the password
+   */
   public static Password fromHashAndSalt(String hashAndSalt) {
     String[] pair = hashAndSalt.split("\\.");
     Base64.Decoder decoder = Base64.getDecoder();
@@ -57,6 +78,11 @@ public final class Password {
     return new Password(hash, salt);
   }
 
+  /**
+   * To hash and salt string.
+   *
+   * @return the string
+   */
   public String toHashAndSalt() {
     Base64.Encoder encoder = Base64.getEncoder();
     String hash = encoder.encodeToString(getHash());
@@ -64,6 +90,12 @@ public final class Password {
     return hash + "." + salt;
   }
 
+  /**
+   * Authenticate boolean.
+   *
+   * @param password the password
+   * @return the boolean
+   */
   public boolean authenticate(String password) {
     byte[] check = pbkdf2(password.toCharArray(), salt);
     int zero = 0;
@@ -73,10 +105,20 @@ public final class Password {
     return zero == 0;
   }
 
+  /**
+   * Get hash byte [ ].
+   *
+   * @return the byte [ ]
+   */
   public byte[] getHash() {
     return Arrays.copyOf(hash, hash.length);
   }
 
+  /**
+   * Get salt byte [ ].
+   *
+   * @return the byte [ ]
+   */
   public byte[] getSalt() {
     return Arrays.copyOf(salt, salt.length);
   }

@@ -17,8 +17,17 @@ import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.LogoutServlet;
 import org.junit.Test;
 
+/**
+ * The type Test logout servlet.
+ */
 public class TestLogoutServlet {
 
+  /**
+   * Test request gets map attribute.
+   *
+   * @throws ServletException the servlet exception
+   * @throws IOException      the io exception
+   */
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException {
@@ -36,6 +45,9 @@ public class TestLogoutServlet {
     verify(response, times(1)).sendRedirect(eq("login"));
   }
 
+  /**
+   * Test logout in servlet info.
+   */
   @Test
   public void testLogoutInServletInfo() {
     // Given

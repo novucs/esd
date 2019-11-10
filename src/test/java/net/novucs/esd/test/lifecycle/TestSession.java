@@ -9,15 +9,24 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * The type Test session.
+ */
 public class TestSession {
 
   private transient Session session;
 
+  /**
+   * Init session test.
+   */
   @Before
   public void initSessionTest() {
     session = new Session();
   }
 
+  /**
+   * Test session handles errors.
+   */
   @Test
   public void testSessionHandlesErrors() {
     for (int i = 0; i < 5; i++) {
@@ -30,6 +39,9 @@ public class TestSession {
     );
   }
 
+  /**
+   * Test session handles user.
+   */
   @Test
   public void testSessionHandlesUser() {
     DateUtil dateUtil = new DateUtil();

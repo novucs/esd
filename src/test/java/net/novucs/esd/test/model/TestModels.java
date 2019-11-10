@@ -10,8 +10,16 @@ import net.novucs.esd.orm.DaoManager;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * The type Test models.
+ */
 public class TestModels {
 
+  /**
+   * Test models initialise.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testModelsInitialise() throws SQLException {
     DaoManager daoManager = createTestDaoManager();

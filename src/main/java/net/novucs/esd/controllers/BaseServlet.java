@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.lifecycle.Session;
 
+/**
+ * The type Base servlet.
+ */
 public abstract class BaseServlet extends HttpServlet {
 
   @Resource(lookup = "java:app/AppName")
@@ -16,6 +19,12 @@ public abstract class BaseServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1426081247044519303L;
 
+  /**
+   * Gets session.
+   *
+   * @param request the request
+   * @return the session
+   */
   public Session getSession(HttpServletRequest request) {
     HttpSession httpSession = request.getSession(false);
 
@@ -36,6 +45,16 @@ public abstract class BaseServlet extends HttpServlet {
     return sessionHandler;
   }
 
+  /**
+   * Forward.
+   *
+   * @param request  the request
+   * @param response the response
+   * @param title    the title
+   * @param page     the page
+   * @throws IOException      the io exception
+   * @throws ServletException the servlet exception
+   */
   protected void forward(HttpServletRequest request, HttpServletResponse response,
       String title, String page) throws IOException, ServletException {
 

@@ -4,6 +4,9 @@ import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
+/**
+ * The type Application.
+ */
 @Table
 public final class Application {
 
@@ -13,26 +16,54 @@ public final class Application {
   @Column(foreign = User.class)
   private Integer userId;
 
+  /**
+   * Instantiates a new Application.
+   */
   public Application() {
     // This constructor is intentionally empty.
   }
 
+  /**
+   * Instantiates a new Application.
+   *
+   * @param userId the user id
+   */
   public Application(Integer userId) {
     this.userId = userId;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public Integer getId() {
     return id;
   }
 
+  /**
+   * Sets id.
+   *
+   * @param id the id
+   */
   public void setId(Integer id) {
     this.id = id;
   }
 
+  /**
+   * Gets user id.
+   *
+   * @return the user id
+   */
   public Integer getUserId() {
     return userId;
   }
 
+  /**
+   * Sets user id.
+   *
+   * @param userId the user id
+   */
   public void setUserId(Integer userId) {
     this.userId = userId;
   }

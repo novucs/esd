@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The type Homepage servlet.
+ */
 public class HomepageServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;

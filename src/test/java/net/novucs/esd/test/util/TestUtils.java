@@ -8,12 +8,21 @@ import java.lang.reflect.InvocationTargetException;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.DaoManager;
 
+/**
+ * The type Test utils.
+ */
 public final class TestUtils {
 
   private TestUtils() {
     throw new IllegalStateException();
   }
 
+  /**
+   * Assert not constructable.
+   *
+   * @param clazz the clazz
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   public static void assertNotConstructable(Class<?> clazz) throws ReflectiveOperationException {
     Constructor constructor = clazz.getDeclaredConstructor();
     constructor.setAccessible(true);
@@ -26,6 +35,11 @@ public final class TestUtils {
     fail("Construction must fail");
   }
 
+  /**
+   * Create test dao manager dao manager.
+   *
+   * @return the dao manager
+   */
   public static DaoManager createTestDaoManager() {
     String dbUrl = "jdbc:derby:memory:testDB;create=true";
     String dbUser = "impact";
