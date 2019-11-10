@@ -1,6 +1,7 @@
 package net.novucs.esd.model;
 
 import java.time.ZonedDateTime;
+import java.util.Locale;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
@@ -37,7 +38,7 @@ public class User {
   public User(String name, String email, Password password, String address,
       ZonedDateTime dateOfBirth, String status) {
     this.name = name;
-    this.email = email.toLowerCase();
+    this.email = email.toLowerCase(Locale.UK);
     this.password = password;
     this.address = address;
     this.dateOfBirth = dateOfBirth;
@@ -65,7 +66,7 @@ public class User {
   }
 
   public void setEmail(String email) {
-    this.email = email.toLowerCase();
+    this.email = email.toLowerCase(Locale.UK);
   }
 
   public Password getPassword() {
