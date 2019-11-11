@@ -14,6 +14,7 @@ import net.novucs.esd.lifecycle.Session;
  */
 public abstract class BaseServlet extends HttpServlet {
 
+  private static final String SESSION_ATTRIBUTE = "session";
   private static final long serialVersionUID = 1426081247044519303L;
 
   @Resource(lookup = "java:app/AppName")
@@ -35,13 +36,13 @@ public abstract class BaseServlet extends HttpServlet {
 
     // Check if we have a session handler in our session
     Session sessionHandler;
-    if (httpSession.getAttribute("session") == null) {
+    if (httpSession.getAttribute(SESSION_ATTRIBUTE) == null) {
       // Create a session
       sessionHandler = new Session();
-      httpSession.setAttribute("session", sessionHandler);
+      httpSession.setAttribute(SESSION_ATTRIBUTE, sessionHandler);
     } else {
       // Invoke our old session
-      sessionHandler = (Session) httpSession.getAttribute("session");
+      sessionHandler = (Session) httpSession.getAttribute(SESSION_ATTRIBUTE);
     }
 
     return sessionHandler;
@@ -66,7 +67,7 @@ public abstract class BaseServlet extends HttpServlet {
     request.setAttribute("page", String.format("%s.jsp", page));
     request.setAttribute("name", page);
     request.setAttribute("baseUrl", "/" + appName);
-    request.setAttribute("session", session);
+    request.setAttribute(SESSION_ATTRIBUTE, session);
     request.getRequestDispatcher("/layout.jsp").forward(request, response);
   }
 }
