@@ -66,6 +66,7 @@ public abstract class BaseServlet extends HttpServlet {
     request.setAttribute("page", String.format("%s.jsp", page));
     request.setAttribute("name", page);
     request.setAttribute("baseUrl", "/" + appName);
+    request.setAttribute("roles", session.getRoles());
     request.getRequestDispatcher("/layout.jsp").forward(request, response);
   }
 }

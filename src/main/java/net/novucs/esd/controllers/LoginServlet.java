@@ -80,7 +80,7 @@ public class LoginServlet extends BaseServlet {
 
   private void loginSuccess(HttpServletRequest request, HttpServletResponse response,
       Session session)
-      throws IOException, ServletException {
+      throws IOException {
     try {
       User user = session.getUser();
       List<UserRole> userRoles = userRoleDao.select()
@@ -95,6 +95,7 @@ public class LoginServlet extends BaseServlet {
         roles.add(role);
       }
 
+      session.setRoles(roles);
       request.setAttribute("roles", roles);
       response.sendRedirect("dashboard");
     } catch (SQLException ex) {
