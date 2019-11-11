@@ -1,7 +1,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="net.novucs.esd.model.Role" %>
 <%@ page import="net.novucs.esd.model.User" %>
-<% String userName = ((User) request.getAttribute("user")).getName(); %>
+<%@ page import="net.novucs.esd.lifecycle.Session" %>
+<% Session userSession = ((Session) request.getAttribute("session")); %>
+<% String userName = userSession.getUser().getName(); %>
 <div>
     Member Dashboard!
 
@@ -15,7 +17,7 @@
         <div class="col s12 center-align">
             <ul class="collection with-header">
                 <li class="collection-header"><h5><%= userName %>'s Roles</h5></li>
-                <% for (Role role : ((List<Role>) request.getAttribute("roles"))) { %>
+                <% for (Role role : userSession.getRoles()) { %>
                     <li class="collection-item"><%= role.getName() %></li>
                 <% } %>
             </ul>
