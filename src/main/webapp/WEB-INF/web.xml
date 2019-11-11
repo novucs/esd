@@ -51,6 +51,14 @@
     <servlet-name>RegistrationServlet</servlet-name>
     <url-pattern>/register</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>AddressLookup</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.AddressLookupServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddressLookup</servlet-name>
+    <url-pattern>/api/addressLookup.do</url-pattern>
+  </servlet-mapping>
   <session-config>
     <session-timeout>
       20
