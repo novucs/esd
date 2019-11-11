@@ -1,6 +1,7 @@
 package net.novucs.esd.controllers;
 
 import java.io.IOException;
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,9 @@ import net.novucs.esd.lifecycle.Session;
 public abstract class BaseServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1426081247044519303L;
+
+  @Resource(lookup = "java:app/AppName")
+  private transient String appName;
 
   /**
    * Gets session.
