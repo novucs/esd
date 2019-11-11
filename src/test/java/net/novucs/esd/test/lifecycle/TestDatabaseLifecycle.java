@@ -13,18 +13,34 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
+/**
+ * The type Test database lifecycle.
+ */
 public class TestDatabaseLifecycle {
 
+  /**
+   * The constant ENVIRONMENT.
+   */
   @ClassRule
   public static final EnvironmentVariables ENVIRONMENT = new EnvironmentVariables();
   private static final String DB_URL = "jdbc:derby:memory:testDB;create=true";
-  private static final String BOB = "bob";
+  private static final String USERNAME = "UserAccount";
 
+  /**
+   * Sets up.
+   *
+   * @throws SQLException the sql exception
+   */
   @Before
   public void setUp() throws SQLException {
     DriverManager.registerDriver(new EmbeddedDriver());
   }
 
+  /**
+   * Test database is created on init.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testDatabaseIsCreatedOnInit() throws SQLException {
     // Given
@@ -34,10 +50,10 @@ public class TestDatabaseLifecycle {
 
     // When
     lifecycle.init();
-    User bob = lifecycle.getDaoManager().get(User.class).select()
-        .where(new Where().eq("name", BOB)).first();
+    User user = lifecycle.getDaoManager().get(User.class).select()
+        .where(new Where().eq("name", USERNAME)).first();
 
     // Assert
-    assertEquals("Database must be created on init", BOB, bob.getName());
+    assertEquals("Database must be created on init", USERNAME, user.getName());
   }
 }

@@ -18,6 +18,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+/**
+ * The type Test each model.
+ *
+ * @param <M> the type parameter
+ */
 @RunWith(Parameterized.class)
 public class TestEachModel<M> {
 
@@ -25,10 +30,20 @@ public class TestEachModel<M> {
   private static final transient ZonedDateTime DUMMY_DATE_TIME = ZonedDateTime.now();
   private final Class<M> modelClass;
 
+  /**
+   * Instantiates a new Test each model.
+   *
+   * @param modelClass the model class
+   */
   public TestEachModel(Class<M> modelClass) {
     this.modelClass = modelClass;
   }
 
+  /**
+   * Data collection.
+   *
+   * @return the collection
+   */
   @Parameters
   public static Collection<Object[]> data() {
     List<Object[]> data = new ArrayList<>();
@@ -53,6 +68,11 @@ public class TestEachModel<M> {
     throw new IllegalArgumentException("No test data for type: " + type.getName());
   }
 
+  /**
+   * Test equals.
+   *
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   @Test
   public void testEquals() throws ReflectiveOperationException {
     M model1 = createModelWithSetters();
@@ -60,6 +80,11 @@ public class TestEachModel<M> {
     assertEquals("Similar models should be equal", model1, model2);
   }
 
+  /**
+   * Test hash code.
+   *
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   @Test
   public void testHashCode() throws ReflectiveOperationException {
     M model1 = createModelWithSetters();

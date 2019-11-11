@@ -23,6 +23,9 @@ import net.novucs.esd.util.Password;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * The type Test dao manager.
+ */
 public class TestDaoManager {
 
   private transient Dao<TableA> tableADao;
@@ -30,6 +33,11 @@ public class TestDaoManager {
   private transient Dao<TableB> tableBDao;
   private transient Dao<AllFieldsTable> allFieldsTableDao;
 
+  /**
+   * Sets up.
+   *
+   * @throws SQLException the sql exception
+   */
   @Before
   public void setUp() throws SQLException {
     DaoManager daoManager = createTestDaoManager();
@@ -41,6 +49,11 @@ public class TestDaoManager {
     allFieldsTableDao = daoManager.get(AllFieldsTable.class);
   }
 
+  /**
+   * Test select all.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testSelectAll() throws SQLException {
     List<AllFieldsTable> created = new ArrayList<>();
@@ -66,6 +79,11 @@ public class TestDaoManager {
     assertEquals("Should select first two created entries", expected, selected);
   }
 
+  /**
+   * Test select by id.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testSelectById() throws SQLException {
     AllFieldsTable created = new AllFieldsTable();
@@ -74,6 +92,11 @@ public class TestDaoManager {
     assertEquals("Selecting the record just created should be the same", created, selected);
   }
 
+  /**
+   * Test update.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testUpdate() throws SQLException {
     AllFieldsTable created = new AllFieldsTable();
@@ -85,6 +108,11 @@ public class TestDaoManager {
     assertEquals("Updates should edit the record by its given ID", created, selected);
   }
 
+  /**
+   * Test deletion.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testDeletion() throws SQLException {
     AllFieldsTable created = new AllFieldsTable();
@@ -95,6 +123,11 @@ public class TestDaoManager {
     assertNull("Deleting a record should remove from database", selected);
   }
 
+  /**
+   * Test foreign relations supported.
+   *
+   * @throws SQLException the sql exception
+   */
   @Test
   public void testForeignRelationsSupported() throws SQLException {
     TableA tableA = new TableA();
@@ -116,6 +149,9 @@ public class TestDaoManager {
         tableA.id.equals(selectedA.id) && tableB.id.equals(selectedB.id));
   }
 
+  /**
+   * The type Table a.
+   */
   @Table
   public static class TableA {
 
@@ -127,22 +163,40 @@ public class TestDaoManager {
     private String value;
   }
 
+  /**
+   * The type Table ab.
+   */
   @Table
   public static class TableAB {
 
+    /**
+     * The Id.
+     */
     @Column(primary = true)
     public Integer id;
 
+    /**
+     * The Table a id.
+     */
     @Column(foreign = TableA.class)
     public Integer tableAId;
 
+    /**
+     * The Table b id.
+     */
     @Column(foreign = TableB.class)
     public Integer tableBId;
   }
 
+  /**
+   * The type Table b.
+   */
   @Table
   public static class TableB {
 
+    /**
+     * The Id.
+     */
     @Column(primary = true)
     public Integer id;
 
@@ -151,28 +205,54 @@ public class TestDaoManager {
     private String value;
   }
 
+  /**
+   * The type All fields table.
+   */
   @Table
   public static class AllFieldsTable {
 
+    /**
+     * The Id.
+     */
     @Column(primary = true)
     public Integer id;
 
+    /**
+     * The String.
+     */
     @Column
     public String string;
 
+    /**
+     * The Password.
+     */
     @Column
     public Password password;
 
+    /**
+     * The Integer.
+     */
     @Column
     public Integer integer;
 
+    /**
+     * The Zoned date time.
+     */
     @Column
     public ZonedDateTime zonedDateTime;
 
+    /**
+     * Instantiates a new All fields table.
+     */
     public AllFieldsTable() {
       this(UUID.randomUUID().toString());
     }
 
+    /**
+     * Instantiates a new All fields table.
+     *
+     * @param password the password
+     */
     public AllFieldsTable(String password) {
       this.string = UUID.randomUUID().toString();
       this.password = Password.fromPlaintext(password);

@@ -12,6 +12,9 @@ import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The type Main.
+ */
 public final class Main {
 
   private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
@@ -19,6 +22,11 @@ public final class Main {
   private Main() {
   }
 
+  /**
+   * The entry point of application.
+   *
+   * @param args the input arguments
+   */
   public static void main(String[] args) {
     try {
       Map<String, String> env = System.getenv();

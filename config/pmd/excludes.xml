@@ -22,9 +22,11 @@
   <rule ref="category/java/design.xml">
     <exclude name="DataClass"/>
     <exclude name="LawOfDemeter"/>
+    <exclude name="ExcessiveImports" />
   </rule>
   <rule ref="category/java/documentation.xml">
     <exclude name="CommentRequired"/>
+    <exclude name="CommentSize"/>
   </rule>
   <rule ref="category/java/errorprone.xml">
     <exclude name="BeanMembersShouldSerialize"/>
@@ -38,7 +40,7 @@
   </rule>
   <rule ref="category/java/codestyle.xml/LongVariable">
     <properties>
-      <property name="minimum" value="32" />
+      <property name="minimum" value="32"/>
     </properties>
   </rule>
   <rule ref="category/java/multithreading.xml">

@@ -9,29 +9,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * The type Dao manager.
+ */
 public class DaoManager {
 
   private final transient Map<Class<?>, Dao<?>> daos = Collections
       .synchronizedMap(new LinkedHashMap<>());
   private final transient ConnectionSource connectionSource;
 
+  /**
+   * Instantiates a new Dao manager.
+   *
+   * @param connectionSource the connection source
+   */
   public DaoManager(ConnectionSource connectionSource) {
     this.connectionSource = connectionSource;
   }
 
+  /**
+   * Gets daos.
+   *
+   * @return the daos
+   */
   public Map<Class<?>, Dao<?>> getDaos() {
     return daos;
   }
 
+  /**
+   * Gets connection source.
+   *
+   * @return the connection source
+   */
   public ConnectionSource getConnectionSource() {
     return connectionSource;
   }
 
+  /**
+   * Get dao.
+   *
+   * @param <M>        the type parameter
+   * @param modelClass the model class
+   * @return the dao
+   */
   public <M> Dao<M> get(Class<M> modelClass) {
     //noinspection unchecked
     return (Dao<M>) daos.getOrDefault(modelClass, null);
   }
 
+  /**
+   * Init.
+   *
+   * @param modelClasses the model classes
+   * @throws SQLException the sql exception
+   */
   public void init(List<Class<?>> modelClasses) throws SQLException {
     List<Class<?>> remaining = new ArrayList<>(modelClasses);
 

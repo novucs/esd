@@ -1,0 +1,65 @@
+
+.text-center {
+  text-align: center;
+}
+
+.waves-effect {
+  background-color: black;
+}
+
+.nav-wrapper {
+  color: black;
+}
+
+.navigation-bar {
+  background-color: black;
+  z-index: 2;
+}
+
+.brand-logo {
+  font-weight: lighter;
+  padding-left: 15px;
+  text-align: center;
+}
+
+.brand-logo > span:last-child {
+  font-size: smaller;
+}
+
+.brand-logo:hover {
+  color: black;
+}
+
+.brand-logo {
+  font-weight: lighter;
+  padding-left: 15px;
+  border-top-right-radius: 10px;
+}
+
+.brand-logo > span:first-child {
+  font-weight: bolder;
+  border: solid black 3px;
+  padding: 0px 7px 0px 7px;
+  border-radius: 7px;
+}
+
+body {
+  background-image: url("../assets/city_and_car.jpeg");
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.page-footer {
+  background-color: black;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  line-height: 1.5em;
+  padding: 5px 0;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+}

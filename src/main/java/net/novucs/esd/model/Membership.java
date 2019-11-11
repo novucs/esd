@@ -5,6 +5,9 @@ import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
+/**
+ * The type Membership.
+ */
 @Table
 public final class Membership {
 
@@ -26,46 +29,96 @@ public final class Membership {
   @Column
   private String status;
 
+  /**
+   * Instantiates a new Membership.
+   */
   public Membership() {
     // This constructor is intentionally empty.
   }
 
+  /**
+   * Instantiates a new Membership.
+   *
+   * @param userId  the user id
+   * @param balance the balance
+   * @param status  the status
+   */
   public Membership(Integer userId, BigDecimal balance, String status) {
     this.userId = userId;
     this.status = status;
     setBalance(balance);
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public Integer getId() {
     return id;
   }
 
+  /**
+   * Sets id.
+   *
+   * @param id the id
+   */
   public void setId(Integer id) {
     this.id = id;
   }
 
+  /**
+   * Gets user id.
+   *
+   * @return the user id
+   */
   public Integer getUserId() {
     return userId;
   }
 
+  /**
+   * Sets user id.
+   *
+   * @param userId the user id
+   */
   public void setUserId(Integer userId) {
     this.userId = userId;
   }
 
+  /**
+   * Gets balance.
+   *
+   * @return the balance
+   */
   public BigDecimal getBalance() {
     return BigDecimal.valueOf(pounds + (pence / 100f));
   }
 
+  /**
+   * Sets balance.
+   *
+   * @param balance the balance
+   */
   public void setBalance(BigDecimal balance) {
     double doubleBalance = balance.doubleValue();
     pounds = (int) doubleBalance;
     pence = (int) ((doubleBalance - pounds) * 100);
   }
 
+  /**
+   * Gets status.
+   *
+   * @return the status
+   */
   public String getStatus() {
     return status;
   }
 
+  /**
+   * Sets status.
+   *
+   * @param status the status
+   */
   public void setStatus(String status) {
     this.status = status;
   }

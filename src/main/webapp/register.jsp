@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<body>
 <link rel="stylesheet" href="css/register.css">
 <div class="container">
     <div class="row">
@@ -96,4 +95,3 @@
         </div>
     </div>
 </div>
-</body>

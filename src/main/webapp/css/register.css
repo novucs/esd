@@ -1,12 +1,16 @@
 @keyframes slide-in {
-    0% {
-        transform: translateX(1000px);
-    }
-    100% {
-        transform: translateX(0);
-    }
+  0% {
+    transform: translateX(1000px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 #register-component-container {
-    animation: 1s slide-in forwards;
+  animation: 1s slide-in forwards;
+}
+
+body:before {
+  z-index: 0;
 }

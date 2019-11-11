@@ -17,7 +17,8 @@
                         <div class="row">
                             <div class="col s12">
                                 <div class="input-field">
-                                    <input name="username" placeholder="" id="username" type="email" class="validate"
+                                    <input name="username" placeholder="" id="username" type="email"
+                                           class="validate"
                                            autocomplete="off" required/>
                                     <label for="username">Username</label>
                                 </div>
@@ -26,7 +27,8 @@
                         <div class="row">
                             <div class="col  s12">
                                 <div class="input-field">
-                                    <input placeholder="" name="password" id="password" type="password" class="validate"
+                                    <input placeholder="" name="password" id="password"
+                                           type="password" class="validate"
                                            minlength="3" required/>
                                     <label for="password">Password</label>
                                 </div>
@@ -34,13 +36,11 @@
                         </div>
                         <div class="row">
                             <div class="col s12 left">
-                                <button id="login-button" class="waves-effect btn secondary-content left-align"
+                                <button id="login-button"
+                                        class="waves-effect btn secondary-content left-align"
                                         type="submit" name="login">
                                     Submit
                                 </button>
-                                <span id="forgot-password"><a href="forgotpassword">
-                                    Forgot password?
-                                </a></span>
                             </div>
                         </div>
                     </form>

@@ -18,8 +18,18 @@ import net.novucs.esd.ExampleServlet;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
+/**
+ * The type Test example servlet.
+ */
 public class TestExampleServlet {
 
+  /**
+   * Test request gets map attribute.
+   *
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException, ReflectiveOperationException {
@@ -38,6 +48,9 @@ public class TestExampleServlet {
     verify(request, times(3)).setAttribute(any(String.class), any(Map.class));
   }
 
+  /**
+   * Test example in serverlett info.
+   */
   @Test
   public void testExampleInServerlettInfo() {
     // Given
