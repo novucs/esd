@@ -96,7 +96,7 @@ public class LoginServlet extends BaseServlet {
       }
 
       request.setAttribute("roles", roles);
-      super.forward(request, response, "Login Success", "/loginsuccess");
+      response.sendRedirect("dashboard");
     } catch (SQLException ex) {
       Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
     }

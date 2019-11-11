@@ -11,15 +11,12 @@
 
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="${baseUrl}/css/site.css" />
   <link rel="stylesheet" href="${baseUrl}/css/${name}.css" />
   <link rel="stylesheet" href="${baseUrl}/css/overrides.css" />
 </head>
 <body>
-  <ul id="dropdown" class="dropdown-content">
-    <li><a>User</a></li>
-    <li><a>Admin</a></li>
-  </ul>
   <header>
     <nav class="navigation-bar">
       <div class="nav-wrapper">
@@ -66,6 +63,7 @@
 
     <!-- Scripts -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="${baseUrl}/js/site.js"></script>
     <script src="${baseUrl}/js/error.js"></script>
     <% List<String> errors = (List<String>) request.getAttribute("errors"); %>
     <% if (errors != null && errors.size() > 0) { %>

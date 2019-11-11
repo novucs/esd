@@ -30,6 +30,7 @@
 
 main.container {
   box-shadow: 0 0 15px #959595;
+  padding: 15px;
 }
 
 .container {
