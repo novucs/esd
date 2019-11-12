@@ -100,7 +100,7 @@ public class TestLoginServlet {
     loginServlet.doPost(request, response);
 
     ArgumentCaptor<Session> argument = ArgumentCaptor.forClass(Session.class);
-    verify(session, times(2)).setAttribute(eq(SESSION), argument.capture());
+    verify(session, times(1)).setAttribute(eq(SESSION), argument.capture());
 
     assertEquals("Has user been correctly stored in session.",
         userToLogin.getId(), argument.getAllValues().get(0).getUser().getId());

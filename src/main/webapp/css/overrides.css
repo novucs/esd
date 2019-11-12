@@ -1,3 +1,38 @@
 /**
  * Keep any standard CSS in here (i.e. if you're unable to compile with SCSS)
  */
+.xyz-breadcrumb {
+  color: black;
+}
+
+.xyz-breadcrumb {
+  background: none;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 0.75em;
+}
+
+.xyz-breadcrumb .breadcrumb {
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.xyz-breadcrumb .breadcrumb:last-child {
+  color: rgba(0, 0, 0, 1);
+}
+
+.xyz-breadcrumb .breadcrumb:before {
+  color: rgba(0, 0, 0, 0.35);
+  content: '»';
+  font-size: 12px;
+  line-height: 22px;
+}
+
+main.container {
+  box-shadow: 0 0 15px #959595;
+  padding: 15px;
+}
+
+.container {
+  width: 100%;
+}
