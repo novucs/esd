@@ -98,7 +98,8 @@ public class LoginServlet extends BaseServlet {
 
       session.setRoles(roles);
 
-      if(roles.stream().anyMatch(r -> r.getName().toLowerCase(Locale.getDefault()).equals("administrator"))){
+      if (roles.stream().anyMatch(r -> r.getName()
+          .toLowerCase(Locale.getDefault()).equals("administrator"))) {
         response.sendRedirect("admin/dashboard");
         return;
       }
