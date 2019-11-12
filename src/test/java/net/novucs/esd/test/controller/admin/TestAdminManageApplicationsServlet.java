@@ -66,24 +66,6 @@ public class TestAdminManageApplicationsServlet {
   }
 
   @Test
-  public void testRequestHasNoSession()
-      throws ServletException, IOException {
-    // Given
-    AdminManageApplicationsServlet servlet = new AdminManageApplicationsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
-    // When
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(httpSession.getAttribute(eq("session"))).thenReturn(null);
-    servlet.doGet(request, response);
-
-    // Assert
-    verify(response, times(1)).sendRedirect("../login");
-  }
-
-  @Test
   public void testServletInfo() {
     // Given
     AdminManageApplicationsServlet servlet = new AdminManageApplicationsServlet();
