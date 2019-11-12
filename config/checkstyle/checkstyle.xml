@@ -200,7 +200,7 @@
     </module>
     <module name="OverloadMethodsDeclarationOrder"/>
     <module name="VariableDeclarationUsageDistance">
-      <property name="allowedDistance" value="5"/>
+      <property name="allowedDistance" value="6"/>
     </module>
     <module name="CustomImportOrder">
       <property name="sortImportsInGroupAlphabetically" value="true"/>
