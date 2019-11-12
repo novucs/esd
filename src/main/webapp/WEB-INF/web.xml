@@ -20,14 +20,6 @@
     <url-pattern> </url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>MemberServlet</servlet-name>
-    <servlet-class>net.novucs.esd.MemberServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>MemberServlet</servlet-name>
-    <url-pattern>/members</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>LoginServlet</servlet-name>
     <servlet-class>net.novucs.esd.controllers.LoginServlet</servlet-class>
   </servlet>
@@ -51,7 +43,6 @@
     <servlet-name>RegistrationServlet</servlet-name>
     <url-pattern>/register</url-pattern>
   </servlet-mapping>
-
   <servlet>
     <servlet-name>MemberDashboardServlet</servlet-name>
     <servlet-class>net.novucs.esd.controllers.member.MemberDashboardServlet</servlet-class>
@@ -153,6 +144,32 @@
       20
     </session-timeout>
   </session-config>
+  <filter>
+    <filter-name>LoggedInFilter</filter-name>
+    <filter-class>net.novucs.esd.filter.LoggedInFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LoggedInFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>AdminFilter</filter-name>
+    <filter-class>net.novucs.esd.filter.AdminFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>AdminFilter</filter-name>
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>MemberFilter</filter-name>
+    <filter-class>net.novucs.esd.filter.MemberFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>MemberFilter</filter-name>
+    <url-pattern>/claims</url-pattern>
+    <url-pattern>/makepayment</url-pattern>
+    <url-pattern>/payments</url-pattern>
+  </filter-mapping>
   <error-page>
     <error-code>404</error-code>
     <location>/error/404.jsp</location>
