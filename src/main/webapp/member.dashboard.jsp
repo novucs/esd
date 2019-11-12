@@ -1,6 +1,4 @@
-<%@ page import="java.util.List" %>
 <%@ page import="net.novucs.esd.model.Role" %>
-<%@ page import="net.novucs.esd.model.User" %>
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
 <% Session userSession = ((Session) request.getAttribute("session")); %>
 <% String userName = userSession.getUser().getName(); %>
