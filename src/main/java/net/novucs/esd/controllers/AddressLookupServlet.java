@@ -8,6 +8,7 @@ import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.novucs.esd.model.PostcodeIo;
 import net.novucs.esd.model.PostcodeResult;
 
 public class AddressLookupServlet extends BaseServlet {
@@ -20,11 +21,12 @@ public class AddressLookupServlet extends BaseServlet {
     // TODO: Attempt to use MapBox API?
     URL postCodeEndpoint = new URL(POSTCODES_IO_ENDPOINT + "/" + postalCode);
     InputStreamReader reader = new InputStreamReader(postCodeEndpoint.openStream());
-    PostcodeResult data = new Gson().fromJson(reader, PostcodeResult.class);
+    PostcodeIo data = new Gson().fromJson(reader, PostcodeIo.class);
+    PostcodeResult result = data.getResult();
 
     System.out.println("---------------------");
-    System.out.println("POSTCODE: " + data.getParish());
-    System.out.println("SOMETHING: " + data.getOutcode() + data.getIncode());
+    System.out.println("POSTCODE: " + result.getParish());
+    System.out.println("SOMETHING: " + result.getOutcode() + result.getIncode());
     System.out.println("---------------------");
 
     return "Bruh";
