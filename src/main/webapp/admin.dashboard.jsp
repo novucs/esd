@@ -1,3 +1,4 @@
-<div>
-    Administration Dashboard!
+
+<div class="row dashboard-container rounded-container">
+
 </div>

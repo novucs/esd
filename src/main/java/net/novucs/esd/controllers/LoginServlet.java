@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -96,6 +97,12 @@ public class LoginServlet extends BaseServlet {
       }
 
       session.setRoles(roles);
+
+      if(roles.stream().anyMatch(r -> r.getName().toLowerCase(Locale.getDefault()).equals("administrator"))){
+        response.sendRedirect("admin/dashboard");
+        return;
+      }
+
       response.sendRedirect("dashboard");
     } catch (SQLException ex) {
       Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
