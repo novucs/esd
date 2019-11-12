@@ -1,6 +1,5 @@
 package net.novucs.esd.test.filter;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -20,9 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.filter.AdminFilter;
 import net.novucs.esd.filter.BaseFilter;
-import net.novucs.esd.filter.MemberFilter;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
