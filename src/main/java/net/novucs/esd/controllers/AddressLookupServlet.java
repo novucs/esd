@@ -1,40 +1,31 @@
 package net.novucs.esd.controllers;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.*;
+import net.novucs.esd.model.PostcodeResult;
 
 public class AddressLookupServlet extends BaseServlet {
 
-  private static final String GOOGLE_MAPS_API_KEY =
-      "AIzaSyBgLep4XYUU26_O1C5o5NZKF_22w65HOZI";
-  private static final String GOOGLE_MAPS_ENDPOINT =
-      "https://maps.googleapis.com/maps/api/geocode/json?key="
-          + GOOGLE_MAPS_API_KEY + "&sensor=false";
+  private static final String POSTCODES_IO_ENDPOINT =
+      "http://api.postcodes.io/postcodes";
 
-  private String lookupAddress(String houseName, String postalCode) throws IOException {
+  private String lookupAddress(String postalCode) throws IOException {
     // Do first lat & long search from post code
     // TODO: Attempt to use MapBox API?
-    URL postCodeEndpoint = new URL(GOOGLE_MAPS_ENDPOINT + "&address=" + postalCode);
+    URL postCodeEndpoint = new URL(POSTCODES_IO_ENDPOINT + "/" + postalCode);
     InputStreamReader reader = new InputStreamReader(postCodeEndpoint.openStream());
-    HashMap<String, String> data = new Gson().fromJson(reader, HashMap.class);
+    PostcodeResult data = new Gson().fromJson(reader, PostcodeResult.class);
 
-    for (Map.Entry<String, String> address : data.entrySet()) {
-      System.out.println("---------------------");
-      System.out.println(address.getKey());
-      System.out.println(address.getValue());
-      System.out.println("---------------------");
-      break;
-    }
+    System.out.println("---------------------");
+    System.out.println("POSTCODE: " + data.getParish());
+    System.out.println("SOMETHING: " + data.getOutcode() + data.getIncode());
+    System.out.println("---------------------");
 
     return "Bruh";
 
@@ -83,10 +74,7 @@ public class AddressLookupServlet extends BaseServlet {
     if (request.getParameter("action") == null) {
       super.forward(request, response, "Lookup Data", "address");
     } else if (request.getParameter("action").equals("lookup")) {
-      lookupAddress(
-          request.getParameter("houseno"),
-          request.getParameter("postcode")
-      );
+      lookupAddress(request.getParameter("postcode"));
       request.setAttribute("addressData", Arrays.asList(
           "1 Bristol Lane",
           "2 Bristol Lane",
