@@ -31,6 +31,9 @@ import org.mockito.stubbing.Answer;
 
 public class TestMemberFilter {
 
+  private static final String MAKE_PAYMENT = "/makepayment";
+  private static final String SESSION_LABEL = "session";
+  private static final String LAYOUT_JSP = "/layout.jsp";
   private transient Session userSession;
 
   @Before
@@ -47,6 +50,26 @@ public class TestMemberFilter {
   }
 
   @Test
+  public void testMemberFilterWithNoHttpSession()
+      throws ServletException, IOException {
+    // Given
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    FilterChain chain = mock(FilterChain.class);
+
+    // When
+    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(request.getSession(anyBoolean())).thenReturn(null);
+
+    // Request
+    MemberFilter filter = new MemberFilter();
+    filter.doFilter(request, response, chain);
+
+    // Assert
+    verify(response, times(1)).sendRedirect(anyString());
+  }
+
+  @Test
   public void testMemberFilterWithNoSession()
       throws ServletException, IOException {
     // Given
@@ -56,8 +79,8 @@ public class TestMemberFilter {
     FilterChain chain = mock(FilterChain.class);
 
     // When
-    when(request.getRequestURI()).thenReturn("/makepayment");
-    when(httpSession.getAttribute(eq("session"))).thenReturn(null);
+    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(null);
 
     // Request
     MemberFilter filter = new MemberFilter();
@@ -80,9 +103,9 @@ public class TestMemberFilter {
     userSession.setRoles(null);
 
     // When
-    when(request.getRequestURI()).thenReturn("/makepayment");
-    when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
@@ -108,9 +131,9 @@ public class TestMemberFilter {
     userSession.setRoles(sessionRoles);
 
     // When
-    when(request.getRequestURI()).thenReturn("/makepayment");
-    when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
@@ -136,9 +159,9 @@ public class TestMemberFilter {
     userSession.setRoles(sessionRoles);
 
     // When
-    when(request.getRequestURI()).thenReturn("/makepayment");
-    when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
@@ -164,9 +187,9 @@ public class TestMemberFilter {
     userSession.setRoles(sessionRoles);
 
     // When
-    when(request.getRequestURI()).thenReturn("/makepayment");
-    when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 

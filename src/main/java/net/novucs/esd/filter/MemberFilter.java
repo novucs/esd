@@ -31,7 +31,6 @@ public class MemberFilter extends BaseFilter implements Filter {
     if (super.pathIsExcluded(path)) {
       chain.doFilter(request, response); // Just continue chain.
     } else {
-
       HttpSession httpSession = httpRequest.getSession(false);
 
       if (httpSession == null || httpSession.getAttribute("session") == null) {
