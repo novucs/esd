@@ -158,7 +158,7 @@
   </filter>
   <filter-mapping>
     <filter-name>AdminFilter</filter-name>
-    <url-pattern>/admin/*"</url-pattern>
+    <url-pattern>/admin/*</url-pattern>
   </filter-mapping>
   <filter>
     <filter-name>MemberFilter</filter-name>
