@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -21,6 +22,14 @@ public class AdminFilter extends BaseFilter implements Filter {
 
   @Resource(lookup = "java:app/AppName")
   private transient String appName;
+
+  @Override
+  public void init(FilterConfig filterConfig) {
+  }
+
+  @Override
+  public void destroy() {
+  }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

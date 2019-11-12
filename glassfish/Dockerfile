@@ -2,12 +2,12 @@
 FROM openjdk:8-slim
 
 ENV GLASSFISH_HOME=/app
-ENV GLASSFISH_VERSION=5.1.0
+ENV GLASSFISH_VERSION=4.1.1
 
 RUN apt-get update && apt-get install -y wget zip netcat && \
-    wget "https://www.eclipse.org/downloads/download.php?file=/glassfish/glassfish-${GLASSFISH_VERSION}.zip&r=1" -O glassfish.zip && \
+    wget "http://download.oracle.com/glassfish/${GLASSFISH_VERSION}/release/glassfish-${GLASSFISH_VERSION}.zip" -O glassfish.zip && \
     unzip glassfish.zip && \
-    mv glassfish5 ${GLASSFISH_HOME} && \
+    mv glassfish4 ${GLASSFISH_HOME} && \
     rm -Rf /*.tar.gz && \
     apt-get purge -y wget && \
     rm -rf /var/lib/apt/lists/*
