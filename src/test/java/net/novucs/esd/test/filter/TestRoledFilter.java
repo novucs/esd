@@ -1,5 +1,6 @@
 package net.novucs.esd.test.filter;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -19,6 +20,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.novucs.esd.filter.AdminFilter;
+import net.novucs.esd.filter.BaseFilter;
 import net.novucs.esd.filter.MemberFilter;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Role;
@@ -29,8 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
-public class TestMemberFilter {
+public class TestRoledFilter {
 
+  private static final String ROLE_NAME = "member";
   private static final String MAKE_PAYMENT = "/makepayment";
   private static final String SESSION_LABEL = "session";
   private static final String LAYOUT_JSP = "/layout.jsp";
@@ -50,7 +54,7 @@ public class TestMemberFilter {
   }
 
   @Test
-  public void testMemberFilterWithNoHttpSession()
+  public void testFilterWithNoHttpSession()
       throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -62,15 +66,15 @@ public class TestMemberFilter {
     when(request.getSession(anyBoolean())).thenReturn(null);
 
     // Request
-    MemberFilter filter = new MemberFilter();
-    filter.doFilter(request, response, chain);
+    BaseFilter filter = new BaseFilter();
+    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
   }
 
   @Test
-  public void testMemberFilterWithNoSession()
+  public void testFilterWithNoSession()
       throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -83,15 +87,15 @@ public class TestMemberFilter {
     when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(null);
 
     // Request
-    MemberFilter filter = new MemberFilter();
-    filter.doFilter(request, response, chain);
+    BaseFilter filter = new BaseFilter();
+    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
   }
 
   @Test
-  public void testMemberFilterWithUserNullRoles()
+  public void testFilterWithUserNullRoles()
       throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -110,15 +114,15 @@ public class TestMemberFilter {
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    MemberFilter filter = new MemberFilter();
-    filter.doFilter(request, response, chain);
+    BaseFilter filter = new BaseFilter();
+    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
   }
 
   @Test
-  public void testMemberFilterWithUserNoRoles()
+  public void testFilterWithUserNoRoles()
       throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -138,15 +142,15 @@ public class TestMemberFilter {
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    MemberFilter filter = new MemberFilter();
-    filter.doFilter(request, response, chain);
+    BaseFilter filter = new BaseFilter();
+    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
   }
 
   @Test
-  public void testMemberFilterWithUserCorrectRoles()
+  public void testFilterWithUserCorrectRoles()
       throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -155,7 +159,7 @@ public class TestMemberFilter {
     FilterChain chain = mock(FilterChain.class);
 
     // Roles
-    List<Role> sessionRoles = Arrays.asList(new Role("Member"));
+    List<Role> sessionRoles = Arrays.asList(new Role(ROLE_NAME));
     userSession.setRoles(sessionRoles);
 
     // When
@@ -166,15 +170,15 @@ public class TestMemberFilter {
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    MemberFilter filter = new MemberFilter();
-    filter.doFilter(request, response, chain);
+    BaseFilter filter = new BaseFilter();
+    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(chain, times(1)).doFilter(request, response);
   }
 
   @Test
-  public void testMemberFilterWithUserIncorrectRoles()
+  public void testFilterWithUserIncorrectRoles()
       throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -194,15 +198,15 @@ public class TestMemberFilter {
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    MemberFilter filter = new MemberFilter();
-    filter.doFilter(request, response, chain);
+    BaseFilter filter = new BaseFilter();
+    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendError(anyInt());
   }
 
   @Test
-  public void testMemberFilterExcluded()
+  public void testFilterExcluded()
       throws ServletException, IOException {
     // Given
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -213,8 +217,8 @@ public class TestMemberFilter {
     when(request.getRequestURI()).thenReturn("/fakeUrl.css");
 
     // Request
-    MemberFilter filter = new MemberFilter();
-    filter.doFilter(request, response, chain);
+    BaseFilter filter = new BaseFilter();
+    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(chain, times(1)).doFilter(request, response);

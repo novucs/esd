@@ -24,7 +24,7 @@ public class BaseFilter {
         || path.contains("/login") || path.matches(".*(css|jpg|jpeg|png|gif|js)");
   }
 
-  protected void handleRoleFilter(String roleName, ServletRequest request,
+  public void handleRoleFilter(String roleName, ServletRequest request,
       ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
 
