@@ -52,7 +52,7 @@ public class LoginServlet extends BaseServlet {
     }
 
     String password = request.getParameter("password");
-    Session session = getSession(request);
+    Session session = Session.fromRequest(request);
 
     if (user != null && user.getPassword().authenticate(password)) {
       session.setUser(user);
@@ -66,7 +66,7 @@ public class LoginServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Session session = getSession(request);
+    Session session = Session.fromRequest(request);
 
     // Check if user is already logged in
     if (session.getUser() != null) {

@@ -12,10 +12,14 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,7 +36,7 @@ import org.mockito.stubbing.Answer;
 public class TestRoledFilter {
 
   private static final String ROLE_NAME = "member";
-  private static final String MAKE_PAYMENT = "/makepayment";
+  private static final String DUMMY_PATH = "/app/makepayment";
   private static final String SESSION_LABEL = "session";
   private static final String LAYOUT_JSP = "/layout.jsp";
   private transient Session userSession;
@@ -59,12 +63,12 @@ public class TestRoledFilter {
     FilterChain chain = mock(FilterChain.class);
 
     // When
-    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(request.getRequestURI()).thenReturn(DUMMY_PATH);
     when(request.getSession(anyBoolean())).thenReturn(null);
 
     // Request
-    BaseFilter filter = new BaseFilter();
-    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
+    BaseFilter filter = new DummyFilter();
+    filter.filterByRole(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
@@ -80,12 +84,12 @@ public class TestRoledFilter {
     FilterChain chain = mock(FilterChain.class);
 
     // When
-    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(request.getRequestURI()).thenReturn(DUMMY_PATH);
     when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(null);
 
     // Request
-    BaseFilter filter = new BaseFilter();
-    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
+    BaseFilter filter = new DummyFilter();
+    filter.filterByRole(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
@@ -104,15 +108,15 @@ public class TestRoledFilter {
     userSession.setRoles(null);
 
     // When
-    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(request.getRequestURI()).thenReturn(DUMMY_PATH);
     when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    BaseFilter filter = new BaseFilter();
-    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
+    BaseFilter filter = new DummyFilter();
+    filter.filterByRole(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
@@ -132,15 +136,15 @@ public class TestRoledFilter {
     userSession.setRoles(sessionRoles);
 
     // When
-    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(request.getRequestURI()).thenReturn(DUMMY_PATH);
     when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    BaseFilter filter = new BaseFilter();
-    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
+    BaseFilter filter = new DummyFilter();
+    filter.filterByRole(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendRedirect(anyString());
@@ -160,15 +164,15 @@ public class TestRoledFilter {
     userSession.setRoles(sessionRoles);
 
     // When
-    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(request.getRequestURI()).thenReturn(DUMMY_PATH);
     when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    BaseFilter filter = new BaseFilter();
-    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
+    BaseFilter filter = new DummyFilter();
+    filter.filterByRole(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(chain, times(1)).doFilter(request, response);
@@ -184,19 +188,19 @@ public class TestRoledFilter {
     FilterChain chain = mock(FilterChain.class);
 
     // Roles
-    List<Role> sessionRoles = Arrays.asList(new Role("INCORRECT_ROLE"));
+    List<Role> sessionRoles = Collections.singletonList(new Role("INCORRECT_ROLE"));
     userSession.setRoles(sessionRoles);
 
     // When
-    when(request.getRequestURI()).thenReturn(MAKE_PAYMENT);
+    when(request.getRequestURI()).thenReturn(DUMMY_PATH);
     when(httpSession.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT_JSP)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     // Request
-    BaseFilter filter = new BaseFilter();
-    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
+    BaseFilter filter = new DummyFilter();
+    filter.filterByRole(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(response, times(1)).sendError(anyInt());
@@ -214,10 +218,25 @@ public class TestRoledFilter {
     when(request.getRequestURI()).thenReturn("/fakeUrl.css");
 
     // Request
-    BaseFilter filter = new BaseFilter();
-    filter.handleRoleFilter(ROLE_NAME, request, response, chain);
+    BaseFilter filter = new DummyFilter();
+    filter.filterByRole(ROLE_NAME, request, response, chain);
 
     // Assert
     verify(chain, times(1)).doFilter(request, response);
+  }
+
+  private static class DummyFilter extends BaseFilter {
+
+    @Override
+    public void init(FilterConfig filterConfig) {
+    }
+
+    @Override
+    public void destroy() {
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+    }
   }
 }
