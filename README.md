@@ -5,10 +5,15 @@ Other Documents:
 
 * [Planning and Specification Documents](https://docs.google.com/document/d/1-RYVGb9SWycJ3qjYdG6a2n_CVkIMA-091wgTMpM1pWw/edit?usp=sharing)
 * **Sprint 1**
-    * [Presentation Slides](https://docs.google.com/presentation/d/1YE8q5Ss_eXeBY88T_o1lAt124U194z2HVEm3Ye2s6Zc/edit#slide=id.g65affc0ea7_0_26)
-    * [Gantt Chart](https://docs.google.com/spreadsheets/d/1CuMzPxT09XPu4rKxUHP4BeWPx02Qsc_23hW29At_4mM/edit?usp=sharing)
+    * [Presentation Slides](https://docs.google.com/presentation/d/1YE8q5Ss_eXeBY88T_o1lAt124U194z2HVEm3Ye2s6Zc/edit)
+    * [Gantt Chart (End of Sprint 1)](https://docs.google.com/spreadsheets/d/1emPPWVlmWq6Swxd0nMS5abA0V7NOwHdpIquuz8Qphw4/edit)
     * [Team Meeting Logs](https://docs.google.com/document/d/1Sqs76sz8YiU-DdGOzemonaKh34DnCnZv508iSUtr2qY/edit)
     * [Task Delivery Form](https://docs.google.com/spreadsheets/d/12OIcEzbHAyU1NgS5qefXVFrq9kBFAxa1R7tE03d2C8g/edit)
+* **Sprint 2**
+    * [Presentation Slides](https://docs.google.com/presentation/d/1tMS5IKeZA0QfBmf1jkagXWh98ibGLW7jVt5lsNx6zWY/edit)
+    * [Gantt Chart](https://docs.google.com/spreadsheets/d/1CuMzPxT09XPu4rKxUHP4BeWPx02Qsc_23hW29At_4mM/edit?usp=sharing)
+    * [Team Meeting Logs](https://docs.google.com/document/d/1Mh9JGCnKwnYh4F2RnbiuHM_MQ2ytNIdeYCSyvwYmdIY/edit)
+    * [Task Delivery Form](https://docs.google.com/spreadsheets/d/1-5r7Yi7BovaCbgftWTqmsubh2VlF4ouDdRF-nPyDsko/edit)
 
 ## Quickstart
 Requirements:
