@@ -3,6 +3,8 @@ package net.novucs.esd.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 
@@ -11,6 +13,7 @@ import net.novucs.esd.model.User;
  */
 public class Session {
 
+  public static final String ATTRIBUTE_NAME = "session";
   private final Stack<String> errors = new Stack<>();
   private List<Role> roles = new ArrayList<>();
   private User user;
@@ -71,5 +74,34 @@ public class Session {
    */
   public void setRoles(List<Role> roles) {
     this.roles = roles;
+  }
+
+
+  /**
+   * Gets session.
+   *
+   * @param request the request
+   * @return the session
+   */
+  public static Session fromRequest(HttpServletRequest request) {
+    HttpSession httpSession = request.getSession(false);
+
+    // If a session doesn't exist, request GlassFish make a new one
+    if (httpSession == null) {
+      httpSession = request.getSession(true);
+    }
+
+    // Check if we have a session handler in our session
+    Session sessionHandler;
+    if (httpSession.getAttribute(ATTRIBUTE_NAME) == null) {
+      // Create a session
+      sessionHandler = new Session();
+      httpSession.setAttribute(ATTRIBUTE_NAME, sessionHandler);
+    } else {
+      // Invoke our old session
+      sessionHandler = (Session) httpSession.getAttribute(ATTRIBUTE_NAME);
+    }
+
+    return sessionHandler;
   }
 }

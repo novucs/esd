@@ -29,7 +29,7 @@ import org.mockito.stubbing.Answer;
 
 public class TestLoggedInFilter {
 
-  private static final String ACCESSIBLE_PAGE = "/settings";
+  private static final String ACCESSIBLE_PAGE = "/app/settings";
   private static final String SESSION_LABEL = "session";
   private static final String LAYOUT_JSP = "/layout.jsp";
   private transient Session userSession;
