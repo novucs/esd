@@ -13,6 +13,10 @@ public class AdminDashboardServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+    // todo: pull outstanding members, current members etc from db.
+    request.setAttribute("outstandingMemberApplications", "45");
+    request.setAttribute("currentMembers", "100");
+    request.setAttribute("outstandingBalances", "15");
     super.forward(request, response, "Dashboard", "admin.dashboard");
   }
 
