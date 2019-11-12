@@ -56,7 +56,7 @@ public class LoginServlet extends BaseServlet {
 
     if (user != null && user.getPassword().authenticate(password)) {
       session.setUser(user);
-      loginSuccess(request, response, session);
+      loginSuccess(response, session);
     } else {
       session.pushError("Incorrect username or password");
       super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
@@ -70,7 +70,7 @@ public class LoginServlet extends BaseServlet {
 
     // Check if user is already logged in
     if (session.getUser() != null) {
-      loginSuccess(request, response, session);
+      loginSuccess(response, session);
       return;
     }
 
@@ -78,9 +78,9 @@ public class LoginServlet extends BaseServlet {
     super.forward(request, response, LOGIN_TITLE, LOGIN_PATH);
   }
 
-  private void loginSuccess(HttpServletRequest request, HttpServletResponse response,
+  private void loginSuccess(HttpServletResponse response,
       Session session)
-      throws IOException, ServletException {
+      throws IOException {
     try {
       User user = session.getUser();
       List<UserRole> userRoles = userRoleDao.select()
@@ -95,8 +95,8 @@ public class LoginServlet extends BaseServlet {
         roles.add(role);
       }
 
-      request.setAttribute("roles", roles);
-      super.forward(request, response, "Login Success", "/loginsuccess");
+      session.setRoles(roles);
+      response.sendRedirect("dashboard");
     } catch (SQLException ex) {
       Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
     }
