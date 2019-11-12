@@ -4,7 +4,6 @@ import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,24 +61,6 @@ public class TestUserSettingsServlet {
 
     // Assert
     verify(request).getRequestDispatcher(eq("/layout.jsp"));
-  }
-
-  @Test
-  public void testRequestHasNoSession()
-      throws ServletException, IOException {
-    // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
-    // When
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(httpSession.getAttribute(eq("session"))).thenReturn(null);
-    servlet.doGet(request, response);
-
-    // Assert
-    verify(response, times(1)).sendRedirect("login");
   }
 
   @Test

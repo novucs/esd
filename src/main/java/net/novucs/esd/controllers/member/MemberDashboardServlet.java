@@ -4,9 +4,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.novucs.esd.controllers.BaseServlet;
-import net.novucs.esd.lifecycle.Session;
 
 public class MemberDashboardServlet extends BaseServlet {
 
@@ -15,14 +13,6 @@ public class MemberDashboardServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-
-    // This page is limited to logged in members
-    Session session = super.getSession(request);
-    if (session.getUser() == null) {
-      response.sendRedirect("login");
-      return;
-    }
-
     super.forward(request, response, "Dashboard", "member.dashboard");
   }
 
