@@ -63,7 +63,7 @@ public abstract class BaseServlet extends HttpServlet {
     Session session = getSession(request);
     response.setContentType("text/html;charset=UTF-8");
     request.setAttribute("errors", session.getErrors());
-    request.setAttribute("title", String.format("%s", title));
+    request.setAttribute("title", title);
     request.setAttribute("page", String.format("%s.jsp", page));
     request.setAttribute("name", page);
     request.setAttribute("baseUrl", "/" + appName);
