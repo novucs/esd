@@ -87,26 +87,6 @@ public class AddressLookupServlet extends BaseServlet {
   }
 
   /**
-   * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-   *
-   * @param request  servlet request
-   * @param response servlet response
-   * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException      if an I/O error occurs
-   */
-  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    if (request.getParameter("action") == null) {
-      super.forward(request, response, "Lookup Data", "address");
-    } else if (request.getParameter("action").equals("lookup")) {
-      String address = lookupAddress(request.getParameter("houseno"),
-          request.getParameter("postcode"));
-      request.setAttribute("addressData", Arrays.asList(address));
-      super.forward(request, response, "Lookup Data", "address");
-    }
-  }
-
-  /**
    * Handles the HTTP <code>GET</code> method.
    *
    * @param request  servlet request
@@ -117,7 +97,7 @@ public class AddressLookupServlet extends BaseServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    processRequest(request, response);
+    super.forward(request, response, "Lookup Data", "address");
   }
 
   /**
@@ -131,7 +111,14 @@ public class AddressLookupServlet extends BaseServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    processRequest(request, response);
+    if (request.getParameter("action") == null) {
+      super.forward(request, response, "Lookup Data", "address");
+    } else if (request.getParameter("action").equals("lookup")) {
+      String address = lookupAddress(request.getParameter("houseno"),
+          request.getParameter("postcode"));
+      request.setAttribute("addressData", Arrays.asList(address));
+      super.forward(request, response, "Lookup Data", "address");
+    }
   }
 
   /**
@@ -141,7 +128,7 @@ public class AddressLookupServlet extends BaseServlet {
    */
   @Override
   public String getServletInfo() {
-    return "Short description";
+    return "AddressLookupServlet";
   }
 
 }
