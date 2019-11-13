@@ -2,8 +2,10 @@
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<% Boolean userHasSession =
-        ((Session) (request.getSession().getAttribute("session"))).getUser() != null; %>
+<% Session userSession = ((Session) request.getSession().getAttribute("session")); %>
+<% Boolean userHasSession = userSession.getUser() != null; %>
+<% Boolean userIsMember = userSession.hasRole("Member"); %>
+<% Boolean userIsAdmin = userSession.hasRole("Administrator"); %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,7 +20,7 @@
     <link rel="stylesheet" href="${baseUrl}/css/overrides.css" />
   </head>
   <body>
-    <t:navigation hasSession="<%=userHasSession%>"/>
+    <t:navigation hasSession="<%=userHasSession%>" isMember="<%=userIsMember%>" isAdmin="<%=userIsAdmin%>"/>
     <% if (userHasSession) { %>
       <main class="container">
         <jsp:include page="breadcrumb.jsp" />

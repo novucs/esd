@@ -3,6 +3,7 @@ package net.novucs.esd.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.model.Role;
@@ -65,6 +66,24 @@ public class Session {
    */
   public List<Role> getRoles() {
     return roles;
+  }
+
+  /**
+   * Get the user role names.
+   *
+   * @return List of role names
+   */
+  public List<String> getRoleNames() {
+    return this.getRoles().stream().map(r -> r.getName().toLowerCase()).collect(Collectors.toList());
+  }
+
+  /**
+   * Check if the role name exists within the users roles
+   *
+   * @return Yes / No
+   */
+  public Boolean hasRole(String name) {
+    return this.getRoleNames().contains(name.toLowerCase());
   }
 
   /**
