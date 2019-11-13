@@ -2,7 +2,6 @@ package net.novucs.esd.controllers.admin;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.ZonedDateTime;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,7 @@ public class AdminEditUserServlet extends BaseServlet {
   private static final long serialVersionUID = 1426082847044519303L;
 
   @Inject
-  Dao<User> userDao;
+  private Dao<User> userDao;
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -83,11 +82,11 @@ public class AdminEditUserServlet extends BaseServlet {
     }
 
     // Check if the user exists
-    User user = null;
+    User user;
     try {
       user = userDao.selectById(userId);
     } catch (SQLException e) {
-      e.printStackTrace();
+      return null;
     }
     return user;
   }
