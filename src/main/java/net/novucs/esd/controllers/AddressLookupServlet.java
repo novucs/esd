@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AddressLookupServlet extends BaseServlet {
 
+  private static final long serialVersionUID = 1426081247044519303L;
   private static final String GOOGLE_MAPS_API_KEY =
       "AIzaSyBgLep4XYUU26_O1C5o5NZKF_22w65HOZI";
   private static final String GOOGLE_MAPS_ENDPOINT =
@@ -23,11 +24,12 @@ public class AddressLookupServlet extends BaseServlet {
           + GOOGLE_MAPS_API_KEY + "&sensor=false";
 
   /**
-   * Lookup an Address from a Postal Code and return its full address
-   * @param String houseName
-   * @param String postalCode
-   * @return String
-   * @throws IOException
+   * Lookup an Address from a Postal Code and return its full address.
+   *
+   * @param houseName  The House Number / Name
+   * @param postalCode The Postal Code
+   * @return Formatted Address
+   * @throws IOException if an I/O error occurs
    */
   public String lookupAddress(String houseName, String postalCode) throws IOException {
     // Setup Postal Code lookup via Google API
@@ -69,14 +71,14 @@ public class AddressLookupServlet extends BaseServlet {
   }
 
   /**
-   * Reads a JSON Object from a Reader
+   * Reads a JSON Object from a Reader.
    *
-   * @param URL postcodeLookup
-   * @return JsonObject
-   * @throws IOException
+   * @param lookupUrl The URL to read from
+   * @return A JsonObject
+   * @throws IOException if an I/O error occurs
    */
-  private JsonObject readJsonObject(URL postcodeLookup) throws IOException {
-    BufferedReader in = new BufferedReader(new InputStreamReader(postcodeLookup.openStream()));
+  private JsonObject readJsonObject(URL lookupUrl) throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(lookupUrl.openStream()));
     JsonObject json;
     try (JsonReader reader = Json.createReader(in)) {
       json = reader.readObject();
@@ -85,20 +87,20 @@ public class AddressLookupServlet extends BaseServlet {
   }
 
   /**
-   * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-   * methods.
+   * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
    *
-   * @param request servlet request
+   * @param request  servlet request
    * @param response servlet response
    * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
+   * @throws IOException      if an I/O error occurs
    */
-  protected void processRequest (HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     if (request.getParameter("action") == null) {
       super.forward(request, response, "Lookup Data", "address");
     } else if (request.getParameter("action").equals("lookup")) {
-      String address = lookupAddress(request.getParameter("houseno"), request.getParameter("postcode"));
+      String address = lookupAddress(request.getParameter("houseno"),
+          request.getParameter("postcode"));
       request.setAttribute("addressData", Arrays.asList(address));
       super.forward(request, response, "Lookup Data", "address");
     }
@@ -107,28 +109,28 @@ public class AddressLookupServlet extends BaseServlet {
   /**
    * Handles the HTTP <code>GET</code> method.
    *
-   * @param request servlet request
+   * @param request  servlet request
    * @param response servlet response
    * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
+   * @throws IOException      if an I/O error occurs
    */
   @Override
-  protected void doGet (HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     processRequest(request, response);
   }
 
   /**
    * Handles the HTTP <code>POST</code> method.
    *
-   * @param request servlet request
+   * @param request  servlet request
    * @param response servlet response
    * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
+   * @throws IOException      if an I/O error occurs
    */
   @Override
-  protected void doPost (HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     processRequest(request, response);
   }
 
@@ -138,7 +140,7 @@ public class AddressLookupServlet extends BaseServlet {
    * @return a String containing servlet description
    */
   @Override
-  public String getServletInfo () {
+  public String getServletInfo() {
     return "Short description";
   }
 
