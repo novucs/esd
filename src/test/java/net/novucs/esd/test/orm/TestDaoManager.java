@@ -91,7 +91,7 @@ public class TestDaoManager {
       AllFieldsTable table = new AllFieldsTable();
       table.string = "test_string" + (i % 3);
       allFieldsTableDao.insert(table);
-      if ((i % 3) == 2) {
+      if (i % 3 == 2) { // NOPMD
         expected.add(table);
       }
     }

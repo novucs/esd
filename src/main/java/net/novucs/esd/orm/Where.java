@@ -6,8 +6,8 @@ import java.util.StringJoiner;
 import net.novucs.esd.orm.clause.AndClause;
 import net.novucs.esd.orm.clause.Clause;
 import net.novucs.esd.orm.clause.EqClause;
-import net.novucs.esd.orm.clause.OrClause;
 import net.novucs.esd.orm.clause.LikeClause;
+import net.novucs.esd.orm.clause.OrClause;
 import net.novucs.esd.orm.clause.WhereClause;
 
 /**
