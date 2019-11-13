@@ -6,7 +6,8 @@
         M.Dropdown.init(e, {
           hover: true,
           closeOnClick: true,
-          coverTrigger: false
+          coverTrigger: false,
+          constrainWidth: false
         });
       } catch (e) {
         console.warn("Unable to instantiate Dropdown.");
