@@ -6,6 +6,7 @@ import java.util.StringJoiner;
 import net.novucs.esd.orm.clause.AndClause;
 import net.novucs.esd.orm.clause.Clause;
 import net.novucs.esd.orm.clause.EqClause;
+import net.novucs.esd.orm.clause.LikeClause;
 import net.novucs.esd.orm.clause.OrClause;
 import net.novucs.esd.orm.clause.WhereClause;
 
@@ -34,6 +35,43 @@ public class Where {
    */
   public Where eq(String columnName, Object value) {
     clauses.add(new EqClause(columnName, value));
+    return this;
+  }
+
+  /**
+   * Selects fields that are similar.
+   *
+   * @param columnName the column name
+   * @param value      the value
+   * @return the where
+   */
+  public Where like(String columnName, String value) {
+    clauses.add(new LikeClause(columnName, value));
+    return this;
+  }
+
+  /**
+   * Search specific columns in table via the tokenized query.
+   *
+   * @param query   the raw query string.
+   * @param columns the columns to search.
+   * @return the search selection.
+   */
+  public Where search(String query, String... columns) {
+    String[] tokens = query.split(" ");
+    for (String column : columns) {
+      for (String token : tokens) {
+        like(column, "%" + token + "%");
+        and();
+      }
+      if (tokens.length >= 1) {
+        clauses.remove(clauses.size() - 1);
+      }
+      or();
+    }
+    if (columns.length >= 1) {
+      clauses.remove(clauses.size() - 1);
+    }
     return this;
   }
 
