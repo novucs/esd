@@ -3,7 +3,7 @@
 <%@ page import="net.novucs.esd.model.User" %>
 <% Session userSession = ((Session) request.getAttribute("session")); %>
 <% User user = userSession.getUser(); %>
-<% Boolean passwordChange = user.getNeedsPasswordChange(); %>
+<% Boolean passwordChange = user.getNeedsPasswordChange() == 1; %>
 <div>
     <div class="row no-bottom-margin">
         <div class="col <%=passwordChange ? "s8" : "s12"%>">
