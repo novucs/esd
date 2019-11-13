@@ -47,7 +47,7 @@ public class AdminEditUserServlet extends BaseServlet {
     // Feedback
     request.setAttribute("updated", true);
     request.setAttribute("editUser", user);
-    super.forward(request, response, "Submit Edit User", "admin.edituser");
+    super.forward(request, response, "Edit " + user.getName(), "admin.edituser");
   }
 
   @Override
