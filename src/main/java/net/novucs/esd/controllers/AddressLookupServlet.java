@@ -1,59 +1,87 @@
 package net.novucs.esd.controllers;
 
-import com.google.gson.Gson;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.StringJoiner;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.model.PostcodeIo;
-import net.novucs.esd.model.PostcodeResult;
 
 public class AddressLookupServlet extends BaseServlet {
 
-  private static final String POSTCODES_IO_ENDPOINT =
-      "http://api.postcodes.io/postcodes";
+  private static final String GOOGLE_MAPS_API_KEY =
+      "AIzaSyBgLep4XYUU26_O1C5o5NZKF_22w65HOZI";
+  private static final String GOOGLE_MAPS_ENDPOINT =
+      "https://maps.googleapis.com/maps/api/geocode/json?key="
+          + GOOGLE_MAPS_API_KEY + "&sensor=false";
 
-  private String lookupAddress(String postalCode) throws IOException {
-    // Do first lat & long search from post code
-    // TODO: Attempt to use MapBox API?
-    URL postCodeEndpoint = new URL(POSTCODES_IO_ENDPOINT + "/" + postalCode);
-    InputStreamReader reader = new InputStreamReader(postCodeEndpoint.openStream());
-    PostcodeIo data = new Gson().fromJson(reader, PostcodeIo.class);
-    PostcodeResult result = data.getResult();
+  /**
+   * Lookup an Address from a Postal Code and return its full address
+   * @param String houseName
+   * @param String postalCode
+   * @return String
+   * @throws IOException
+   */
+  public String lookupAddress(String houseName, String postalCode) throws IOException {
+    // Setup Postal Code lookup via Google API
+    URL postcodeLookup = new URL(GOOGLE_MAPS_ENDPOINT + "&address=" + postalCode);
+    JsonObject postcodeResponse = readJsonObject(postcodeLookup);
 
-    System.out.println("---------------------");
-    System.out.println("POSTCODE: " + result.getParish());
-    System.out.println("SOMETHING: " + result.getOutcode() + result.getIncode());
-    System.out.println("---------------------");
+    // Grab the latitude and longitude
+    JsonObject location = postcodeResponse.getJsonArray("results")
+        .getJsonObject(0)
+        .getJsonObject("geometry")
+        .getJsonObject("location");
+    String lat = Double.toString(location.getJsonNumber("lat").doubleValue());
+    String lng = Double.toString(location.getJsonNumber("lng").doubleValue());
 
-    return "Bruh";
-
-    /*
-    // Get data from postCodeEndpoint and convert to JSON Object [?]
-    // The below examples are grabbing just from `.results[0]`, we could fetch all
-    // but this would then cause multiple requests... possibly? @refactor @review
-    String lat = "53.0234732";  // receivedData.results[0].geometry.location.lat
-    String lng = "-3.34328743"; // receivedData.results[0].geometry.location.lng
-
-    // Use the above returned lat,lng to get the addresses
+    // Use the latitude and longitude to request additional address information
     URL addressEndpoint = new URL(GOOGLE_MAPS_ENDPOINT + "&latlng=" + lat + "," + lng);
+    JsonObject addressResponse = readJsonObject(addressEndpoint);
+
+    // Parse the address components for address data
+    JsonArray addressComponent = addressResponse.getJsonArray("results")
+        .getJsonObject(0)
+        .getJsonArray("address_components");
 
     // Fetch the data from addressEndpoint
-    // addressData.results[0].address_components;
-    List<String> address = Arrays.asList("Blah", "Bruh", "Bleh");
-    String street = ""; // address[1].long_name
-    String town = ""; // address[2].long_name
-    String county = ""; // address[3].long_name
+    String street = addressComponent
+        .getJsonObject(1).getJsonString("long_name").getString();
+    String town = addressComponent
+        .getJsonObject(2).getJsonString("long_name").getString();
+    String county = addressComponent
+        .getJsonObject(3).getJsonString("long_name").getString();
 
+    // Concatenate the address data together and return it
     StringJoiner addr = new StringJoiner(", ");
     addr.add(houseName);
     addr.add(street);
     addr.add(town);
     addr.add(county);
-    return addr.toString();*/
+    return addr.toString();
+  }
+
+  /**
+   * Reads a JSON Object from a Reader
+   *
+   * @param URL postcodeLookup
+   * @return JsonObject
+   * @throws IOException
+   */
+  private JsonObject readJsonObject(URL postcodeLookup) throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(postcodeLookup.openStream()));
+    JsonObject json;
+    try (JsonReader reader = Json.createReader(in)) {
+      json = reader.readObject();
+    }
+    return json;
   }
 
   /**
@@ -65,25 +93,13 @@ public class AddressLookupServlet extends BaseServlet {
    * @throws ServletException if a servlet-specific error occurs
    * @throws IOException if an I/O error occurs
    */
-  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    // This page is limited to logged in members
-    /*Session session = super.getSession(request);
-    if (session.getUser() == null) {
-      response.sendRedirect("login");
-      return;
-    }*/
+  protected void processRequest (HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
     if (request.getParameter("action") == null) {
       super.forward(request, response, "Lookup Data", "address");
     } else if (request.getParameter("action").equals("lookup")) {
-      lookupAddress(request.getParameter("postcode"));
-      request.setAttribute("addressData", Arrays.asList(
-          "1 Bristol Lane",
-          "2 Bristol Lane",
-          "3 Bristol Lane",
-          "4 Bristol Lane",
-          "5 Bristol Lane")
-      );
+      String address = lookupAddress(request.getParameter("houseno"), request.getParameter("postcode"));
+      request.setAttribute("addressData", Arrays.asList(address));
       super.forward(request, response, "Lookup Data", "address");
     }
   }
@@ -97,8 +113,8 @@ public class AddressLookupServlet extends BaseServlet {
    * @throws IOException if an I/O error occurs
    */
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doGet (HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
     processRequest(request, response);
   }
 
@@ -111,8 +127,8 @@ public class AddressLookupServlet extends BaseServlet {
    * @throws IOException if an I/O error occurs
    */
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doPost (HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
     processRequest(request, response);
   }
 
@@ -122,7 +138,7 @@ public class AddressLookupServlet extends BaseServlet {
    * @return a String containing servlet description
    */
   @Override
-  public String getServletInfo() {
+  public String getServletInfo () {
     return "Short description";
   }
 
