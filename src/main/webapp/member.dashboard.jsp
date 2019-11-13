@@ -3,9 +3,10 @@
 <%@ page import="net.novucs.esd.model.User" %>
 <% Session userSession = ((Session) request.getAttribute("session")); %>
 <% User user = userSession.getUser(); %>
+<% Boolean passwordChange = user.getNeedsPasswordChange(); %>
 <div>
     <div class="row no-bottom-margin">
-        <div class="col s8">
+        <div class="col <%=passwordChange ? "s8" : "s12"%>">
             <div class="card black white-text">
                 <div class="card-content valign-wrapper">
                     <div class="card-text">
@@ -19,23 +20,25 @@
                 </div>
             </div>
         </div>
-        <div class="col s4">
-            <div class="card red white-text">
-                <div class="card-content valign-wrapper">
-                    <div class="card-text">
-                        <h6>Change your password</h6>
-                        <p>
-                            <a href="${pageContext.request.contextPath}/settings">
-                                Update your account password!
-                            </a>
-                        </p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="material-icons medium valign">vpn_key</i>
+        <% if (passwordChange) { %>
+            <div class="col s4">
+                <div class="card red white-text">
+                    <div class="card-content valign-wrapper">
+                        <div class="card-text">
+                            <h6>Change your password</h6>
+                            <p>
+                                <a href="${pageContext.request.contextPath}/settings">
+                                    Update your account password!
+                                </a>
+                            </p>
+                        </div>
+                        <div class="card-icon">
+                            <i class="material-icons medium valign">vpn_key</i>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        <% } %>
     </div>
     <div class="row">
         <div class="col s12 m4">
