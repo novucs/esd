@@ -100,7 +100,8 @@ public class TestDaoManager {
         .where(new Where().search("test 2", "string"))
         .all();
 
-    assertEquals("Should select first two created entries", expected, selected);
+    assertEquals("Should select all entities where query matches column",
+        expected, selected);
   }
 
   /**
