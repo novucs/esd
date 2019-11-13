@@ -8,7 +8,7 @@
     <t:head />
   </head>
   <body>
-    <t:navigation hasSession="false" />
+    <t:navigation isMember="false" isAdmin="false" hasSession="false" />
     <main>
       <div>
         <div class="container align-center">
@@ -20,6 +20,7 @@
                 </p>
                 <br/>
                 <a href="javascript:window.history.back();" class="waves-effect waves-light btn-large">Go Back</a>
+                <a href="${pageContext.request.contextPath}/" class="waves-effect waves-light btn-large">Homepage</a>
               </div>
             </div>
           </div>
