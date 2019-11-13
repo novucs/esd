@@ -1,25 +1,60 @@
-<%@tag description="Generic Header Contents" pageEncoding="UTF-8"%>
-<%@attribute name="hasSession" required="true" type="java.lang.Boolean"%>
+<%@tag description="Generic Header Contents" pageEncoding="UTF-8" %>
+<%@attribute name="hasSession" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isMember" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
+<% String baseUrl = request.getContextPath(); %>
 <header>
     <nav class="navigation-bar">
-        <div class="nav-wrapper">
+        <div class="nav-wrapper ${hasSession ? 'container' : ''}">
             <a href="." class="brand-logo">
                 <span>XYZ</span>
                 <span>Drivers Association</span>
             </a>
             <% if (hasSession) { %>
             <ul class="right hide-on-med-and-down">
-                <li><a href="#">Member Dashboard</a></li>
-                <li><a href="#">Admin Dashboard</a></li>
+                <li>
+                    <a href="${baseUrl}/dashboard" class="dropdown-trigger" data-target="memberDropdown">
+                        Member
+                    </a>
+                </li>
+                <% if (isMember) { %>
+                <ul id="memberDropdown" class="dropdown-content">
+                    <li><a href="${baseUrl}/dashboard">Dashboard</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="${baseUrl}/profile">My Profile</a></li>
+                    <li><a href="${baseUrl}/claims">My Claims</a></li>
+                    <li><a href="${baseUrl}/payments">My Payments</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="${baseUrl}/makepayment">Make a Payment</a></li>
+                    <li><a href="${baseUrl}/makeclaim">Make a Claim</a></li>
+                </ul>
+                <% } %>
+                <% if (isAdmin) { %>
+                <li>
+                    <a href="${baseUrl}/admin/dashboard" class="dropdown-trigger"
+                       data-target="adminDropdown">
+                        Administration
+                    </a>
+                </li>
+                <ul id="adminDropdown" class="dropdown-content">
+                    <li><a href="${baseUrl}/admin/dashboard">Dashboard</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="${baseUrl}/admin/users">Manage Users</a></li>
+                    <li><a href="${baseUrl}/admin/applications">Manage Applications</a></li>
+                    <li><a href="${baseUrl}/admin/claims">Manage Claims</a></li>
+                    <li><a href="${baseUrl}/admin/payments">Manage Payments</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="${baseUrl}/admin/users/search">Search Users</a></li>
+                </ul>
+                <% } %>
                 <!-- Dropdown Trigger -->
-                <li><a class="dropdown-trigger" href="" data-target="dropdown"><i
+                <li><a class="dropdown-trigger" href="#" data-target="userDropdown"><i
                         class="large material-icons">account_box</i></a></li>
             </ul>
             <% } %>
-            <ul id="dropdown" class="dropdown-content">
-                <li><a>User Settings</a></li>
-                <li><a>Reset Password</a></li>
-                <li><a href="logout">Logout</a></li>
+            <ul id="userDropdown" class="dropdown-content">
+                <li><a href="${baseUrl}/settings">User Settings</a></li>
+                <li><a href="${baseUrl}/logout">Logout</a></li>
             </ul>
         </div>
     </nav>
