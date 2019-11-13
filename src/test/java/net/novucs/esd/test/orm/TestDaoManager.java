@@ -80,6 +80,30 @@ public class TestDaoManager {
   }
 
   /**
+   * Test search.
+   *
+   * @throws SQLException the sql exception
+   */
+  @Test
+  public void testSearch() throws SQLException {
+    List<AllFieldsTable> expected = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      AllFieldsTable table = new AllFieldsTable();
+      table.string = "test_string" + (i % 3);
+      allFieldsTableDao.insert(table);
+      if ((i % 3) == 2) {
+        expected.add(table);
+      }
+    }
+
+    List<AllFieldsTable> selected = allFieldsTableDao.select()
+        .where(new Where().search("test 2", "string"))
+        .all();
+
+    assertEquals("Should select first two created entries", expected, selected);
+  }
+
+  /**
    * Test select by id.
    *
    * @throws SQLException the sql exception
