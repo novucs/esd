@@ -1,3 +1,4 @@
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page import="net.novucs.esd.model.Role" %>
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
 <%@ page import="net.novucs.esd.model.User" %>
@@ -21,65 +22,14 @@
             </div>
         </div>
         <% if (passwordChange) { %>
-            <div class="col s4">
-                <div class="card red white-text">
-                    <div class="card-content valign-wrapper">
-                        <div class="card-text">
-                            <h6>Change your password</h6>
-                            <p>
-                                <a href="${pageContext.request.contextPath}/settings">
-                                    Update your account password!
-                                </a>
-                            </p>
-                        </div>
-                        <div class="card-icon">
-                            <i class="material-icons medium valign">vpn_key</i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <t:tile title="Change your password" label="Update your account password!" icon="vpn_key"
+                colour="red" size="s4" labelLink="./settings"/>
         <% } %>
     </div>
     <div class="row">
-        <div class="col s12 m4">
-            <div class="card black white-text">
-                <div class="card-content valign-wrapper">
-                    <div class="card-text">
-                        <h6>0</h6>
-                        <p>Outstanding Claims</p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="material-icons medium valign">ballot</i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col s12 m4">
-            <div class="card black white-text">
-                <div class="card-content valign-wrapper">
-                    <div class="card-text">
-                        <h6>Active</h6>
-                        <p>Account Status</p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="material-icons medium valign">verified_user</i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col s12 m4">
-            <div class="card black white-text">
-                <div class="card-content valign-wrapper">
-                    <div class="card-text">
-                        <h6>0</h6>
-                        <p>Total Payments</p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="material-icons medium valign">attach_money</i>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <t:tile title="0" label="Outstanding Claims" icon="ballot"/>
+        <t:tile title="Active" label="Account Status" icon="verified_user"/>
+        <t:tile title="0" label="Total Payments" icon="attach_money"/>
     </div>
     <div class="row">
         <div class="col s12 center-align">
