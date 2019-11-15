@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.admin.AdminDashboardServlet;
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.User;
-import net.novucs.esd.util.DateUtil;
-import net.novucs.esd.util.Password;
+import net.novucs.esd.test.TestDummyDataUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
@@ -33,14 +31,7 @@ public class TestAdminDashboardServlet {
   @Before
   public void initialiseTest() {
     userSession = new Session();
-    userSession.setUser(new User(
-        "testuser",
-        "testuser@example.com",
-        Password.fromPlaintext("test_pass"),
-        "Line 1,Line 2,City,County,Postcode",
-        new DateUtil().getDateFromString("2000-01-01"),
-        "APPLICATION"
-    ));
+    userSession.setUser(TestDummyDataUtils.getDummyUser());
   }
 
   @Test
