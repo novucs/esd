@@ -1,4 +1,4 @@
-<%@tag description="Generic Header Contents" pageEncoding="UTF-8" %>
+<%@tag description="Row Tile" pageEncoding="UTF-8" %>
 <%@attribute name="title" required="true" type="java.lang.String" %>
 <%@attribute name="label" required="true" type="java.lang.String" %>
 <%@attribute name="icon" required="true" type="java.lang.String" %>
