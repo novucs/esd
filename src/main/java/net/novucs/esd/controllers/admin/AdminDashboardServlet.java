@@ -40,16 +40,17 @@ public class AdminDashboardServlet extends BaseServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     try {
-      int roleId = roleDao.select().where(new Where().eq("name", "Member")).first().getId();
+      Role role = roleDao.select().where(new Where().eq("name", "Member")).first();
+      int roleId = role.getId();
       List<User> numberOfUsers = userDao.select().all();
       List<UserRole> userRoles = userRoleDao.select().all();
       int outstandingApplications = applicationDao.select().all().size();
       int claims = claimDao.select().all().size();
       int members = 0;
 
-      for(User u: numberOfUsers){
-        for(UserRole r: userRoles){
-          if(r.getUserId() == u.getId() && roleId == r.getRoleId()){
+      for (User u: numberOfUsers) {
+        for (UserRole r: userRoles) {
+          if (r.getUserId() == u.getId() && roleId == r.getRoleId()) {
             members++;
           }
         }
@@ -64,7 +65,7 @@ public class AdminDashboardServlet extends BaseServlet {
       request.setAttribute("quarterlyClaimCost", "20000");
       super.forward(request, response, "Dashboard", "admin.dashboard");
     } catch (SQLException e) {
-      e.printStackTrace();
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 
