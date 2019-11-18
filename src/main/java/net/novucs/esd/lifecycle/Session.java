@@ -20,7 +20,7 @@ public class Session {
   public static final String ATTRIBUTE_NAME = "session";
   private final Stack<String> errors = new Stack<>();
   private List<Role> roles = new ArrayList<>();
-  private Map<String, Integer> filters = new ConcurrentHashMap<>();
+  private Map<String, Object> filters = new ConcurrentHashMap<>();
   private User user;
 
   /**
@@ -107,8 +107,17 @@ public class Session {
    * @param filterName Name of the filter
    * @param filterValue Value of the filter
    */
-  public void setFilter(String filterName, Integer filterValue) {
+  public void setFilter(String filterName, Object filterValue) {
     this.filters.put(filterName, filterValue);
+  }
+
+  /**
+   * Add a filter to the session e.g. page size
+   *
+   * @param filterName Name of the filter to remove
+   */
+  public void removeFilter(String filterName) {
+    this.filters.remove(filterName);
   }
 
 
@@ -117,10 +126,9 @@ public class Session {
    *
    * @param filterName Name of the filter
    */
-  public Integer getFilter(String filterName) {
+  public Object getFilter(String filterName) {
     try{
-      Integer filter = this.filters.get(filterName);
-      return filter;
+      return this.filters.get(filterName);
     } catch (Exception e){
       return null;
     }

@@ -1,8 +1,23 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <div>
     <div class="row no-bottom-margin">
+        <div class="col s3 input-field">
+            <label for="search-users-query">Filter</label>
+            <input type="text" id="search-users-query" placeholder="Search for users.."
+                   name="search-users-query" form="search-form"/>
+        </div>
+        <div class="col s2 input-field">
+            <form method="post" id="search-form">
+                <button type="submit" class="waves-effect btn waves-light xyz-button">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
         <div class="col s12">
             <div id="users-table">
                 <table class="highlight">
@@ -38,35 +53,35 @@
             </div>
         </div>
     </div>
-        <div class="row no-bottom-margin">
-            <div class="col s2 input-field">
-                <select name="page-size" id="page-size" form="filter-form">
-                    <c:forEach begin="0" end="${length - 1}" varStatus="loop">
-                        <c:choose>
-                            <c:when test="${pageSizes[loop.index] == ps}">
-                                <option selected value="${pageSizes[loop.index]}">
+    <div class="row no-bottom-margin">
+        <div class="col s2 input-field">
+            <select name="page-size" id="page-size" form="filter-form">
+                <c:forEach begin="0" end="${fn:length(pageSizes) - 1}" varStatus="loop">
+                    <c:choose>
+                        <c:when test="${pageSizes[loop.index] == ps}">
+                            <option selected value="${pageSizes[loop.index]}">
                                     ${pageSizes[loop.index]}
-                                </option>
-                            </c:when>
-                            <c:otherwise>
-                                <option value="${pageSizes[loop.index]}">
+                            </option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="${pageSizes[loop.index]}">
                                     ${pageSizes[loop.index]}
-                                </option>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                </select>
-                <label for="page-size">Page Size</label>
-            </div>
-            <div class="col s1 input-field">
-                <form method="post" id="filter-form">
-                    <button type="submit" id="update-filters" class="waves-effect waves-light btn"
-                            name="change-page-size">
-                        Update
-                    </button>
-                </form>
-            </div>
+                            </option>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </select>
+            <label for="page-size">Page Size</label>
         </div>
+        <div class="col s1 input-field">
+            <form method="post" id="filter-form">
+                <button type="submit" class="waves-effect waves-light btn xyz-button"
+                        name="change-page-size">
+                    Update
+                </button>
+            </form>
+        </div>
+    </div>
     <div class="row" class="pagination-control">
         <div class="col s12 center-align">
             <ul class="pagination">
