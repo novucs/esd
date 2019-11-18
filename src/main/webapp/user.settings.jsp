@@ -1,12 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="net.novucs.esd.model.User" %>
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
+<%@ page import="net.novucs.esd.model.UserRole" %>
 <%@ page import="net.novucs.esd.model.Role" %>
 <%@ page import="java.util.List" %>
-<% User userName = ((Session) request.getAttribute("session")).getUser(); %>
+<% User userName = ((Session) request.getAttribute("ses/**/sion")).getUser(); %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
-
+<%--${session.getRoles()}--%>
 <table>
     <thead>
     <tr>
@@ -14,7 +16,7 @@
         <th>Email</th>
         <th>D.O.B</th>
         <th>Address</th>
-        <th class="collection-header"><h5><%= userName %>'s Roles</h5></th>
+        <th class="collection-header"><h5><%= userName.getName() %>'s Roles</h5></th>
         <th>Edit</th>
     </tr>
     </thead>
@@ -27,8 +29,10 @@
         </td>
         <td><%= userName.getAddress() %>
         </td>
-        <% for (Role role : ((List<Role>) request.getAttribute("roles"))) { %>
-        <td class="collection-item"><%= role.getName() %>
+        <td>
+            <c:forEach var="role" items="${session.getRoles()}">
+                ${role.name}
+            </c:forEach>
         </td>
         <td>
 
