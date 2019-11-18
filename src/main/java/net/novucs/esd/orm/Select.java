@@ -18,6 +18,8 @@ public class Select<M> {
 
   private final transient Dao<M> dao;
   @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+  private transient Integer offset;
+  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Integer limit;
   @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Where where;
@@ -39,6 +41,17 @@ public class Select<M> {
    */
   public Select<M> where(Where where) {
     this.where = where;
+    return this;
+  }
+
+  /**
+   * How far the selection should offset all matched results by.
+   *
+   * @param offset how far to offset the results by.
+   * @return <code>this</code> Select - fluent API.
+   */
+  public Select<M> offset(int offset) {
+    this.offset = offset;
     return this;
   }
 
@@ -78,8 +91,17 @@ public class Select<M> {
       selectorJoiner.add(builder.getQuery());
     }
 
+    selectorJoiner.add("ORDER BY");
+    selectorJoiner.add(dao.getParsedModel().getPrimaryKey().getSQLName());
+
+    if (this.offset != null) {
+      selectorJoiner.add("OFFSET");
+      selectorJoiner.add(this.offset.toString());
+      selectorJoiner.add("ROWS");
+    }
+
     if (this.limit != null) {
-      selectorJoiner.add("FETCH FIRST");
+      selectorJoiner.add("FETCH NEXT");
       selectorJoiner.add(this.limit.toString());
       selectorJoiner.add("ROWS ONLY");
     }
