@@ -84,6 +84,14 @@
     <url-pattern>/makepayment</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>MemberMakeClaimServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.member.MemberMakeClaimServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MemberMakeClaimServlet</servlet-name>
+    <url-pattern>/makeclaim</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>AdminDashboardServlet</servlet-name>
     <servlet-class>net.novucs.esd.controllers.admin.AdminDashboardServlet</servlet-class>
   </servlet>
