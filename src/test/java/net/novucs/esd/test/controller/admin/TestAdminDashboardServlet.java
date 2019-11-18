@@ -41,6 +41,9 @@ public class TestAdminDashboardServlet {
 
   private transient Session userSession;
 
+  private static final String LAYOUT = "/layout.jsp";
+
+
   @Before
   public void initialiseTest() {
     userSession = new Session();
@@ -58,13 +61,13 @@ public class TestAdminDashboardServlet {
     setServletDaos(servlet);
     // When
     when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).getRequestDispatcher(eq("/layout.jsp"));
+    verify(request).getRequestDispatcher(eq(LAYOUT));
   }
 
 
@@ -77,7 +80,6 @@ public class TestAdminDashboardServlet {
     Dao<UserRole> userRoleDao = dm.get(UserRole.class);
     Dao<Application> applicationDao = dm.get(Application.class);
     Dao<Claim> claimDao = dm.get(Claim.class);
-    Dao<Membership> membershipDao = dm.get(Membership.class);
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
     ReflectUtil.setFieldValue(servlet, "userRoleDao", userRoleDao);
     ReflectUtil.setFieldValue(servlet, "roleDao", roleDao);
@@ -97,7 +99,7 @@ public class TestAdminDashboardServlet {
     createRequiredAttributeData();
 
     when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
-    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
+    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     servlet.doGet(request, response);
@@ -106,7 +108,7 @@ public class TestAdminDashboardServlet {
     verify(request).setAttribute(eq("currentMembers"), eq(1));
     verify(request).setAttribute(eq("outstandingBalances"), eq(1));
     // Assert
-    verify(request).getRequestDispatcher(eq("/layout.jsp"));
+    verify(request).getRequestDispatcher(eq(LAYOUT));
   }
 
 
@@ -126,7 +128,7 @@ public class TestAdminDashboardServlet {
     roleDao.insert(member);
     userRoleDao.insert(new UserRole(bob.getId(), member.getId()));
     applicationDao.insert(new Application(bob.getId()));
-    Membership m = new Membership(bob.getId(), new BigDecimal(0), "active");
+    Membership m = new Membership(bob.getId(), BigDecimal.ZERO, "active");
     membershipDao.insert(m);
     claimDao.insert(new Claim(m.getId()));
   }
