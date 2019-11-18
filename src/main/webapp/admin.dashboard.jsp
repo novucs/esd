@@ -1,95 +1,56 @@
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-
-<div class="row dashboard-container rounded-container">
-    <div class="col s12">
-        <!-- Main dashboard items -->
-        <div class="row">
-            <div class="col s12 m4">
-                <t:dashboardcard title="Outstanding Member Applications"
-                    content="<%=("There are currently " +
-                        ((String) request.getAttribute("outstandingMemberApplications"))
-                        + " membership requests pending review."
-                        )%>"
-                image_url="${pageContext.request.contextPath}/assets/outstanding-apps-card.svg"/>
-            </div>
-            <div class="col s12 m4">
-                <t:dashboardcard title="Number of Members"
-                    content="<%=("There are currently " +
-                        ((String) request.getAttribute("currentMembers"))
-                        + " members signed up to XYZ Drivers Association.")%>"
-                     image_url="${pageContext.request.contextPath}/assets/all-members-card.png"/>
-            </div>
-            <div class="col s12 m4">
-                <t:dashboardcard title="Outstanding Balances"
-                     content="<%=("There are currently " +
-                        ((String) request.getAttribute("outstandingBalances"))
-                        + " members with outstanding balances.")%>"
-                     image_url="${pageContext.request.contextPath}/assets/balances-card.svg"/>
+<%@ page import="net.novucs.esd.lifecycle.Session" %>
+<%@ page import="net.novucs.esd.model.User" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<% Session userSession = ((Session) request.getAttribute("session")); %>
+<% User user = userSession.getUser(); %>
+<div>
+    <div class="row no-bottom-margin">
+        <div class="col s12">
+            <div class="row no-bottom-margin">
+                <div class="col s12" %>
+                    <div class="card black white-text">
+                        <div class="card-content valign-wrapper">
+                            <div class="card-text">
+                                <h6>
+                                    Welcome back, <strong><%=user.getName()%> </strong>
+                                </h6>
+                            </div>
+                            <div class="card-icon">
+                                <i class="material-icons medium valign">face</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- Sub dashboard items -->
-        <div class="row">
-
+    </div>
+    <div class="row no-bottom-margin">
+        <div class="col s12">
+            <!-- Main dashboard items -->
+            <div class="row no-bottom-margin">
+                <t:tile title="<%=String.valueOf(request.getAttribute("outstandingMemberApplications"))%>"
+                        label="Outstanding Membership Applications"
+                        icon="person_add"/>
+                <t:tile title="<%=String.valueOf(request.getAttribute("outstandingBalances"))%>"
+                        label="Outstanding Claims"
+                        icon="event_note" colour="red"/>
+                <t:tile title="<%=String.valueOf(request.getAttribute("currentMembers"))%>"
+                        label="Number of Members"
+                        icon="people_outline"/>
+                <t:tile title="<%=String.valueOf(request.getAttribute("monthlyClaimCost"))%>"
+                        label="Monthly claim cost"
+                        icon="attach_money"/>
+                <t:tile title="<%=String.valueOf(request.getAttribute("quarterlyClaimCost"))%>"
+                        label="Quarterly claim cost"
+                        icon="date_range"/>
+                <div class="reporting">
+                    <t:tile title=""
+                            colour="black reporting"
+                            label="View Reports"
+                            icon="insert_chart"/>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div class="fixed-action-btn toolbar">
-    <a class="btn-floating btn-large black">
-        <i class="large material-icons">mode_edit</i>
-    </a>
-    <ul>
-        <li>
-            <a class="btn-floating black tooltipped"
-               href="${pageContext.request.contextPath}/admin/applications"
-               data-position="top" data-tooltip="Process Member Applications">
-                <i class="material-icons">
-                    person_add
-                </i>
-            </a>
-        </li>
-        <li>
-            <a class="btn-floating black tooltipped"
-               href="${pageContext.request.contextPath}/admin/claims"
-               data-position="top" data-tooltip="Process Member Claims">
-                <i class="material-icons">
-                    event_note
-                </i>
-            </a>
-        </li>
-        <li>
-            <a class="btn-floating black tooltipped"
-               href="${pageContext.request.contextPath}/admin/users"
-               data-position="top" data-tooltip="View All Members">
-                <i class="material-icons">
-                    group
-                </i>
-            </a>
-        </li>
-        <li>
-            <a class="btn-floating black tooltipped"
-               href="${pageContext.request.contextPath}/admin/claims"
-               data-position="top" data-tooltip="View all claims">
-                <i class="material-icons">
-                    poll
-                </i>
-            </a>
-        </li>
-        <li>
-            <a class="btn-floating black tooltipped"
-               data-position="top" data-tooltip="Suspend/Renew Membership">
-                <i class="material-icons">
-                    done_all
-                </i>
-            </a>
-        </li>
-        <li>
-            <a class="btn-floating black tooltipped"
-               data-position="top" data-tooltip="Report annual turnover">
-                <i class="material-icons">
-                    attach_money
-                </i>
-            </a>
-        </li>
-    </ul>
-</div>
-<script src="${pageContext.request.contextPath}/js/admin.dashboard.js"></script>
+    <script src="${pageContext.request.contextPath}/js/admin.dashboard.js"></script>
