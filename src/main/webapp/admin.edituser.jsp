@@ -1,5 +1,8 @@
 <%@ page import="net.novucs.esd.model.User" %>
+<%@ page import="java.util.List" %>
+<%@ page import="net.novucs.esd.model.Role" %>
 <% User editUser = (User) request.getAttribute("editUser"); %>
+<% List<Role> editUserRoles = (List<Role>) request.getAttribute("editUserRoles"); %>
 <% Boolean hasUpdated = (Boolean) request.getAttribute("updated"); %>
 <% String hasError = (String) request.getAttribute("error"); %>
 <% String hasNotice = (String) request.getAttribute("notice"); %>
@@ -61,11 +64,11 @@
         </div>
         <div class="row">
             <div class="input-field col s12 m6">
-                <input name="password1" id="password1" type="password" value="" required>
+                <input name="password1" id="password1" type="password" value="">
                 <label for="password1">Password</label>
             </div>
             <div class="input-field col s12 m6">
-                <input name="password2" id="password2" type="password" value="" required>
+                <input name="password2" id="password2" type="password" value="">
                 <label for="password2" data-error="Passwords do not match">Repeat Password</label>
             </div>
         </div>
@@ -81,9 +84,11 @@
         <div class="row">
             <div class="input-field col s12 m12">
                 <select name="roles" id="roles" multiple>
-                    <option value="user">User</option>
-                    <option value="member">Member</option>
-                    <option value="administrator">Administrator</option>
+                    <% for (Role role : ((List<Role>) request.getAttribute("availableRoles"))) { %>
+                    <option value="<%=role.getId()%>" <%=(editUserRoles.contains(role.getId())
+                            ? "selected" : "")%>><%=role.getName()%>
+                    </option>
+                    <% } %>
                 </select>
                 <label for="roles">Roles</label>
             </div>
@@ -101,4 +106,5 @@
         </div>
     </form>
 </div>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/admin.edituser.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}/js/admin.edituser.js"></script>
