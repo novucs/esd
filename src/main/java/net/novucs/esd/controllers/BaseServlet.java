@@ -40,4 +40,8 @@ public abstract class BaseServlet extends HttpServlet {
     request.setAttribute(Session.ATTRIBUTE_NAME, session);
     request.getRequestDispatcher("/layout.jsp").forward(request, response);
   }
+
+  protected Session getSession(HttpServletRequest request){
+    return (Session) request.getSession().getAttribute("session");
+  }
 }

@@ -1,5 +1,5 @@
 .pagination {
-  .waves-effect{
+  .waves-effect {
     > a {
       &:hover {
         color: white;
@@ -8,8 +8,9 @@
     }
   }
 
-  .active{
+  .active {
     background-color: black !important;
+
     > a {
       &:hover {
         color: white;
@@ -25,4 +26,22 @@
       color: black;
     }
   }
+}
+
+
+.dropdown-content {
+  > li {
+    > span {
+      color: black;
+    }
+  }
+}
+
+.filter-container {
+  width: 60%;
+}
+
+#update-filters {
+  background-color: black;
+  color: white;
 }

@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <div>
-    <div class="row">
+    <div class="row no-bottom-margin">
         <div class="col s12">
             <div id="users-table">
                 <table class="highlight">
@@ -19,14 +19,14 @@
                             <td>${user.name}</td>
                             <td>${user.status}</td>
                             <td class="managed-icon">
-                                <a href="${pageContext.request.contextPath}/admin/edituser?userId=${user.id}">
+                                <a href="${pageContext.request.contextPath}/admin/viewuser?userId=${user.id}">
                                     <i class="material-icons small">
-                                        pageview
+                                        search
                                     </i>
                                 </a>
                             </td>
                             <td class="managed-icon">
-                                <a>
+                                <a href="${pageContext.request.contextPath}/admin/edituser?userId=${user.id}">
                                     <i class="material-icons small">
                                         edit
                                     </i>
@@ -38,6 +38,35 @@
             </div>
         </div>
     </div>
+        <div class="row no-bottom-margin">
+            <div class="col s2 input-field">
+                <select name="page-size" id="page-size" form="filter-form">
+                    <c:forEach begin="0" end="${length - 1}" varStatus="loop">
+                        <c:choose>
+                            <c:when test="${pageSizes[loop.index] == ps}">
+                                <option selected value="${pageSizes[loop.index]}">
+                                    ${pageSizes[loop.index]}
+                                </option>
+                            </c:when>
+                            <c:otherwise>
+                                <option value="${pageSizes[loop.index]}">
+                                    ${pageSizes[loop.index]}
+                                </option>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </select>
+                <label for="page-size">Page Size</label>
+            </div>
+            <div class="col s1 input-field">
+                <form method="post" id="filter-form">
+                    <button type="submit" id="update-filters" class="waves-effect waves-light btn"
+                            name="change-page-size">
+                        Update
+                    </button>
+                </form>
+            </div>
+        </div>
     <div class="row" class="pagination-control">
         <div class="col s12 center-align">
             <ul class="pagination">
@@ -61,14 +90,14 @@
                         <c:when test="${loop.index == pn}">
                             <li class="active">
                                 <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}&">
-                                    ${loop.index}
+                                        ${loop.index}
                                 </a>
                             </li>
                         </c:when>
                         <c:otherwise>
                             <li class="waves-effect">
                                 <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}">
-                                    ${loop.index}
+                                        ${loop.index}
                                 </a>
                             </li>
                         </c:otherwise>
@@ -80,7 +109,8 @@
                                 class="material-icons">chevron_right</i></a></li>
                     </c:when>
                     <c:otherwise>
-                        <li class="waves-effect"><a href="${pageContext.request.contextPath}/admin/users?pn=${pn + 1}"><i
+                        <li class="waves-effect"><a
+                                href="${pageContext.request.contextPath}/admin/users?pn=${pn + 1}"><i
                                 class="material-icons">chevron_right</i></a></li>
                     </c:otherwise>
                 </c:choose>
@@ -88,3 +118,4 @@
         </div>
     </div>
 </div>
+<script src="${pageContext.request.contextPath}/js/admin.manageusers.js"></script>
