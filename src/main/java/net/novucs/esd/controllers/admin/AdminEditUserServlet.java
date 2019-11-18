@@ -2,11 +2,10 @@ package net.novucs.esd.controllers.admin;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,37 @@ public class AdminEditUserServlet extends BaseServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    User user = getUserFromId(request);
+    try {
+      updateUser(request, response);
+    } catch (SQLException | NumberFormatException ex) {
+      Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error processing request", ex);
+    }
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    try {
+      User user = userDao.selectById(Integer.parseInt(request.getParameter("userId")));
+      if (user == null) {
+        request.setAttribute("error", "Invalid User ID specified.");
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+      }
+
+      addRoleAttributes(request, user);
+      super.forward(request, response,
+          "Edit " + user.getName() + " (#" + user.getId() + ")",
+          "admin.edituser");
+    } catch (SQLException ex) {
+      Logger.getLogger(AdminEditUserServlet.class.getName())
+          .log(Level.WARNING, "Unable to add user role.");
+    }
+  }
+
+  private void updateUser(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException, SQLException {
+    User user = userDao.selectById(Integer.parseInt(request.getParameter("userId")));
     if (user == null) {
       request.setAttribute("error", "Invalid User ID specified.");
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -47,8 +76,7 @@ public class AdminEditUserServlet extends BaseServlet {
     user.setName(request.getParameter("name"));
     user.setEmail(request.getParameter("email"));
     user.setDateOfBirth(new DateUtil()
-        .getDateFromString(request.getParameter("date_of_birth"))
-    );
+        .getDateFromString(request.getParameter("date_of_birth")));
 
     // Update Password
     String password1 = request.getParameter("password1");
@@ -59,8 +87,12 @@ public class AdminEditUserServlet extends BaseServlet {
     }
 
     // Delete and Re-add User Roles
-    deleteUserRoles(user);
-    addUserRoles(request.getParameterValues("roles"), user);
+    userRoleDao.delete(userRoleDao.select()
+        .where(new Where().eq("user_id", user.getId()))
+        .all());
+    userRoleDao.insert(Arrays.stream(request.getParameterValues("roles"))
+        .map(role -> new UserRole(user.getId(), Integer.parseInt(role)))
+        .toArray(UserRole[]::new));
 
     // Save User
     try {
@@ -73,113 +105,18 @@ public class AdminEditUserServlet extends BaseServlet {
 
     // Feedback
     request.setAttribute("updated", true);
-    request.setAttribute("availableRoles", getRoles());
-    request.setAttribute("editUserRoles", getUserRoles(user));
-    request.setAttribute("editUser", user);
+    addRoleAttributes(request, user);
     super.forward(request, response, "Edit " + user.getName(), "admin.edituser");
   }
 
-  private void addUserRoles(String[] roles, User user) {
-    try {
-      for (String roleId : roles) {
-        userRoleDao.insert(new UserRole(user.getId(), Integer.parseInt(roleId)));
-      }
-    } catch (SQLException ex) {
-      Logger.getLogger(AdminEditUserServlet.class.getName())
-          .log(Level.WARNING, "Unable to add user role.");
-    }
-  }
-
-  private void deleteUserRoles(User user) {
-    try {
-      for (UserRole userRole : userRoleDao.select()
-          .where(new Where().eq("user_id", user.getId()))
-          .all()) {
-        userRoleDao.delete(userRole);
-      }
-    } catch (SQLException ex) {
-      Logger.getLogger(AdminEditUserServlet.class.getName())
-          .log(Level.WARNING, "Unable to delete user role.");
-    }
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
-    User user = getUserFromId(request);
-    if (user == null) {
-      request.setAttribute("error", "Invalid User ID specified.");
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return;
-    }
-
-    request.setAttribute("availableRoles", getRoles());
+  private void addRoleAttributes(HttpServletRequest request, User user)
+      throws SQLException {
+    request.setAttribute("availableRoles", roleDao.select().all());
+    request.setAttribute("editUserRoles", userRoleDao.select()
+        .where(new Where().eq("user_id", user.getId())).all()
+        .stream().map(UserRole::getId)
+        .collect(Collectors.toList()));
     request.setAttribute("editUser", user);
-    request.setAttribute("editUserRoles", getUserRoles(user));
-    super.forward(request, response,
-        "Edit " + user.getName() + " (#" + user.getId() + ")",
-        "admin.edituser");
-  }
-
-  /**
-   * Get the Roles available.
-   *
-   * @return List
-   */
-  public List<Role> getRoles() {
-    List<Role> roles = Arrays.asList();
-    try {
-      roles = roleDao.select().all();
-    } catch (SQLException e) {
-      Logger.getLogger(AdminEditUserServlet.class.getName())
-          .log(Level.WARNING, "Unable to get roles.");
-    }
-    return roles;
-  }
-
-  /**
-   * Get the User passed via the request parameter.
-   *
-   * @param request Servlet Request
-   * @return User / Null
-   */
-  private User getUserFromId(HttpServletRequest request) {
-    // Check if we have received a User ID to edit
-    Integer userId;
-    try {
-      userId = Integer.parseInt(request.getParameter("userId"));
-    } catch (NumberFormatException e) {
-      return null;
-    }
-
-    // Check if the user exists
-    User user;
-    try {
-      user = userDao.selectById(userId);
-    } catch (SQLException e) {
-      return null;
-    }
-    return user;
-  }
-
-  /**
-   * Get a users roles.
-   *
-   * @param user the user to get roles from
-   * @return a list of Role IDs
-   */
-  private List<Integer> getUserRoles(User user) {
-    List<Integer> roleIds = new ArrayList<>();
-    try {
-      for (UserRole userRole : userRoleDao.select()
-          .where(new Where().eq("user_id", user.getId())).all()) {
-        roleIds.add(userRole.getRoleId());
-      }
-    } catch (SQLException ex) {
-      Logger.getLogger(AdminEditUserServlet.class.getName())
-          .log(Level.WARNING, "Could not get user roles.", ex);
-    }
-    return roleIds;
   }
 
   @Override
