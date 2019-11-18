@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -120,7 +121,8 @@ public class TestAdminDashboardServlet {
     roleDao.insert(member);
     userRoleDao.insert(new UserRole(bob.getId(), member.getId()));
     applicationDao.insert(new Application(bob.getId()));
-    Membership m = new Membership(bob.getId(), BigDecimal.ZERO, "active");
+    Membership m = new Membership(bob.getId(), BigDecimal.ZERO, "active", ZonedDateTime.now(),
+        true);
     membershipDao.insert(m);
     claimDao.insert(new Claim(m.getId()));
   }

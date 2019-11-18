@@ -2,6 +2,7 @@ package net.novucs.esd.lifecycle;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -104,8 +105,13 @@ public class DatabaseLifecycle {
     DateUtil dateUtil = new DateUtil();
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
 
-    for (String roleName : Arrays.asList("User", "Member", "Administrator")) {
-      Role role = new Role(roleName);
+    for (String roleName : Arrays
+        .asList("User", "Member", "NewMember", "FullMember", "Administrator")) {
+
+      Role role = new Role(
+          roleName.equalsIgnoreCase("NewMember")
+              || roleName.equalsIgnoreCase("FullMember") ? "Member" : roleName);
+
       daoManager.get(Role.class).insert(role);
       User user = new User(
           roleName + "Account",
@@ -118,6 +124,34 @@ public class DatabaseLifecycle {
       );
       daoManager.get(User.class).insert(user);
       daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
+
+      if (roleName.equalsIgnoreCase("NewMember")) {
+        Membership membership = new Membership(
+            user.getId(),
+            new BigDecimal("0"),
+            "ACTIVE",
+            ZonedDateTime.now().minusMonths(1),
+            true
+        );
+        daoManager.get(Membership.class).insert(membership);
+      } else if (roleName.equalsIgnoreCase("FullMember")) {
+        Membership pastMembership = new Membership(
+            user.getId(),
+            new BigDecimal("0"),
+            "EXPIRED",
+            ZonedDateTime.now().minusMonths(15),
+            true
+        );
+        Membership currentMembership = new Membership(
+            user.getId(),
+            new BigDecimal("0"),
+            "ACTIVE",
+            ZonedDateTime.now().minusMonths(3),
+            false
+        );
+        daoManager.get(Membership.class).insert(pastMembership);
+        daoManager.get(Membership.class).insert(currentMembership);
+      }
     }
   }
 
