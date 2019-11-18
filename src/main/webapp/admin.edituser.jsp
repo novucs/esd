@@ -70,6 +70,25 @@
             </div>
         </div>
         <hr/>
+        <div class="row no-bottom-margin">
+            <div class="col s12">
+                <h4>User Roles</h4>
+                <p>
+                    This is a multi-select field, Ctrl + Click to select or deselect roles.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m12">
+                <select name="roles" id="roles" multiple>
+                    <option value="user">User</option>
+                    <option value="member">Member</option>
+                    <option value="administrator">Administrator</option>
+                </select>
+                <label for="roles">Roles</label>
+            </div>
+        </div>
+        <hr/>
         <div class="row">
             <div class="input-field col s6">&nbsp;</div>
             <div class="input-field col s6 text-right">

@@ -17,5 +17,9 @@
       }
       passwordConfirm.className = password.className;
     });
+
+    // Initialise Materialize CSS Multi-select
+    let elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems, {});
   });
 })();
