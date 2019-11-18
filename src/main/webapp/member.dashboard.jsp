@@ -31,14 +31,4 @@
         <t:tile title="Active" label="Account Status" icon="verified_user"/>
         <t:tile title="0" label="Total Payments" icon="attach_money"/>
     </div>
-    <div class="row">
-        <div class="col s12 center-align">
-            <ul class="collection with-header">
-                <li class="collection-header"><h5><%=user.getName()%>'s Roles</h5></li>
-                <% for (Role role : userSession.getRoles()) { %>
-                    <li class="collection-item"><%= role.getName() %></li>
-                <% } %>
-            </ul>
-        </div>
-    </div>
 </div>
