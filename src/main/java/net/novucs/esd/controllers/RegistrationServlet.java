@@ -106,7 +106,15 @@ public class RegistrationServlet extends BaseServlet {
     String address = parseAddress(request);
     DateUtil dateUtil = new DateUtil();
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString(request.getParameter("dob"));
-    return new User(name, email, password, address, dateOfBirth, "APPLICATION");
+    return new User(
+        name,
+        email,
+        password,
+        address,
+        dateOfBirth,
+        "APPLICATION",
+        1
+    );
   }
 
   private String parseAddress(HttpServletRequest request) {

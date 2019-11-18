@@ -104,7 +104,8 @@ public class TestRegistrationServlet {
         password,
         "House, A Street, A city, County, AB12 C34",
         dateOfBirth,
-        "APPLICATION"
+        "APPLICATION",
+        1
     );
 
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -121,7 +122,7 @@ public class TestRegistrationServlet {
 
     // Assert
     User userThatWasCreated = userDao.select()
-        .where(new Where().eq("name", "RegistrationServlet Test User 1"))
+        .where(new Where().eq("name", userToCreate.getName()))
         .first();
     userToCreate.setId(userThatWasCreated.getId());
     userThatWasCreated.setPassword(password);
@@ -158,7 +159,8 @@ public class TestRegistrationServlet {
         password,
         "House, A Street, A city, County, AB12 C34",
         dateOfBirth,
-        "APPLICATION"
+        "APPLICATION",
+        1
     );
 
     Dao<User> userDao = daoManager.get(User.class);
