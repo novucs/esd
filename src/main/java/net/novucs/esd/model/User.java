@@ -26,6 +26,9 @@ public class User {
   private Password password;
 
   @Column
+  private Integer needsPasswordChange = 1;
+
+  @Column
   private String address;
 
   @Column
@@ -44,21 +47,23 @@ public class User {
   /**
    * Instantiates a new User.
    *
-   * @param name        the name
-   * @param email       the email
-   * @param password    the password
-   * @param address     the address
-   * @param dateOfBirth the date of birth
-   * @param status      the status
+   * @param name                the name
+   * @param email               the email
+   * @param password            the password
+   * @param address             the address
+   * @param dateOfBirth         the date of birth
+   * @param status              the status
+   * @param needsPasswordChange does the User need a password change
    */
   public User(String name, String email, Password password, String address,
-      ZonedDateTime dateOfBirth, String status) {
+      ZonedDateTime dateOfBirth, String status, Integer needsPasswordChange) {
     this.name = name;
     this.email = email.toLowerCase(Locale.UK);
     this.password = password;
     this.address = address;
     this.dateOfBirth = dateOfBirth;
     this.status = status;
+    this.needsPasswordChange = needsPasswordChange;
   }
 
   /**
@@ -131,6 +136,24 @@ public class User {
    */
   public void setPassword(Password password) {
     this.password = password;
+  }
+
+  /**
+   * Gets whether they this User needs a password change or not.
+   *
+   * @return Integer
+   */
+  public Integer getNeedsPasswordChange() {
+    return this.needsPasswordChange;
+  }
+
+  /**
+   * Set the flag for if this User needs a password change.
+   *
+   * @param needsPasswordChange flag
+   */
+  public void setNeedsPasswordChange(Integer needsPasswordChange) {
+    this.needsPasswordChange = needsPasswordChange;
   }
 
   /**
