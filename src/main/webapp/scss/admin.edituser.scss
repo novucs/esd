@@ -1,3 +1,13 @@
 .text-right {
   text-align: right;
 }
+
+hr {
+  color: rgba(0, 0, 0, 0.075);
+}
+
+.row {
+  &.no-bottom-margin {
+    margin-bottom: 0;
+  }
+}

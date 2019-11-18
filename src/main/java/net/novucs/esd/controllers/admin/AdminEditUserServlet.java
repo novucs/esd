@@ -10,6 +10,7 @@ import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.util.DateUtil;
+import net.novucs.esd.util.Password;
 
 public class AdminEditUserServlet extends BaseServlet {
 
@@ -34,6 +35,14 @@ public class AdminEditUserServlet extends BaseServlet {
     user.setDateOfBirth(new DateUtil()
         .getDateFromString(request.getParameter("date_of_birth"))
     );
+
+    // Update Password
+    String password1 = request.getParameter("password1");
+    String password2 = request.getParameter("password2");
+    if ((!password1.isEmpty() && !password2.isEmpty()) && password1.equals(password2)) {
+      request.setAttribute("notice", "The users password has also been updated.");
+      user.setPassword(Password.fromPlaintext(password1));
+    }
 
     // Save User
     try {
@@ -61,7 +70,9 @@ public class AdminEditUserServlet extends BaseServlet {
     }
 
     request.setAttribute("editUser", user);
-    super.forward(request, response, "Edit " + user.getName(), "admin.edituser");
+    super.forward(request, response,
+        "Edit " + user.getName() + " (#" + user.getId() + ")",
+        "admin.edituser");
   }
 
   /**
@@ -69,8 +80,6 @@ public class AdminEditUserServlet extends BaseServlet {
    *
    * @param request Servlet Request
    * @return User / Null
-   * @throws IOException      when a I/O error occurs
-   * @throws ServletException when a Servlet error occurs
    */
   private User getUserFromId(HttpServletRequest request) {
     // Check if we have received a User ID to edit

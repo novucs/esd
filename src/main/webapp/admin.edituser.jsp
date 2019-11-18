@@ -2,6 +2,7 @@
 <% User editUser = (User) request.getAttribute("editUser"); %>
 <% Boolean hasUpdated = (Boolean) request.getAttribute("updated"); %>
 <% String hasError = (String) request.getAttribute("error"); %>
+<% String hasNotice = (String) request.getAttribute("notice"); %>
 <% if (hasUpdated != null) { %>
 <div class="row">
     <div class="col s12">
@@ -10,11 +11,26 @@
                 <%= hasUpdated ? "This user has been successfully updated." : hasError %>
             </div>
         </div>
+        <% if (hasNotice != null && !hasNotice.isEmpty()) { %>
+        <div class="card orange">
+            <div class="card-content">
+                <%=hasNotice%>
+            </div>
+        </div>
+        <% } %>
     </div>
 </div>
 <% } %>
 <div class="row">
     <form class="col s12" method="post" action="" role="form">
+        <div class="row no-bottom-margin">
+            <div class="col s12">
+                <h4>User Settings</h4>
+                <p>
+                    Any changes to the below fields will be updated when saving this user.
+                </p>
+            </div>
+        </div>
         <div class="row">
             <div class="input-field col s6">
                 <input name="name" id="name" type="text" class="validate"
@@ -34,14 +50,36 @@
                 <label for="email">Email</label>
             </div>
         </div>
+        <hr/>
+        <div class="row no-bottom-margin">
+            <div class="col s12">
+                <h4>Change User Password</h4>
+                <p>
+                    Leave the fields below blank if you do not want to update the user's password
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6">
+                <input name="password1" id="password1" type="password" value="" required>
+                <label for="password1">Password</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <input name="password2" id="password2" type="password" value="" required>
+                <label for="password2" data-error="Passwords do not match">Repeat Password</label>
+            </div>
+        </div>
+        <hr/>
         <div class="row">
             <div class="input-field col s6">&nbsp;</div>
             <div class="input-field col s6 text-right">
                 <button class="btn btn-large btn-register waves-effect waves-light"
-                        type="submit" name="action">Save
+                        type="submit" name="action">
+                    Save
                     <i class="material-icons right">done</i>
                 </button>
             </div>
         </div>
     </form>
 </div>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/admin.edituser.js"></script>
