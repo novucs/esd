@@ -19,7 +19,6 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
-import org.apache.derby.client.am.SqlException;
 
 public class AdminEditUserServlet extends BaseServlet {
 
@@ -54,32 +53,14 @@ public class AdminEditUserServlet extends BaseServlet {
     // Update Password
     String password1 = request.getParameter("password1");
     String password2 = request.getParameter("password2");
-    if ((!password1.isEmpty() && !password2.isEmpty()) && password1.equals(password2)) {
+    if (!password1.isEmpty() && !password2.isEmpty() && password1.equals(password2)) {
       request.setAttribute("notice", "The users password has also been updated.");
       user.setPassword(Password.fromPlaintext(password1));
     }
 
-    // Delete Roles
-    try {
-      for (UserRole userRole : userRoleDao.select()
-          .where(new Where().eq("user_id", user.getId()))
-          .all()) {
-        userRoleDao.delete(userRole);
-      }
-    } catch (SQLException ex) {
-      Logger.getLogger(AdminEditUserServlet.class.getName())
-          .log(Level.WARNING, "Unable to delete user role.");
-    }
-
-    // Re-add Roles
-    try {
-      for (String roleId : request.getParameterValues("roles")) {
-        userRoleDao.insert(new UserRole(user.getId(), Integer.parseInt(roleId)));
-      }
-    } catch (SQLException ex) {
-      Logger.getLogger(AdminEditUserServlet.class.getName())
-          .log(Level.WARNING, "Unable to add user role.");
-    }
+    // Delete and Re-add User Roles
+    deleteUserRoles(user);
+    addUserRoles(request.getParameterValues("roles"), user);
 
     // Save User
     try {
@@ -96,6 +77,30 @@ public class AdminEditUserServlet extends BaseServlet {
     request.setAttribute("editUserRoles", getUserRoles(user));
     request.setAttribute("editUser", user);
     super.forward(request, response, "Edit " + user.getName(), "admin.edituser");
+  }
+
+  private void addUserRoles(String[] roles, User user) {
+    try {
+      for (String roleId : roles) {
+        userRoleDao.insert(new UserRole(user.getId(), Integer.parseInt(roleId)));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(AdminEditUserServlet.class.getName())
+          .log(Level.WARNING, "Unable to add user role.");
+    }
+  }
+
+  private void deleteUserRoles(User user) {
+    try {
+      for (UserRole userRole : userRoleDao.select()
+          .where(new Where().eq("user_id", user.getId()))
+          .all()) {
+        userRoleDao.delete(userRole);
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(AdminEditUserServlet.class.getName())
+          .log(Level.WARNING, "Unable to delete user role.");
+    }
   }
 
   @Override
@@ -126,9 +131,9 @@ public class AdminEditUserServlet extends BaseServlet {
     try {
       roles = roleDao.select().all();
     } catch (SQLException e) {
-      e.printStackTrace();
+      Logger.getLogger(AdminEditUserServlet.class.getName())
+          .log(Level.WARNING, "Unable to get roles.");
     }
-
     return roles;
   }
 
@@ -160,7 +165,8 @@ public class AdminEditUserServlet extends BaseServlet {
   /**
    * Get a users roles.
    *
-   * @return List<Role>
+   * @param user the user to get roles from
+   * @return a list of Role IDs
    */
   private List<Integer> getUserRoles(User user) {
     List<Integer> roleIds = new ArrayList<>();
