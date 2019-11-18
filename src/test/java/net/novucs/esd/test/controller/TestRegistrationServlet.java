@@ -126,7 +126,8 @@ public class TestRegistrationServlet {
         .first();
     userToCreate.setId(userThatWasCreated.getId());
     userThatWasCreated.setPassword(password);
-    verify(request).setAttribute("page", "registersuccess.jsp");
+    verify(request).setAttribute("registerStatus", "success");
+    verify(request).setAttribute("page", "register.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
     assertEquals("The right user is returned", userToCreate.getName(),
         userThatWasCreated.getName());
@@ -180,7 +181,8 @@ public class TestRegistrationServlet {
     servlet.doPost(request, response);
 
     // Assert
-    verify(request).setAttribute("page", "registerfail.jsp");
+    verify(request).setAttribute("page", "register.jsp");
+    verify(request).setAttribute("registerStatus", "fail");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
 
