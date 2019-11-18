@@ -35,14 +35,9 @@ import org.mockito.stubbing.Answer;
 
 public class TestAdminDashboardServlet {
 
-  /*
-   TODO: Refactor this to test for the implementation of AdminDashboardServlet
-   */
-
   private transient Session userSession;
 
   private static final String LAYOUT = "/layout.jsp";
-
 
   @Before
   public void initialiseTest() {
@@ -70,7 +65,6 @@ public class TestAdminDashboardServlet {
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
 
-
   private void setServletDaos(AdminDashboardServlet servlet)
       throws SQLException, ReflectiveOperationException {
     DaoManager dm = createTestDaoManager();
@@ -86,7 +80,6 @@ public class TestAdminDashboardServlet {
     ReflectUtil.setFieldValue(servlet, "applicationDao", applicationDao);
     ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);
   }
-
 
   @Test
   public void requiredAttributesSet()
@@ -110,7 +103,6 @@ public class TestAdminDashboardServlet {
     // Assert
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
-
 
   private void createRequiredAttributeData()
       throws SQLException, ReflectiveOperationException {
