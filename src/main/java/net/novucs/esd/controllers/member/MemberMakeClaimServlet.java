@@ -3,6 +3,7 @@ package net.novucs.esd.controllers.member;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +54,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-
+    DecimalFormat df = new DecimalFormat("#.##");
     request.setAttribute("claimStatus", STATUS_CREATE);
     DateUtil dateUtil = new DateUtil();
     Session session = Session.fromRequest(request);
@@ -108,9 +109,8 @@ public class MemberMakeClaimServlet extends BaseServlet {
               if (allMembershipClaims.size() == 0) {
                 request.setAttribute("membershipStatus", MEMBER_STATUS_FULL_CLAIM);
                 request.setAttribute("remainingClaims", 2);
-                request.setAttribute("maxClaimValue", MAX_CLAIM_SINGLE);
-                super.forward(request, response, "New Claim",
-                    PAGE);
+                request.setAttribute("maxClaimValue", df.format(MAX_CLAIM_SINGLE));
+                super.forward(request, response, "New Claim", PAGE);
               } else {
                 // User is eligible to make a claim and max claim value needs to be calculated.
 
@@ -121,12 +121,12 @@ public class MemberMakeClaimServlet extends BaseServlet {
 
                 // If remaining quota is more than maximum single claim value, use max value.
                 remainingBalance =
-                    remainingBalance.compareTo(BigDecimal.valueOf(MAX_CLAIM_SINGLE)) < 0
+                    remainingBalance.compareTo(BigDecimal.valueOf(MAX_CLAIM_SINGLE)) > 0
                         ? BigDecimal.valueOf(MAX_CLAIM_SINGLE) : remainingBalance;
 
                 request.setAttribute("membershipStatus", MEMBER_STATUS_FULL_CLAIM);
                 request.setAttribute("remainingClaims", 1);
-                request.setAttribute("maxClaimValue", remainingBalance);
+                request.setAttribute("maxClaimValue", df.format(remainingBalance));
                 super.forward(request, response, "New Claim", PAGE);
               }
             }

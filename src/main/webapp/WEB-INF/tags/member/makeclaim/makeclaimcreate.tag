@@ -11,7 +11,7 @@
                 You can make ${remainingClaims} more claims this year.
             </h6>
             <p>
-                The maximum amount for this claim is &#163;${maxClaimValue}.00.
+                The maximum amount for this claim is &#163;${maxClaimValue}.
             </p>
             <form method="post" action="makeclaim">
                 <div class="row">
@@ -60,7 +60,7 @@
                             <div class="col s2 right"></div>
                         </div>
                     </div>
-                    <div class="col s8 left">Go back to your<a href="/dashboard"> dashboard.</a></div>
+                    <div class="col s8 left">Go back to your<a href="/app/dashboard"> dashboard.</a></div>
                 </div>
             </form>
         </div>
