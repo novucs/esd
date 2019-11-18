@@ -1,0 +1,28 @@
+.pagination {
+  .waves-effect{
+    > a {
+      &:hover {
+        color: white;
+        background-color: black;
+      }
+    }
+  }
+
+  .active{
+    background-color: black !important;
+    > a {
+      &:hover {
+        color: white;
+        background-color: black;
+      }
+    }
+  }
+}
+
+.managed-icon {
+  > a {
+    > i {
+      color: black;
+    }
+  }
+}
