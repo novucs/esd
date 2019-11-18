@@ -104,7 +104,8 @@ public class TestRegistrationServlet {
         password,
         "House, A Street, A city, County, AB12 C34",
         dateOfBirth,
-        "APPLICATION"
+        "APPLICATION",
+        1
     );
 
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -121,11 +122,12 @@ public class TestRegistrationServlet {
 
     // Assert
     User userThatWasCreated = userDao.select()
-        .where(new Where().eq("name", "RegistrationServlet Test User 1"))
+        .where(new Where().eq("name", userToCreate.getName()))
         .first();
     userToCreate.setId(userThatWasCreated.getId());
     userThatWasCreated.setPassword(password);
-    verify(request).setAttribute("page", "registersuccess.jsp");
+    verify(request).setAttribute("registerStatus", "success");
+    verify(request).setAttribute("page", "register.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
     assertEquals("The right user is returned", userToCreate.getName(),
         userThatWasCreated.getName());
@@ -157,7 +159,8 @@ public class TestRegistrationServlet {
         password,
         "House, A Street, A city, County, AB12 C34",
         dateOfBirth,
-        "APPLICATION"
+        "APPLICATION",
+        1
     );
 
     Dao<User> userDao = daoManager.get(User.class);
@@ -178,7 +181,8 @@ public class TestRegistrationServlet {
     servlet.doPost(request, response);
 
     // Assert
-    verify(request).setAttribute("page", "registerfail.jsp");
+    verify(request).setAttribute("page", "register.jsp");
+    verify(request).setAttribute("registerStatus", "fail");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
 

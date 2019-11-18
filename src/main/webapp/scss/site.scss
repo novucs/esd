@@ -19,6 +19,15 @@ nav .brand-logo {
   font-weight: lighter;
   padding-left: 15px;
 
+  &:hover {
+    > span {
+      &:first-child {
+        color: black;
+        background-color: white;
+      }
+    }
+  }
+
   > span {
     &:first-child {
       font-weight: bolder;
@@ -55,4 +64,24 @@ main {
 
 .dropdown-content {
   min-width: 200px;
+  > li {
+    > a {
+      color: black;
+    }
+  }
+}
+
+nav {
+  > div {
+    > ul {
+      > li{
+        > a {
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+    }
+  }
 }

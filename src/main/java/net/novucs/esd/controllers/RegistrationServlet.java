@@ -28,8 +28,6 @@ public class RegistrationServlet extends BaseServlet {
   private static final long serialVersionUID = 1426082847044519303L;
 
   private static final String PAGE = "register";
-  private static final String SUCCESS_PAGE = PAGE + "success";
-  private static final String FAIL_PAGE = PAGE + "fail";
 
   @Inject
   private Dao<User> userDao;
@@ -42,6 +40,8 @@ public class RegistrationServlet extends BaseServlet {
   
   @Inject
   private Dao<UserLog> userLogDao;
+
+
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -62,7 +62,8 @@ public class RegistrationServlet extends BaseServlet {
           .first();
 
       if (matched != null) {
-        super.forward(request, response, "Email already in use", FAIL_PAGE);
+        request.setAttribute("registerStatus", "fail");
+        super.forward(request, response, "Email already in use", PAGE);
         return;
       }
 
@@ -79,14 +80,16 @@ public class RegistrationServlet extends BaseServlet {
     } catch (SQLException e) {
       Logger.getLogger(RegistrationServlet.class.getName())
               .log(Level.SEVERE, null, e);
-      super.forward(request, response, "Database error", FAIL_PAGE);
+      request.setAttribute("registerStatus", "fail");
+      super.forward(request, response, "Database error", PAGE);
       return;
     }
 
     // Set password attribute so temporary password
     // can be provided to user on registration success page.
     request.setAttribute("password", generatedPassword);
-    super.forward(request, response, "Registration Success", SUCCESS_PAGE);
+    request.setAttribute("registerStatus", "success");
+    super.forward(request, response, "Registration Success", PAGE);
   }
 
   private String generatePassword() {
@@ -103,7 +106,15 @@ public class RegistrationServlet extends BaseServlet {
     String address = parseAddress(request);
     DateUtil dateUtil = new DateUtil();
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString(request.getParameter("dob"));
-    return new User(name, email, password, address, dateOfBirth, "APPLICATION");
+    return new User(
+        name,
+        email,
+        password,
+        address,
+        dateOfBirth,
+        "APPLICATION",
+        1
+    );
   }
 
   private String parseAddress(HttpServletRequest request) {
