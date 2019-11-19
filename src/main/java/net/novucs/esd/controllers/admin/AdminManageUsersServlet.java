@@ -37,6 +37,7 @@ public class AdminManageUsersServlet extends BaseServlet {
 
       Integer pageSize = (Integer) session.getFilter(PAGE_SIZE_FILTER);
       String searchQuery = (String) session.getFilter(USER_SEARCH_QUERY);
+
       pageSize = pageSize == null ? Integer.parseInt(pageSizes[0]) : pageSize;
       double pageNumber = pageNumberParameter == null ? 1 : Double.parseDouble(pageNumberParameter);
 
@@ -81,6 +82,7 @@ public class AdminManageUsersServlet extends BaseServlet {
     if (searchQuery != null) {
       session.setFilter(USER_SEARCH_QUERY, searchQuery);
     }
+
     response.sendRedirect("users");
   }
 

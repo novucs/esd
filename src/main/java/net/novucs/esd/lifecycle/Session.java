@@ -102,7 +102,7 @@ public class Session {
 
 
   /**
-   * Add a filter to the session e.g. page size
+   * Add a filter to the session e.g. page size.
    *
    * @param filterName Name of the filter
    * @param filterValue Value of the filter
@@ -112,7 +112,7 @@ public class Session {
   }
 
   /**
-   * Add a filter to the session e.g. page size
+   * Remove filter from session.
    *
    * @param filterName Name of the filter to remove
    */
@@ -120,16 +120,14 @@ public class Session {
     this.filters.remove(filterName);
   }
 
-
   /**
-   * Add a filter to the session e.g. page size
+   * get a filter to the session.
    *
    * @param filterName Name of the filter
    */
   public Object getFilter(String filterName) {
     return this.filters.get(filterName);
   }
-
 
   /**
    * Gets session.
