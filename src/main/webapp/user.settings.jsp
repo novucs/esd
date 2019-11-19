@@ -8,6 +8,7 @@
 <table>
     <thead>
     <tr>
+        <th>User ID</th>
         <th>Full Name</th>
         <th>Email</th>
         <th>D.O.B</th>
@@ -18,11 +19,13 @@
     </thead>
     <tbody>
     <tr>
+        <td><%= userName.getId() %>
+        </td>
         <td><%= userName.getName() %>
         </td>
         <td><%= userName.getEmail() %>
         </td>
-        <td><%= userName.getDateOfBirth() %>
+        <td><%= userName.getDateOfBirth().toLocalDate() %>
         </td>
         <td><%= userName.getAddress() %>
         </td>
@@ -36,49 +39,51 @@
             <button data-target="modal1" class="btn modal-trigger">Edit account details</button>
 
             <!-- Modal Structure -->
-            <div id="modal1" class="modal">
-                <card>
-                    <div>
-                        <h3><%= userName.getName() %>'s New Profile</h3>
-                        <div class="row">
-                            <form class="col s12">
-                                <div class="row">
-                                    <div class="input-field col s6">
-                                        <input placeholder="Full Name" name="full_name"
-                                               id="full_name" type="text"
-                                               class="validate" required>
-                                        <label for="full_name">Full name</label>
-                                    </div>
-                                    <div class="input-field col s6">
-                                        <input type="text" class="datepicker" name="date_of_birth"
-                                               required>
-                                        <label>Date of Birth</label>
-                                    </div>
-                                    <div class="input-field col s6">
-                                        <input id="new_email" name="new_email" type="email"
-                                               class="validate" required>
-                                        <label for="new_email">Email</label>
-                                    </div>
-                                    <div class="input-field col s6">
-                                        <input id="new_address" class="validate" name="address"
-                                               required>
-                                        <label for="new_address">Address</label>
+            <form method="post" action="">
+                <div id="modal1" class="modal">
+                    <card>
+                        <div>
+                            <h3><%= userName.getName() %>'s New Profile</h3>
+                            <div class="row">
+                                <div class="col s24">
+                                    <div class="row">
+                                        <div class="input-field col s6">
+                                            <input placeholder="Full Name" name="fullname"
+                                                   id="fullname" type="text"
+                                                   class="validate" required>
+                                            <label for="fullname">Full name</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input type="date" class="date"
+                                                   name="date_of_birth"
+                                                   required>
+                                            <label>Date of Birth</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input id="new_email" name="email" type="text"
+                                                   class="validate" required>
+                                            <label for="new_email">Email</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input id="address" class="validate" type="text"
+                                                   name="address"
+                                                   required>
+                                            <label>Address</label>
+                                        </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit"
+                                        class="waves-effect waves-light btn xyz-button"
+                                        name="change-page-size">
+                                    Update
+                                </button>
+                            </div>
                         </div>
-                    </div>
-
-                </card>
-                <div class="modal-footer">
-                    <form method="post">
-                        <button type="submit" class="waves-effect waves-light btn xyz-button"
-                                name="change-page-size">
-                            Update
-                        </button>
-                    </form>
+                    </card>
                 </div>
-            </div>
+            </form>
         </td>
     </tr>
     </tbody>
