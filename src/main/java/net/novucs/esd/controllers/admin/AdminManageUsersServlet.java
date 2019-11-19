@@ -2,7 +2,6 @@ package net.novucs.esd.controllers.admin;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -18,9 +17,9 @@ public class AdminManageUsersServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
-  private final String PAGE_SIZE_FILTER = "userPageSizeFilter";
+  private static final String PAGE_SIZE_FILTER = "userPageSizeFilter";
 
-  private final String USER_SEARCH_QUERY = "userSearchQuery";
+  private static final String USER_SEARCH_QUERY = "userSearchQuery";
 
   private final String[] pageSizes = { "15", "30", "50" };
 
@@ -42,13 +41,13 @@ public class AdminManageUsersServlet extends BaseServlet {
       double pageNumber = pageNumberParameter == null ? 1 : Double.parseDouble(pageNumberParameter);
 
       List<User> users;
-      if(searchQuery != null){
-        String columns[] = {"name", "email"};
-        users = userDao.select().where(new Where().search(searchQuery, columns)).offset(
-            (int) (pageSize * (pageNumber -1))).limit(pageSize).all();
+      if (searchQuery == null) {
+        users = userDao.select().offset(
+            (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
       } else {
-       users = userDao.select().offset(
-            (int) (pageSize * (pageNumber -1))).limit(pageSize).all();
+        String[] columns = { "name", "email" };
+        users = userDao.select().where(new Where().search(searchQuery, columns)).offset(
+            (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
       }
 
       double numberOfUsers = userDao.select().all().size();
@@ -75,11 +74,11 @@ public class AdminManageUsersServlet extends BaseServlet {
     String searchQuery = request.getParameter("search-users-query");
     Session session = super.getSession(request);
 
-    if(ps != null){
+    if (ps != null) {
       session.setFilter(PAGE_SIZE_FILTER, Integer.parseInt(ps));
     }
 
-    if(searchQuery != null){
+    if (searchQuery != null) {
       session.setFilter(USER_SEARCH_QUERY, searchQuery);
     }
     response.sendRedirect("users");

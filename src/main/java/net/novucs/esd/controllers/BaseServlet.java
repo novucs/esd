@@ -41,7 +41,7 @@ public abstract class BaseServlet extends HttpServlet {
     request.getRequestDispatcher("/layout.jsp").forward(request, response);
   }
 
-  protected Session getSession(HttpServletRequest request){
-    return (Session) request.getSession().getAttribute("session");
+  protected Session getSession(HttpServletRequest request) {
+    return (Session) request.getSession(false).getAttribute("session");
   }
 }

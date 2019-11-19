@@ -20,7 +20,7 @@ public class Session {
   public static final String ATTRIBUTE_NAME = "session";
   private final Stack<String> errors = new Stack<>();
   private List<Role> roles = new ArrayList<>();
-  private Map<String, Object> filters = new ConcurrentHashMap<>();
+  private final Map<String, Object> filters = new ConcurrentHashMap<>();
   private User user;
 
   /**
@@ -127,11 +127,7 @@ public class Session {
    * @param filterName Name of the filter
    */
   public Object getFilter(String filterName) {
-    try{
-      return this.filters.get(filterName);
-    } catch (Exception e){
-      return null;
-    }
+    return this.filters.get(filterName);
   }
 
 
