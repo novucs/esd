@@ -43,42 +43,54 @@
                 <div id="modal1" class="modal">
                     <card>
                         <div>
-                            <h3><%= userName.getName() %>'s New Profile</h3>
-                            <div class="row">
-                                <div class="col s24">
-                                    <div class="row">
-                                        <div class="input-field col s6">
-                                            <input placeholder="Full Name" name="fullname"
-                                                   id="fullname" type="text"
-                                                   class="validate" required>
-                                            <label for="fullname">Full name</label>
-                                        </div>
-                                        <div class="input-field col s6">
-                                            <input type="date" class="date"
-                                                   name="date_of_birth"
-                                                   required>
-                                            <label>Date of Birth</label>
-                                        </div>
-                                        <div class="input-field col s6">
-                                            <input id="new_email" name="email" type="text"
-                                                   class="validate" required>
-                                            <label for="new_email">Email</label>
-                                        </div>
-                                        <div class="input-field col s6">
-                                            <input id="address" class="validate" type="text"
-                                                   name="address"
-                                                   required>
-                                            <label>Address</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <h5><%= userName.getName() %>'s New Profile</h5>
                             <div class="modal-footer">
                                 <button type="submit"
                                         class="waves-effect waves-light btn xyz-button"
                                         name="change-page-size">
                                     Update
                                 </button>
+                            </div>
+                            <div class="row">
+                                <div class="col s24">
+                                    <div class="row">
+                                        <div class="input-field col s6">
+                                            <input placeholder="Full Name" name="fullname"
+                                                   id="fullname" type="text"
+                                                   class="validate">
+                                            <label for="fullname">Full name</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input type="date" class="date"
+                                                   name="date_of_birth"
+                                            >
+                                            <label>Date of Birth</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input id="new_email" name="email" type="text"
+                                                   class="validate">
+                                            <label for="new_email">Email</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input id="address" class="validate" type="text"
+                                                   name="address"
+                                            >
+                                            <label>Address</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input placeholder="Current Password" id="password"
+                                                   name="current_password" type="password"
+                                                   class="validate">
+                                            <label for="password">Enter Current Password</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input placeholder="New Password" id="new_password"
+                                                   name="new_password" type="password"
+                                                   class="validate">
+                                            <label for="new_password">Enter New Password</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </card>
@@ -88,24 +100,28 @@
     </tr>
     </tbody>
 </table>
-<div>
-    <div>
-        <h4>Password Reset</h4>
-    </div>
-    <div class="input-field col s6">
-        <input placeholder="Current Password" id="password" type="text" class="validate">
-        <label for="password">Enter Current Password</label>
-    </div>
-    <div class="input-field col s6">
-        <input placeholder="New Password" id="new_password" type="text" class="validate">
-        <label for="new_password">Enter New Password</label>
-    </div>
-    <div>
-        <button class="btn waves-effect waves-light" type="submit" name="action" onclick="">Change
-            Password
-            <i class="material-icons right">send</i>
-        </button>
-    </div>
-</div>
+<%--<form method="post" id="reset-password" action="">--%>
+<%--    <div>--%>
+<%--        <div>--%>
+<%--            <h4>Password Reset</h4>--%>
+<%--        </div>--%>
+<%--        <div class="input-field col s6">--%>
+<%--            <input placeholder="Current Password" id="password" name="current_password" type="text"--%>
+<%--                   class="validate">--%>
+<%--            <label for="password">Enter Current Password</label>--%>
+<%--        </div>--%>
+<%--        <div class="input-field col s6">--%>
+<%--            <input placeholder="New Password" id="new_password" name="new_password" type="text"--%>
+<%--                   class="validate">--%>
+<%--            <label for="new_password">Enter New Password</label>--%>
+<%--        </div>--%>
+<%--        <div>--%>
+<%--            <button class="btn waves-effect waves-light" type="submit" name="action" onclick="">--%>
+<%--                Change--%>
+<%--                Password--%>
+<%--                <i class="material-icons right">send</i>--%>
+<%--            </button>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--</form>--%>
 
-</html>
