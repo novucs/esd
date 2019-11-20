@@ -31,9 +31,6 @@ public final class Membership {
   private ZonedDateTime startDate;
 
   @Column
-  private ZonedDateTime endDate;
-
-  @Column
   private ZonedDateTime claimFromDate;
 
   @Column
@@ -59,8 +56,10 @@ public final class Membership {
       boolean isNewMember) {
     this.userId = userId;
     this.status = status;
+    double doubleBalance = balance.doubleValue();
+    this.pounds = (int) doubleBalance;
+    this.pence = (int) ((doubleBalance - pounds) * 100);
     this.startDate = startDate;
-    this.endDate = startDate.plusYears(1);
 
     if (isNewMember) {
       this.claimFromDate = startDate.plusMonths(6);
@@ -123,8 +122,8 @@ public final class Membership {
    */
   public void setBalance(BigDecimal balance) {
     double doubleBalance = balance.doubleValue();
-    pounds = (int) doubleBalance;
-    pence = (int) ((doubleBalance - pounds) * 100);
+    this.pounds = (int) doubleBalance;
+    this.pence = (int) ((doubleBalance - pounds) * 100);
   }
 
   /**
@@ -170,16 +169,7 @@ public final class Membership {
    * @return the end date
    */
   public ZonedDateTime getEndDate() {
-    return endDate;
-  }
-
-  /**
-   * Sets end date.
-   *
-   * @param endDate the end date
-   */
-  public void setEndDate(ZonedDateTime endDate) {
-    this.endDate = endDate;
+    return startDate.plusYears(1);
   }
 
   /**
@@ -214,13 +204,18 @@ public final class Membership {
         && Objects.equals(pounds, that.pounds)
         && Objects.equals(pence, that.pence)
         && Objects.equals(startDate, that.getStartDate())
-        && Objects.equals(endDate, that.getEndDate())
         && Objects.equals(claimFromDate, that.getClaimFromDate())
         && Objects.equals(getStatus(), that.getStatus());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getUserId(), pounds, pence, getStatus());
+    return Objects.hash(getId(),
+        getUserId(),
+        pounds,
+        pence,
+        getStartDate(),
+        getClaimFromDate(),
+        getStatus());
   }
 }

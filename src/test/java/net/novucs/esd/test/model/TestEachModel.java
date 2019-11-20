@@ -58,6 +58,8 @@ public class TestEachModel<M> {
       return "string";
     } else if (type == Integer.class) {
       return 1;
+    } else if (type == boolean.class) {
+      return false;
     } else if (type == Password.class) {
       return DUMMY_PASSWORD;
     } else if (type == BigDecimal.class) {
@@ -103,6 +105,7 @@ public class TestEachModel<M> {
 
     List<Object> parameters = new ArrayList<>();
 
+    assert constructor != null;
     for (Parameter parameter : constructor.getParameters()) {
       parameters.add(getTestData(parameter.getType()));
     }

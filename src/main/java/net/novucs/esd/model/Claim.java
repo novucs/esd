@@ -42,9 +42,12 @@ public final class Claim {
    *
    * @param membershipId the membership id
    */
-  public Claim(Integer membershipId) {
+  public Claim(Integer membershipId, BigDecimal amount, ZonedDateTime claimDate) {
     this.membershipId = membershipId;
-    this.claimDate = ZonedDateTime.now();
+    double doubleBalance = amount.doubleValue();
+    pounds = (int) doubleBalance;
+    pence = (int) ((doubleBalance - pounds) * 100);
+    this.claimDate = claimDate;
   }
 
   /**
@@ -89,9 +92,18 @@ public final class Claim {
 
   public void setAmount(BigDecimal balance) {
     double doubleBalance = balance.doubleValue();
-    pounds = (int) doubleBalance;
-    pence = (int) ((doubleBalance - pounds) * 100);
+    this.pounds = (int) doubleBalance;
+    this.pence = (int) ((doubleBalance - pounds) * 100);
   }
+
+  public Integer getPounds() {
+    return pounds;
+  }
+
+  public Integer getPence() {
+    return pence;
+  }
+
 
   public ZonedDateTime getClaimDate() {
     return claimDate;
@@ -119,7 +131,7 @@ public final class Claim {
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getMembershipId());
+    return Objects.hash(getId(), getMembershipId(), pounds, pence, getClaimDate());
   }
 
 }

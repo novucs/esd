@@ -106,7 +106,7 @@ public class TestAdminDashboardServlet {
   }
 
   private void createRequiredAttributeData()
-      throws SQLException, ReflectiveOperationException {
+      throws SQLException {
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -124,7 +124,7 @@ public class TestAdminDashboardServlet {
     Membership m = new Membership(bob.getId(), BigDecimal.ZERO, "active", ZonedDateTime.now(),
         true);
     membershipDao.insert(m);
-    claimDao.insert(new Claim(m.getId()));
+    claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now()));
   }
 
   @Test

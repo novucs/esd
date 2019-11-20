@@ -109,8 +109,8 @@ public class DatabaseLifecycle {
         .asList("User", "Member", "NewMember", "FullMember", "Administrator")) {
 
       Role role = new Role(
-          roleName.equalsIgnoreCase("NewMember")
-              || roleName.equalsIgnoreCase("FullMember") ? "Member" : roleName);
+          "NewMember".equalsIgnoreCase(roleName)
+              || "FullMember".equalsIgnoreCase(roleName) ? "Member" : roleName);
 
       daoManager.get(Role.class).insert(role);
       User user = new User(
@@ -125,26 +125,26 @@ public class DatabaseLifecycle {
       daoManager.get(User.class).insert(user);
       daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
 
-      if (roleName.equalsIgnoreCase("NewMember")) {
+      if ("NewMember".equalsIgnoreCase(roleName)) {
         Membership membership = new Membership(
             user.getId(),
-            new BigDecimal("0"),
+            BigDecimal.ZERO,
             "ACTIVE",
             ZonedDateTime.now().minusMonths(1),
             true
         );
         daoManager.get(Membership.class).insert(membership);
-      } else if (roleName.equalsIgnoreCase("FullMember")) {
+      } else if ("FullMember".equalsIgnoreCase(roleName)) {
         Membership pastMembership = new Membership(
             user.getId(),
-            new BigDecimal("0"),
+            BigDecimal.ZERO,
             "EXPIRED",
             ZonedDateTime.now().minusMonths(15),
             true
         );
         Membership currentMembership = new Membership(
             user.getId(),
-            new BigDecimal("0"),
+            BigDecimal.ZERO,
             "ACTIVE",
             ZonedDateTime.now().minusMonths(3),
             false
