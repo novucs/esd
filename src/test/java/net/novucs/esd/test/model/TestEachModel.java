@@ -58,7 +58,7 @@ public class TestEachModel<M> {
       return "string";
     } else if (type == Integer.class) {
       return 1;
-    } else if (type == boolean.class) {
+    } else if (type == Boolean.class) {
       return false;
     } else if (type == Password.class) {
       return DUMMY_PASSWORD;

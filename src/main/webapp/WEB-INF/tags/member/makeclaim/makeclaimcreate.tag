@@ -11,7 +11,7 @@
                 You can make ${remainingClaims} more claims this year.
             </h6>
             <p>
-                The maximum amount for this claim is &#163;${maxClaimValue}.
+                The maximum amount for this claim is &pound;${maxClaimValue}.
             </p>
             <form method="post" action="makeclaim">
                 <div class="row">
@@ -21,7 +21,7 @@
                             <div class="col s2 center">
                                 <div class="row" style="display: flex;">
                                     <div class="input-field" style="display: flex;">
-                                        <p style="font-size: 14px;">&#163;&nbsp;</p>
+                                        <p style="font-size: 14px;">&pound;&nbsp;</p>
                                         <input name="claim-value"
                                                id="claim-value"
                                                min="10"
@@ -35,13 +35,6 @@
                                                required
                                                />
                                     </div>
-                                    <script type="text/javascript">
-                                        function maintainFormat(){
-                                          var inpObj = document.getElementById("claim-pounds");
-                                          inpObj.value = parseFloat(inpObj.value).toFixed(2);
-                                        }
-                                    </script>
-
                                 </div>
                             <div/>
                             <div class="col s5 right"></div>
@@ -60,7 +53,7 @@
                             <div class="col s2 right"></div>
                         </div>
                     </div>
-                    <div class="col s8 left">Go back to your<a href="/app/dashboard"> dashboard.</a></div>
+                    <div class="col s8 left">Go back to your<a href="${pageContext.request.contextPath}/dashboard"> dashboard.</a></div>
                 </div>
             </form>
         </div>

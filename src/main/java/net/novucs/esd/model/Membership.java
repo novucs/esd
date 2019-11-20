@@ -53,7 +53,7 @@ public final class Membership {
    * @param isNewMember the is new member
    */
   public Membership(Integer userId, BigDecimal balance, String status, ZonedDateTime startDate,
-      boolean isNewMember) {
+      Boolean isNewMember) {
     this.userId = userId;
     this.status = status;
     double doubleBalance = balance.doubleValue();
@@ -61,11 +61,8 @@ public final class Membership {
     this.pence = (int) ((doubleBalance - pounds) * 100);
     this.startDate = startDate;
 
-    if (isNewMember) {
-      this.claimFromDate = startDate.plusMonths(6);
-    } else {
-      this.claimFromDate = startDate;
-    }
+    this.claimFromDate = isNewMember ? startDate.plusMonths(6) : startDate;
+
 
     setBalance(balance);
   }

@@ -15,14 +15,14 @@
                 <t:makeclaimineligible
                   messageText="In order to make a claim you need to purchase a membership"
                   linkText="purchase your membership"
-                  linkUrl="/app/makepayment"
+                  linkUrl="${pageContext.request.contextPath}/makepayment"
                   />
             </c:when>
             <c:when test="${membershipStatus == 'EXPIRED'}">
                 <t:makeclaimineligible
                     messageText="Your membership expired on ${expiredDate}. To make a claim you must renew your membership"
                     linkText="renew your membership"
-                    linkUrl="/app/makepayment"
+                    linkUrl="${pageContext.request.contextPath}/makepayment"
                     />
             </c:when>
             <c:when test="${membershipStatus == 'SUSPENDED'}">
@@ -36,14 +36,14 @@
                 <t:makeclaimineligible
                     messageText="You have used your claim quota for this membership period"
                     linkText="view your claims"
-                    linkUrl="/app/claims"
+                    linkUrl="${pageContext.request.contextPath}/claims"
                     />
             </c:when>
             <c:when test="${membershipStatus == 'FULL_WAIT'}">
                 <t:makeclaimineligible
                     messageText="New members must wait 6 months before making a claim, you will be eligible to make a claim on ${claimFrom}"
                     linkText="return to your Dashboard"
-                    linkUrl="/app/dashboard"
+                    linkUrl="${pageContext.request.contextPath}/dashboard"
                     />
             </c:when>
             <c:otherwise>

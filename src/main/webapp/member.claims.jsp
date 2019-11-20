@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags/member/makeclaim" %>
+<script src="${pageContext.request.contextPath}/js/makeclaim.js"></script>
 
 <div class="container">
     <div class="row">

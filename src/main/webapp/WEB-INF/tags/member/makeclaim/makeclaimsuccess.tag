@@ -8,7 +8,7 @@
         <div class="row">
             <h6/>Your claim has been submitted for processing.</h6>
             <br/>
-            <div><a href="/claims">Click here</a> to view the status of your claim.</div>
+            <div><a href="${pageContext.request.contextPath}/claims">Click here</a> to view the status of your claim.</div>
         </div>
     </div>
 </div>

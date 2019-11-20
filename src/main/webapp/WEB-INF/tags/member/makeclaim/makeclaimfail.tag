@@ -10,7 +10,7 @@
             <br/>
             <div>Please check your open claims before trying again.</div>
             <br/>
-            <div><a href="/app/claims">Click here</a> to view your claims.</div>
+            <div><a href="${pageContext.request.contextPath}/claims">Click here</a> to view your claims.</div>
         </div>
     </div>
 </div>
