@@ -57,53 +57,13 @@ public class UserSettingsServlet extends BaseServlet {
     // Update Password
 
     String password1 = request.getParameter("current_password");
-    System.out.println(password1);
+
     String password2 = request.getParameter("new_password");
-    System.out.println(password2);
+
     if (!password1.isEmpty() && !password2.isEmpty() && !password1.equals(password2)) {
       request.setAttribute("notice", "The users password has also been updated.");
       user.setPassword(Password.fromPlaintext(password2));
     }
-
-    // Save User
-    try {
-      userDao.update(user);
-      request.setAttribute("updated", true);
-    } catch (SQLException e) {
-      request.setAttribute("error", "There was an error saving the user. Try again.");
-      request.setAttribute("updated", false);
-    }
-
-    // Feedback
-    request.setAttribute("updated", true);
-    super.forward(request, response, "Account Settings", "member.dashboard");
-  }
-
-  private void changePassword(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException, SQLException {
-    Session session = Session.fromRequest(request);
-    User user = session.getUser();
-    if (user == null) {
-      request.setAttribute("error", "Invalid User ID specified.");
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return;
-    }
-    if (request.getAttribute("current_password") == null) {
-      System.out.println("The attribute current password is null");
-      return;
-    }
-    Password password = user.getPassword();
-
-    if (password.toString() != request.getAttribute("current_password")) {
-      request.setAttribute("error", "Password doesn't match.");
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return;
-    }
-
-    Password newPassword = Password.fromPlaintext(request.getParameter("new_password"));
-
-    // Update password
-    user.setPassword(newPassword);
 
     // Save User
     try {
