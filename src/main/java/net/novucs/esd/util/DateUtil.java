@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -43,6 +44,17 @@ public class DateUtil {
       return null;
     }
     return parsedDate.toInstant().atZone(ZoneId.systemDefault());
+  }
+
+  /**
+   * Gets date from string.
+   *
+   * @param dateTime the date time to format
+   * @return the date from string
+   */
+  public String getFormattedDate(ZonedDateTime dateTime) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    return formatter.format(dateTime);
   }
 
   /**
