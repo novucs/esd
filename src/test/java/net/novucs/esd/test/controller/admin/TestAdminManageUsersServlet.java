@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.ZonedDateTime;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +23,6 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.test.TestDummyDataUtils;
-import net.novucs.esd.util.DateUtil;
-import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 
 import org.junit.Before;
@@ -76,7 +73,6 @@ public class TestAdminManageUsersServlet {
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     servlet.doGet(request, response);
-
     // Assert
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
@@ -103,7 +99,7 @@ public class TestAdminManageUsersServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
     verify(request).setAttribute(eq("users"), anyListOf(User.class));
-    verify(request).setAttribute("maxPages", 1);
+    verify(request).setAttribute("maxPages", 2);
     verify(request).setAttribute("pn", 1.0);
     verify(request).setAttribute("ps", pageSize);
     verify(request).getRequestDispatcher(eq("/layout.jsp"));
@@ -131,7 +127,7 @@ public class TestAdminManageUsersServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
     verify(request).setAttribute(eq("users"), anyListOf(User.class));
-    verify(request).setAttribute("maxPages", 1);
+    verify(request).setAttribute("maxPages", 2);
     verify(request).setAttribute("pn", 1.0);
     verify(request).setAttribute("ps", pageSize);
     verify(request).getRequestDispatcher(eq(LAYOUT));
@@ -195,27 +191,7 @@ public class TestAdminManageUsersServlet {
   }
 
   private void addUserData(Dao<User> userDao) throws SQLException {
-    DateUtil dateUtil = new DateUtil();
-    ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
-
-    userDao.insert(new User(
-        "bob",
-        "bob@bob.net",
-        Password.fromPlaintext("bob"),
-        "bob lane",
-        dateOfBirth,
-        "great",
-        1
-    ));
-
-    userDao.insert(new User(
-        "admin",
-        "admin@admin.net",
-        Password.fromPlaintext("bob"),
-        "admin lane",
-        dateOfBirth,
-        "depressed",
-        1
-    ));
+    userDao.insert(TestDummyDataUtils.getDummyBobUser());
+    userDao.insert(TestDummyDataUtils.getDummyAdminUser());
   }
 }

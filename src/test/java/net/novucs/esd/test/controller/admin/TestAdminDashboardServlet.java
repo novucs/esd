@@ -97,7 +97,6 @@ public class TestAdminDashboardServlet {
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     servlet.doGet(request, response);
-
     verify(request).setAttribute(eq("outstandingMemberApplications"), eq(1));
     verify(request).setAttribute(eq("currentMembers"), eq(1));
     verify(request).setAttribute(eq("outstandingBalances"), eq(1));
@@ -114,6 +113,7 @@ public class TestAdminDashboardServlet {
     Dao<UserRole> userRoleDao = dm.get(UserRole.class);
     Dao<Application> applicationDao = dm.get(Application.class);
     Dao<Claim> claimDao = dm.get(Claim.class);
+    claimDao.createTable();
     Dao<Membership> membershipDao = dm.get(Membership.class);
     User bob = TestDummyDataUtils.getDummyBobUser();
     userDao.insert(bob);

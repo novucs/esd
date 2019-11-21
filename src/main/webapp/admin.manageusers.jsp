@@ -104,7 +104,7 @@
                     <c:choose>
                         <c:when test="${loop.index == pn}">
                             <li class="active">
-                                <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}&">
+                                <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}">
                                         ${loop.index}
                                 </a>
                             </li>
