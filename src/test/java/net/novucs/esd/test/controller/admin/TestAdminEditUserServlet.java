@@ -231,7 +231,7 @@ public class TestAdminEditUserServlet {
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn("696969");
     when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    servlet.doPost(request, response);
+    servlet.doGet(request, response);
 
     // Verify
     verify(request).setAttribute(eq("error"), anyString());
