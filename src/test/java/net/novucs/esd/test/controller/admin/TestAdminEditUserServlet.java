@@ -107,7 +107,7 @@ public class TestAdminEditUserServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
-    String[] roles = { userRole.getId().toString(), adminRole.getId().toString() };
+    String[] roles = {userRole.getId().toString(), adminRole.getId().toString()};
 
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
@@ -144,7 +144,7 @@ public class TestAdminEditUserServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
-    String[] roles = { userRole.getId().toString(), adminRole.getId().toString() };
+    String[] roles = {userRole.getId().toString(), adminRole.getId().toString()};
 
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
@@ -182,7 +182,7 @@ public class TestAdminEditUserServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
-    String[] roles = { userRole.getId().toString(), adminRole.getId().toString() };
+    String[] roles = {userRole.getId().toString(), adminRole.getId().toString()};
 
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
@@ -205,6 +205,32 @@ public class TestAdminEditUserServlet {
     // Verify
     verify(request).setAttribute(eq("editUser"), notNull());
     verify(request).setAttribute(eq("updated"), eq(true));
+    verify(request).setAttribute(eq("availableRoles"), any());
+    verify(request).setAttribute(eq("editUserRoles"), any());
+    verify(request).setAttribute(eq("errors"), anyList());
+  }
+
+  @Test
+  public void testGetEditUser()
+      throws IOException, ServletException, SQLException, ReflectiveOperationException {
+    // Given
+    AdminEditUserServlet servlet = new AdminEditUserServlet();
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpSession session = mock(HttpSession.class);
+    setServletDaos(servlet);
+
+    // When
+    when(request.getSession(anyBoolean())).thenReturn(session);
+    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
+        dummyUser.getId().toString());
+    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
+        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+    servlet.doGet(request, response);
+
+    // Verify
+    verify(request).setAttribute(eq("editUser"), notNull());
     verify(request).setAttribute(eq("availableRoles"), any());
     verify(request).setAttribute(eq("editUserRoles"), any());
     verify(request).setAttribute(eq("errors"), anyList());
