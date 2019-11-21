@@ -37,4 +37,18 @@ public final class TestDummyDataUtils {
         1
     );
   }
+
+  public static User getDummyAdminUser() {
+    DateUtil dateUtil = new DateUtil();
+    ZonedDateTime dateOfBirth = dateUtil.getDateFromString("1990-01-01");
+    return new User(
+        "admin",
+        "admin@admin.net",
+        Password.fromPlaintext("bob"),
+        "admin lane",
+        dateOfBirth,
+        "depressed",
+        1
+    );
+  }
 }

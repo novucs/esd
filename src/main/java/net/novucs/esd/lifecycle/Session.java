@@ -3,7 +3,9 @@ package net.novucs.esd.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,6 +20,7 @@ public class Session {
   public static final String ATTRIBUTE_NAME = "session";
   private final Stack<String> errors = new Stack<>();
   private List<Role> roles = new ArrayList<>();
+  private final Map<String, Object> filters = new ConcurrentHashMap<>();
   private User user;
 
   /**
@@ -97,6 +100,34 @@ public class Session {
     this.roles = roles;
   }
 
+
+  /**
+   * Add a filter to the session e.g. page size.
+   *
+   * @param filterName Name of the filter
+   * @param filterValue Value of the filter
+   */
+  public void setFilter(String filterName, Object filterValue) {
+    this.filters.put(filterName, filterValue);
+  }
+
+  /**
+   * Remove filter from session.
+   *
+   * @param filterName Name of the filter to remove
+   */
+  public void removeFilter(String filterName) {
+    this.filters.remove(filterName);
+  }
+
+  /**
+   * get a filter to the session.
+   *
+   * @param filterName Name of the filter
+   */
+  public Object getFilter(String filterName) {
+    return this.filters.get(filterName);
+  }
 
   /**
    * Gets session.
