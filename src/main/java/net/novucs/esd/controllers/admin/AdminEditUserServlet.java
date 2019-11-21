@@ -63,9 +63,19 @@ public class AdminEditUserServlet extends BaseServlet {
     }
   }
 
+  /**
+   * Update a user.
+   *
+   * @param request the request
+   * @param response the response.
+   * @throws IOException an IO error
+   * @throws ServletException a Servlet error
+   * @throws SQLException a SQL error
+   */
   private void updateUser(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException, SQLException {
-    User user = userDao.selectById(Integer.parseInt(request.getParameter("userId")));
+    User user = getUserById(Integer.parseInt(request.getParameter("userId")));
+
     if (user == null) {
       request.setAttribute("error", "Invalid User ID specified.");
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -92,7 +102,7 @@ public class AdminEditUserServlet extends BaseServlet {
         .where(new Where().eq("user_id", user.getId()))
         .all());
     userRoleDao.insert(Arrays.stream(request.getParameterValues("roles"))
-        .map(role -> new UserRole(user.getId(), Integer.parseInt(role)))
+        .map((role) -> new UserRole(user.getId(), Integer.parseInt(role)))
         .toArray(UserRole[]::new));
 
     // Save User
@@ -105,11 +115,17 @@ public class AdminEditUserServlet extends BaseServlet {
     }
 
     // Feedback
-    request.setAttribute("updated", true);
     addRoleAttributes(request, user);
     super.forward(request, response, "Edit " + user.getName(), "admin.edituser");
   }
 
+  /**
+   * Edit a users roles.
+   *
+   * @param request the request
+   * @param user the user
+   * @throws SQLException an error
+   */
   private void addRoleAttributes(HttpServletRequest request, User user)
       throws SQLException {
     request.setAttribute("availableRoles", roleDao.select().all());
@@ -118,6 +134,21 @@ public class AdminEditUserServlet extends BaseServlet {
         .stream().map(UserRole::getId)
         .collect(Collectors.toList()));
     request.setAttribute("editUser", user);
+  }
+
+  /**
+   * Get a user by their User ID.
+   *
+   * @param userId the user id
+   * @return User
+   */
+  private User getUserById(Integer userId) {
+    try {
+      return userDao.selectById(userId);
+    } catch (SQLException ex) {
+      Logger.getLogger(getClass().getName()).log(Level.WARNING, "User does not exist", ex);
+    }
+    return null;
   }
 
   @Override

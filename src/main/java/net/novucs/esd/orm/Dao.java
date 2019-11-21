@@ -153,13 +153,12 @@ public class Dao<M> {
       }
 
       statement.executeBatch();
-
       try (ResultSet rs = statement.getGeneratedKeys()) {
-        for (M model : models) {
-          if (!rs.next()) {
-            throw new SQLException("Failed to fetch all generated keys");
-          }
+        if (!rs.next()) {
+          throw new SQLException("Failed to fetch all generated keys");
+        }
 
+        for (M model : models) {
           ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
           int primaryKey = rs.getInt(1);
           ReflectUtil.setValue(model, primaryKeyColumn, primaryKey);
