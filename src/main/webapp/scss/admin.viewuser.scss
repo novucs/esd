@@ -1,0 +1,30 @@
+.info-section {
+  margin-bottom: 30px;
+}
+
+.tabs {
+  background-color: inherit;
+
+  .indicator {
+    height: 2px;
+    background-color: black;
+  }
+
+  .tab {
+    a {
+      color: black;
+
+      &:focus,
+      &:focus.active {
+        background-color: transparentize(black, .95);
+        outline: none;
+      }
+
+      &:hover,
+      &.active {
+        background-color: transparent;
+        color: black;
+      }
+    }
+  }
+}
