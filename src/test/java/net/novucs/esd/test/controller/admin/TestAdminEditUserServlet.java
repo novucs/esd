@@ -67,11 +67,12 @@ public class TestAdminEditUserServlet {
     Dao<Role> roleDao = dm.get(Role.class);
 
     // Insert our Dummy User with Roles
-    roleDao.insert(userRole);
-    roleDao.insert(adminRole);
+    roleDao.insert(userRole, adminRole);
     userDao.insert(dummyUser);
-    userRoleDao.insert(new UserRole(dummyUser.getId(), userRole.getId()));
-    userRoleDao.insert(new UserRole(dummyUser.getId(), adminRole.getId()));
+    userRoleDao.insert(
+        new UserRole(dummyUser.getId(), userRole.getId()),
+        new UserRole(dummyUser.getId(), adminRole.getId())
+    );
 
     // Reflect DAO
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
