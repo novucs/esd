@@ -79,11 +79,12 @@ public class AdminEditUserServlet extends BaseServlet {
         .getDateFromString(request.getParameter("date_of_birth")));
 
     // Update Password
-    String password1 = request.getParameter("password1");
-    String password2 = request.getParameter("password2");
-    if (!password1.isEmpty() && !password2.isEmpty() && password1.equals(password2)) {
+    String firstPassword = request.getParameter("password1");
+    String repeatPassword = request.getParameter("password2");
+    if (!firstPassword.isEmpty() && !repeatPassword.isEmpty()
+        && firstPassword.equals(repeatPassword)) {
       request.setAttribute("notice", "The users password has also been updated.");
-      user.setPassword(Password.fromPlaintext(password1));
+      user.setPassword(Password.fromPlaintext(firstPassword));
     }
 
     // Delete and Re-add User Roles

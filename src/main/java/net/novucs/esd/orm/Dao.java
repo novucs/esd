@@ -71,7 +71,7 @@ public class Dao<M> {
       ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
       for (M model : models) {
         Integer primaryKey = ReflectUtil.getValue(model, primaryKeyColumn);
-        statement.setInt(0, primaryKey);
+        statement.setInt(1, primaryKey);
         statement.addBatch();
       }
       statement.executeBatch();
