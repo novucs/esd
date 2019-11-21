@@ -145,7 +145,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AdminViewUserServlet</servlet-name>
-    <url-pattern>/admin/user/*</url-pattern>
+    <url-pattern>/admin/viewuser/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>AdminEditUserServlet</servlet-name>
