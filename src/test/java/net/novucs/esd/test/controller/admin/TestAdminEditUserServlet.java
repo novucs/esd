@@ -38,6 +38,10 @@ public class TestAdminEditUserServlet {
 
   private static final String SESSION_LABEL = "session";
   private static final String USER_ID_LABEL = "userId";
+  private static final String EDIT_USER_LABEL = "editUser";
+  private static final String AVAILABLE_ROLES_LABEL = "availableRoles";
+  private static final String EDIT_USER_ROLES_LABEL = "editUserRoles";
+  private static final String ERRORS_LABEL = "errors";
   private static final String LAYOUT_JSP_LABEL = "/layout.jsp";
 
   private transient Session userSession;
@@ -128,11 +132,11 @@ public class TestAdminEditUserServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("editUser"), notNull());
+    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq("availableRoles"), any());
-    verify(request).setAttribute(eq("editUserRoles"), any());
-    verify(request).setAttribute(eq("errors"), anyList());
+    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   @Test
@@ -165,12 +169,12 @@ public class TestAdminEditUserServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("editUser"), notNull());
+    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq("availableRoles"), any());
-    verify(request).setAttribute(eq("editUserRoles"), any());
+    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
     verify(request).setAttribute(eq("notice"), anyString());
-    verify(request).setAttribute(eq("errors"), anyList());
+    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   @Test
@@ -203,11 +207,11 @@ public class TestAdminEditUserServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("editUser"), notNull());
+    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq("availableRoles"), any());
-    verify(request).setAttribute(eq("editUserRoles"), any());
-    verify(request).setAttribute(eq("errors"), anyList());
+    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   @Test
@@ -253,10 +257,10 @@ public class TestAdminEditUserServlet {
     servlet.doGet(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("editUser"), notNull());
-    verify(request).setAttribute(eq("availableRoles"), any());
-    verify(request).setAttribute(eq("editUserRoles"), any());
-    verify(request).setAttribute(eq("errors"), anyList());
+    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
+    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   @Test
