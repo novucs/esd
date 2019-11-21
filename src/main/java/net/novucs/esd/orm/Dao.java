@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.StringJoiner;
 import net.novucs.esd.util.ReflectUtil;
@@ -145,20 +144,17 @@ public class Dao<M> {
     String query = insertSQL();
     try (Connection connection = this.connectionSource.getConnection();
         PreparedStatement statement = connection
-            .prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            .prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
       for (M model : models) {
         parsedModel.setStatementValues(statement, model);
-        statement.addBatch();
-      }
+        statement.executeUpdate();
 
-      statement.executeBatch();
-      try (ResultSet rs = statement.getGeneratedKeys()) {
-        if (!rs.next()) {
-          throw new SQLException("Failed to fetch all generated keys");
-        }
+        try (ResultSet rs = statement.getGeneratedKeys()) {
+          if (!rs.next()) {
+            throw new SQLException("Failed to fetch all generated keys");
+          }
 
-        for (M model : models) {
           ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
           int primaryKey = rs.getInt(1);
           ReflectUtil.setValue(model, primaryKeyColumn, primaryKey);
