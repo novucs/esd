@@ -211,6 +211,29 @@ public class TestAdminEditUserServlet {
   }
 
   @Test
+  public void testGetInvalidEditUser()
+      throws IOException, ServletException, SQLException, ReflectiveOperationException {
+    // Given
+    AdminEditUserServlet servlet = new AdminEditUserServlet();
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpSession session = mock(HttpSession.class);
+    setServletDaos(servlet);
+
+    // When
+    when(request.getSession(anyBoolean())).thenReturn(session);
+    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn("696969");
+    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
+        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+    servlet.doPost(request, response);
+
+    // Verify
+    verify(request).setAttribute(eq("error"), anyString());
+    verify(response).sendError(anyInt());
+  }
+
+  @Test
   public void testGetEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
