@@ -3,6 +3,8 @@ package net.novucs.esd.test.controller.admin;
 import static junit.framework.TestCase.assertTrue;
 import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -99,8 +101,8 @@ public class TestAdminManageUsersServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
     verify(request).setAttribute(eq("users"), anyListOf(User.class));
-    verify(request).setAttribute("maxPages", 2);
-    verify(request).setAttribute("pn", 1.0);
+    verify(request).setAttribute(eq("maxPages"), anyInt());
+    verify(request).setAttribute(eq("pn"), anyDouble());
     verify(request).setAttribute("ps", pageSize);
     verify(request).getRequestDispatcher(eq("/layout.jsp"));
   }
@@ -127,8 +129,8 @@ public class TestAdminManageUsersServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
     verify(request).setAttribute(eq("users"), anyListOf(User.class));
-    verify(request).setAttribute("maxPages", 2);
-    verify(request).setAttribute("pn", 1.0);
+    verify(request).setAttribute(eq("maxPages"), anyInt());
+    verify(request).setAttribute(eq("pn"), anyDouble());
     verify(request).setAttribute("ps", pageSize);
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
