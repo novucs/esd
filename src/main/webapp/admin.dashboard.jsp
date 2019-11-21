@@ -12,7 +12,7 @@
                         <div class="card-content valign-wrapper">
                             <div class="card-text">
                                 <h6>
-                                    Welcome back, <strong><%=user.getName()%> </strong>
+                                    Welcome back, <strong><%=user.getName()%></strong>
                                 </h6>
                             </div>
                             <div class="card-icon">

@@ -148,6 +148,18 @@
     <url-pattern>/admin/viewuser/*</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>AdminEditUserServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.admin.AdminEditUserServlet</servlet-class>
+    <init-param>
+      <param-name>userId</param-name>
+      <param-value>null</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminEditUserServlet</servlet-name>
+    <url-pattern>/admin/edituser</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>UserSettingsServlet</servlet-name>
     <servlet-class>net.novucs.esd.controllers.UserSettingsServlet</servlet-class>
   </servlet>
