@@ -34,7 +34,7 @@
                 </div>
                 <div class="input-field col s6">
                     <label>
-                        Roles:
+                        Roles
                     </label>
                     <input type="text" disabled value="${roleText}">
                 </div>
