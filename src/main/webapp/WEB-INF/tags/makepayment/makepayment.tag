@@ -1,10 +1,10 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags/makepayment" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ attribute name="linkText" type="java.lang.String" %>
-<%@ attribute name="linkUrl" type="java.lang.String" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%@ attribute name="amountOwed" type="java.lang.String" %>
+<%@ attribute name="amountOwed" required="true" %>
+<%@ attribute name="noPaymentMessage"required="true" %>
+<%@ attribute name="paymentTitle" required="true" %>
+<%@ attribute name="paymentMessage" required="true" %>
 
 
 <div class="row">
