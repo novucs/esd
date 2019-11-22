@@ -2,9 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="CS_APPROVED" value="<%=ClaimStatus.APPROVED%>" />
-<c:set var="CS_PENDING" value="<%=ClaimStatus.PENDING%>" />
-<c:set var="CS_REJECTED" value="<%=ClaimStatus.REJECTED%>" />
+<c:set var="CS_APPROVED" value="<%=ClaimStatus.APPROVED%>"/>
+<c:set var="CS_PENDING" value="<%=ClaimStatus.PENDING%>"/>
+<c:set var="CS_REJECTED" value="<%=ClaimStatus.REJECTED%>"/>
 
 <div>
     <form class="row" method="post" action="" role="form">
@@ -31,6 +31,12 @@
                     <input name="email" id="email" type="email" class="validate"
                            value="${user.email}" required disabled>
                     <label for="email">Email</label>
+                </div>
+                <div class="input-field col s6">
+                    <label>
+                        Roles:
+                    </label>
+                    <input type="text" disabled value="${roleText}">
                 </div>
             </div>
         </div>
@@ -116,7 +122,7 @@
                                             ID:&nbsp;
                                         </label>
                                         <span>
-                                            ${claim.id}
+                                                ${claim.id}
                                         </span>
                                     </div>
                                     <div class="col s3">
@@ -129,7 +135,7 @@
                                         <fmt:formatDate value="${parsedClaimDate}" type="date"
                                                         pattern="dd-MM-yyyy" var="formatClaimDate"
                                         />
-                                        ${formatClaimDate}
+                                            ${formatClaimDate}
                                     </div>
                                     <div class="col s3">
                                         <label>
@@ -148,7 +154,7 @@
                                             Status:&nbsp;
                                         </label>
                                         <span class="${claimStatusColor}">
-                                            ${claim.status}
+                                                ${claim.status}
                                         </span>
                                     </div>
                                     <br/>
