@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.novucs.esd.constants.ClaimStatus;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
@@ -147,7 +148,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
     try {
       Claim claim = new Claim((int) request.getSession().getAttribute("membershipId"),
           new BigDecimal(request.getParameter("claim-value")),
-          ZonedDateTime.now());
+          ZonedDateTime.now(), ClaimStatus.PENDING);
       claimDao.insert(claim);
     } catch (SQLException e) {
       Logger.getLogger(MemberMakeClaimServlet.class.getName())
