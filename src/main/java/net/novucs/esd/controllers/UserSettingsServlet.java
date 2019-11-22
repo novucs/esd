@@ -56,13 +56,13 @@ public class UserSettingsServlet extends BaseServlet {
 
     // Update Password
     Password password = user.getPassword();
-    String current_password = request.getParameter("current_password");
-    String new_password = request.getParameter("new_password");
+    String currentPassword = request.getParameter("current_password");
+    String newPassword = request.getParameter("new_password");
 
-    if (!current_password.isEmpty() && !new_password.isEmpty() && !current_password
-        .equals(new_password) && password.authenticate(request.getParameter("current_password"))) {
+    if (!currentPassword.isEmpty() && !newPassword.isEmpty() && !currentPassword
+        .equals(newPassword) && password.authenticate(request.getParameter("current_password"))) {
       user.setNeedsPasswordChange(0);
-      user.setPassword(Password.fromPlaintext(new_password));
+      user.setPassword(Password.fromPlaintext(newPassword));
     }
 
     // Save User
