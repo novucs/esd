@@ -3,8 +3,6 @@
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
 <% User userName = ((Session) request.getAttribute("session")).getUser(); %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html lang="en">
 <table>
     <thead>
     <tr>
@@ -100,28 +98,4 @@
     </tr>
     </tbody>
 </table>
-<%--<form method="post" id="reset-password" action="">--%>
-<%--    <div>--%>
-<%--        <div>--%>
-<%--            <h4>Password Reset</h4>--%>
-<%--        </div>--%>
-<%--        <div class="input-field col s6">--%>
-<%--            <input placeholder="Current Password" id="password" name="current_password" type="text"--%>
-<%--                   class="validate">--%>
-<%--            <label for="password">Enter Current Password</label>--%>
-<%--        </div>--%>
-<%--        <div class="input-field col s6">--%>
-<%--            <input placeholder="New Password" id="new_password" name="new_password" type="text"--%>
-<%--                   class="validate">--%>
-<%--            <label for="new_password">Enter New Password</label>--%>
-<%--        </div>--%>
-<%--        <div>--%>
-<%--            <button class="btn waves-effect waves-light" type="submit" name="action" onclick="">--%>
-<%--                Change--%>
-<%--                Password--%>
-<%--                <i class="material-icons right">send</i>--%>
-<%--            </button>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--</form>--%>
 

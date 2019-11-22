@@ -56,26 +56,23 @@ public class UserSettingsServlet extends BaseServlet {
 
     // Update Password
     Password password = user.getPassword();
-    String password1 = request.getParameter("current_password");
-    String password2 = request.getParameter("new_password");
+    String current_password = request.getParameter("current_password");
+    String new_password = request.getParameter("new_password");
 
-    if (!password1.isEmpty() && !password2.isEmpty() && !password1.equals(password2) &&
-        password.authenticate(request.getParameter("current_password"))) {
-      request.setAttribute("notice", "The users password has also been updated..");
-      user.setPassword(Password.fromPlaintext(password2));
+    if (!current_password.isEmpty() && !new_password.isEmpty() && !current_password
+        .equals(new_password) && password.authenticate(request.getParameter("current_password"))) {
+      user.setNeedsPasswordChange(0);
+      user.setPassword(Password.fromPlaintext(new_password));
     }
 
     // Save User
     try {
       userDao.update(user);
-      request.setAttribute("updated", true);
     } catch (SQLException e) {
-      request.setAttribute("error", "There was an error saving the user. Try again.");
-      request.setAttribute("updated", false);
+      session.pushError("There has been a sql error. Please refresh the page and try again");
     }
 
     // Feedback
-    request.setAttribute("updated", true);
     super.forward(request, response, "Account Settings", "member.dashboard");
   }
 
