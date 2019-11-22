@@ -40,47 +40,6 @@ public class ParsedModel<M> {
   }
 
   /**
-   * Gets table name.
-   *
-   * @return the table name
-   */
-  public String getTableName() {
-    return tableName;
-  }
-
-  /**
-   * Gets sql table name.
-   *
-   * @return the sql table name
-   */
-  public String getSQLTableName() {
-    return quoted(tableName);
-  }
-
-  /**
-   * Gets primary key.
-   *
-   * @return the primary key
-   */
-  public ParsedColumn getPrimaryKey() {
-    for (ParsedColumn column : columns.values()) {
-      if (column.isPrimary()) {
-        return column;
-      }
-    }
-    throw new IllegalStateException("Table " + tableName + " does not have a primary key");
-  }
-
-  /**
-   * Gets columns.
-   *
-   * @return the columns
-   */
-  public Map<String, ParsedColumn> getColumns() {
-    return columns;
-  }
-
-  /**
    * Of parsed model.
    *
    * @param <M>        the type parameter
@@ -119,6 +78,47 @@ public class ParsedModel<M> {
     ParsedModel<M> parsedModel = new ParsedModel<>(modelClass, tableName, columns);
     MODEL_CACHE.put(modelClass, parsedModel);
     return parsedModel;
+  }
+
+  /**
+   * Gets table name.
+   *
+   * @return the table name
+   */
+  public String getTableName() {
+    return tableName;
+  }
+
+  /**
+   * Gets sql table name.
+   *
+   * @return the sql table name
+   */
+  public String getSQLTableName() {
+    return quoted(tableName);
+  }
+
+  /**
+   * Gets primary key.
+   *
+   * @return the primary key
+   */
+  public ParsedColumn getPrimaryKey() {
+    for (ParsedColumn column : columns.values()) {
+      if (column.isPrimary()) {
+        return column;
+      }
+    }
+    throw new IllegalStateException("Table " + tableName + " does not have a primary key");
+  }
+
+  /**
+   * Gets columns.
+   *
+   * @return the columns
+   */
+  public Map<String, ParsedColumn> getColumns() {
+    return columns;
   }
 
   /**

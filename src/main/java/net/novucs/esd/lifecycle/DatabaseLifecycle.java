@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.RolePermission;
 import net.novucs.esd.model.User;
@@ -43,6 +44,7 @@ public class DatabaseLifecycle {
       Application.class,
       Claim.class,
       Membership.class,
+      Payment.class,
       Role.class,
       RolePermission.class,
       User.class,
@@ -124,8 +126,20 @@ public class DatabaseLifecycle {
       );
       daoManager.get(User.class).insert(user);
       daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
-
+      if ("User".equalsIgnoreCase(roleName)) {
+        Application application = new Application(
+            user.getId(),
+            BigDecimal.ZERO
+        );
+        daoManager.get(Application.class).insert(application);
+      }
       if ("NewMember".equalsIgnoreCase(roleName)) {
+        Application application = new Application(
+            user.getId(),
+            BigDecimal.valueOf(10)
+        );
+        application.setStatus("APPROVED");
+        daoManager.get(Application.class).insert(application);
         Membership membership = new Membership(
             user.getId(),
             BigDecimal.ZERO,
@@ -135,6 +149,12 @@ public class DatabaseLifecycle {
         );
         daoManager.get(Membership.class).insert(membership);
       } else if ("FullMember".equalsIgnoreCase(roleName)) {
+        Application application = new Application(
+            user.getId(),
+            BigDecimal.valueOf(10)
+        );
+        application.setStatus("APPROVED");
+        daoManager.get(Application.class).insert(application);
         Membership pastMembership = new Membership(
             user.getId(),
             BigDecimal.ZERO,

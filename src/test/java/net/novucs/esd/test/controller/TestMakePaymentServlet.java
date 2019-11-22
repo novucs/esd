@@ -12,17 +12,15 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
+import net.novucs.esd.controllers.MakePaymentServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
@@ -34,26 +32,21 @@ import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
 /**
- * The type Test member make claim servlet.
+ * The type Test make payment servlet.
  */
-public class TestMemberMakeClaimServlet {
+public class TestMakePaymentServlet {
 
   private static final String LAYOUT = "/layout.jsp";
   private static final String ACTIVE_MEMBERSHIP = "ACTIVE";
+  private static final String APPLICATION = "APPLICATION";
   private static final String USER_NAME = "User Name";
   private static final String USER_EMAIL = "user@email.com";
   private static final String USER_PASSWORD = "password1";
   private static final String USER_ADDRESS = "1 Esd Lane, UWE, A12 BC3";
-
   private static final String SESSION = "session";
-
-  private static final String MEMBERSHIP_STATUS_ATTR = "membershipStatus";
-  private static final String MEMBER_STATUS_NONE = "NONE";
-  private static final String MEMBER_STATUS_FULL_CLAIM = "FULL_CLAIM";
-  private static final String MEMBER_STATUS_FULL_WAIT = "FULL_WAIT";
-  private static final String MEMBER_STATUS_FULL_USED = "FULL_USED";
-  private static final String MEMBER_STATUS_SUSPENDED = "SUSPENDED";
-  private static final String MEMBER_STATUS_EXPIRED = "EXPIRED";
+  private static final int MEMBERSHIP_FEE = 10;
+  private static final String AMOUNT_OWED = "amountOwed";
+  private static final String DECIMAL_FORMAT = "#.##";
   private transient Session userSession;
 
   /**
@@ -64,13 +57,13 @@ public class TestMemberMakeClaimServlet {
     userSession = new Session();
   }
 
-  private void setServletDaos(MemberMakeClaimServlet servlet,
+  private void setServletDaos(MakePaymentServlet servlet,
       User user,
       boolean withOldMembership,
       boolean withCurrentMembership,
-      boolean membershipSuspended,
-      int claimCount,
-      BigDecimal firstClaimAmount)
+      BigDecimal applicationBalance,
+      BigDecimal oldMembershipBalance,
+      BigDecimal currentMembershipBalance)
       throws SQLException, ReflectiveOperationException {
 
     DaoManager dm = createTestDaoManager();
@@ -78,13 +71,16 @@ public class TestMemberMakeClaimServlet {
     Dao<User> userDao = dm.get(User.class);
     userDao.insert(user);
     Dao<Membership> membershipDao = dm.get(Membership.class);
-    Dao<Claim> claimDao = dm.get(Claim.class);
-
+    Dao<Application> applicationDao = dm.get(Application.class);
+    Application application = new Application(
+        user.getId(),
+        applicationBalance
+    );
     //Integer userId, BigDecimal balance, String status, ZonedDateTime startDate
     if (withOldMembership) {
       Membership oldMembership = new Membership(
           user.getId(),
-          BigDecimal.valueOf(0),
+          oldMembershipBalance,
           "EXPIRED",
           ZonedDateTime.now().minusMonths(15),
           false
@@ -92,28 +88,25 @@ public class TestMemberMakeClaimServlet {
       membershipDao.insert(oldMembership);
     }
     if (withCurrentMembership) {
+      application.setStatus("CLOSED");
       Membership newMembership = new Membership(
           user.getId(),
-          BigDecimal.valueOf(0),
-          membershipSuspended ? "SUSPENDED" : ACTIVE_MEMBERSHIP,
+          currentMembershipBalance,
+          ACTIVE_MEMBERSHIP,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership
       );
       membershipDao.insert(newMembership);
-      for (int i = 0; i < claimCount; i++) {
-        Claim claim = new Claim(newMembership.getId(),
-            i == 0 ? firstClaimAmount : new BigDecimal(20), ZonedDateTime.now());
-        claimDao.insert(claim);
-      }
     }
+    applicationDao.insert(application);
 
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
     ReflectUtil.setFieldValue(servlet, "membershipDao", membershipDao);
-    ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);
+    ReflectUtil.setFieldValue(servlet, "applicationDao", applicationDao);
   }
 
   /**
-   * Test request gets make claim page never a member.
+   * Test request gets make payment application to pay.
    *
    * @throws ServletException             the servlet exception
    * @throws IOException                  the io exception
@@ -121,10 +114,10 @@ public class TestMemberMakeClaimServlet {
    * @throws SQLException                 the sql exception
    */
   @Test
-  public void testRequestGetsMakeClaimPageNeverAMember()
+  public void testRequestGetsMakePaymentApplicationToPay()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
 
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
+    MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -134,7 +127,7 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        "APPLICATION",
+        APPLICATION,
         0
     );
 
@@ -142,8 +135,8 @@ public class TestMemberMakeClaimServlet {
         user,
         false,
         false,
-        false,
-        0,
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
         BigDecimal.ZERO);
 
     userSession.setUser(user);
@@ -157,21 +150,24 @@ public class TestMemberMakeClaimServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
+    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_NONE);
+    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP_FEE)));
   }
 
   /**
-   * Test request gets make claim page no current membership.
+   * Test request gets make payment application settled.
    *
-   * @throws ServletException the servlet exception
-   * @throws IOException      the io exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
    */
   @Test
-  public void testRequestGetsMakeClaimPageNoCurrentMembership()
-      throws ServletException, IOException {
+  public void testRequestGetsMakePaymentApplicationSettled()
+      throws ServletException, IOException, SQLException, ReflectiveOperationException {
 
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
+    MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -181,22 +177,18 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        "APPLICATION",
+        APPLICATION,
         0
     );
 
-    try {
-      setServletDaos(servlet,
-          user,
-          true,
-          false,
-          false,
-          0,
-          BigDecimal.ZERO);
-    } catch (SQLException | ReflectiveOperationException e) {
-      Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
+    setServletDaos(servlet,
+        user,
+        false,
+        false,
+        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.ZERO,
+        BigDecimal.ZERO);
 
-    }
     userSession.setUser(user);
 
     // When
@@ -208,21 +200,24 @@ public class TestMemberMakeClaimServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
+    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_EXPIRED);
+    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
   }
 
   /**
-   * Test request gets make claim page membership six month wait.
+   * Test request gets make payment membership to pay.
    *
-   * @throws ServletException the servlet exception
-   * @throws IOException      the io exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
    */
   @Test
-  public void testRequestGetsMakeClaimPageMembershipSixMonthWait()
-      throws ServletException, IOException {
+  public void testRequestGetsMakePaymentMembershipToPay()
+      throws ServletException, IOException, SQLException, ReflectiveOperationException {
 
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
+    MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -232,21 +227,18 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        "APPLICATION",
+        APPLICATION,
         0
     );
 
-    try {
-      setServletDaos(servlet,
-          user,
-          false,
-          true,
-          false,
-          0,
-          BigDecimal.ZERO);
-    } catch (SQLException | ReflectiveOperationException e) {
-      Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
-    }
+    setServletDaos(servlet,
+        user,
+        false,
+        true,
+        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.ZERO,
+        BigDecimal.ZERO);
+
     userSession.setUser(user);
 
     // When
@@ -258,21 +250,24 @@ public class TestMemberMakeClaimServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
+    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_FULL_WAIT);
+    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP_FEE)));
   }
 
   /**
-   * Test request gets make claim page membership used claim quota.
+   * Test request gets make payment membership to pay multiple.
    *
-   * @throws ServletException the servlet exception
-   * @throws IOException      the io exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
    */
   @Test
-  public void testRequestGetsMakeClaimPageMembershipUsedClaimQuota()
-      throws ServletException, IOException {
+  public void testRequestGetsMakePaymentMembershipToPayMultiple()
+      throws ServletException, IOException, SQLException, ReflectiveOperationException {
 
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
+    MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -282,50 +277,49 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
+        APPLICATION,
         0
     );
 
-    try {
-      setServletDaos(servlet,
-          user,
-          true,
-          true,
-          false,
-          2,
-          new BigDecimal(25));
-    } catch (SQLException | ReflectiveOperationException e) {
-      Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
+    setServletDaos(servlet,
+        user,
+        true,
+        true,
+        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.ZERO,
+        BigDecimal.ZERO);
 
-    }
     userSession.setUser(user);
 
     // When
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(httpSession);
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
+    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_FULL_USED);
+    verify(request).setAttribute(AMOUNT_OWED,
+        df.format(BigDecimal.valueOf(MEMBERSHIP_FEE).multiply(BigDecimal.valueOf(2))));
 
   }
 
   /**
-   * Test request gets make claim page membership suspended.
+   * Test request gets make payment membership to pay single.
    *
-   * @throws ServletException the servlet exception
-   * @throws IOException      the io exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
    */
   @Test
-  public void testRequestGetsMakeClaimPageMembershipSuspended()
-      throws ServletException, IOException {
+  public void testRequestGetsMakePaymentMembershipToPaySingle()
+      throws ServletException, IOException, SQLException, ReflectiveOperationException {
 
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
+    MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -335,49 +329,47 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
+        APPLICATION,
         0
     );
 
-    try {
-      setServletDaos(servlet,
-          user,
-          true,
-          true,
-          true,
-          0,
-          new BigDecimal(25));
-    } catch (SQLException | ReflectiveOperationException e) {
-      Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
+    setServletDaos(servlet,
+        user,
+        true,
+        true,
+        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.ZERO);
 
-    }
     userSession.setUser(user);
 
     // When
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(httpSession);
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
+    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_SUSPENDED);
+    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP_FEE)));
   }
 
   /**
-   * Test request gets make claim page membership eligible for claim full amount.
+   * Test request gets make payment membership to pay settled.
    *
-   * @throws ServletException the servlet exception
-   * @throws IOException      the io exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
    */
   @Test
-  public void testRequestGetsMakeClaimPageMembershipEligibleForClaimFullAmount()
-      throws ServletException, IOException {
+  public void testRequestGetsMakePaymentMembershipToPaySettled()
+      throws ServletException, IOException, SQLException, ReflectiveOperationException {
 
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
+    MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -387,88 +379,31 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
+        APPLICATION,
         0
     );
 
-    try {
-      setServletDaos(servlet,
-          user,
-          true,
-          true,
-          false,
-          0,
-          new BigDecimal(25));
-    } catch (SQLException | ReflectiveOperationException e) {
-      Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
+    setServletDaos(servlet,
+        user,
+        true,
+        true,
+        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.valueOf(MEMBERSHIP_FEE));
 
-    }
     userSession.setUser(user);
 
     // When
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(httpSession);
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
+    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_FULL_CLAIM);
-  }
-
-  /**
-   * Test request gets make claim page membership eligible for claim limited amount.
-   *
-   * @throws ServletException the servlet exception
-   * @throws IOException      the io exception
-   */
-  @Test
-  public void testRequestGetsMakeClaimPageMembershipEligibleForClaimLimitedAmount()
-      throws ServletException, IOException {
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
-        0
-    );
-
-    try {
-      setServletDaos(servlet,
-          user,
-          true,
-          true,
-          false,
-          1,
-          new BigDecimal(50));
-    } catch (SQLException | ReflectiveOperationException e) {
-      Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
-
-    }
-    userSession.setUser(user);
-
-    // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(httpSession);
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    servlet.doGet(request, response);
-
-    DecimalFormat df = new DecimalFormat("#.##");
-    // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_FULL_CLAIM);
-    verify(request).setAttribute("maxClaimValue", df.format(50));
+    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
   }
 }

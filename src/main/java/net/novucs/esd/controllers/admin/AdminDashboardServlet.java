@@ -14,7 +14,6 @@ import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
-
 import net.novucs.esd.orm.Where;
 
 public class AdminDashboardServlet extends BaseServlet {
@@ -48,8 +47,8 @@ public class AdminDashboardServlet extends BaseServlet {
       int claims = claimDao.select().all().size();
       int members = 0;
 
-      for (User u: numberOfUsers) {
-        for (UserRole r: userRoles) {
+      for (User u : numberOfUsers) {
+        for (UserRole r : userRoles) {
           if (r.getUserId() == u.getId() && roleId == r.getRoleId()) {
             members++;
           }
