@@ -48,7 +48,7 @@ public class AdminViewUserServlet extends BaseServlet {
 
     String userId  = request.getParameter("userId");
 
-    try{
+    try {
 
       User user = userDao.selectById(Integer.parseInt(userId));
       request.setAttribute("user", user);
@@ -57,13 +57,13 @@ public class AdminViewUserServlet extends BaseServlet {
           .where(new Where().eq("user_id", user.getId())).all();
       List<Claim> claims = new ArrayList<>();
 
-      if(!userMemberships.isEmpty()){
+      if (!userMemberships.isEmpty()) {
         Where query = new Where().eq("membership_id", userMemberships.get(0).getId());
         int max = userMemberships.size() - 1;
-        for(int i = 1; i <= max; i++){
+        for (int i = 1; i <= max; i++) {
           query.or().eq("membership_id", userMemberships.get(i).getId());
         }
-         claims = claimDao.select().where(query).all();
+        claims = claimDao.select().where(query).all();
       }
 
       List<Integer> ids = userRoleDao.select().where(new Where().eq("user_id", user.getId())).all()
@@ -72,14 +72,14 @@ public class AdminViewUserServlet extends BaseServlet {
 
       List<Role> roles = new ArrayList<>();
       String text = "";
-      if(!ids.isEmpty()){
+      if (!ids.isEmpty()) {
         Where query = new Where().eq("id", ids.get(0));
         int maxIds = ids.size() - 1;
-        for(int i = 1; i <= maxIds; i++){
+        for (int i = 1; i <= maxIds; i++) {
           query.or().eq("id", ids.get(i));
         }
-        List<String> roleNames = roleDao.select().where(query).all().stream().map(Role::getName).collect(
-            Collectors.toList());
+        List<String> roleNames = roleDao.select().where(query).all().stream()
+            .map(Role::getName).collect(Collectors.toList());
 
         for (String name : roleNames) {
           text += name + ",  ";
@@ -93,9 +93,9 @@ public class AdminViewUserServlet extends BaseServlet {
       request.setAttribute("memberships", userMemberships);
 
       super.forward(request, response, "View User", "admin.viewuser");
-    } catch (SQLException e){
+    } catch (SQLException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    } catch(Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
       Logger.getLogger(AdminViewUserServlet.class.getName()).log(Level.SEVERE, e.getMessage());
     }

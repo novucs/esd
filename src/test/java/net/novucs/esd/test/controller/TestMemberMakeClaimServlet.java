@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.novucs.esd.constants.ClaimStatus;
 import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
@@ -102,7 +103,7 @@ public class TestMemberMakeClaimServlet {
       membershipDao.insert(newMembership);
       for (int i = 0; i < claimCount; i++) {
         Claim claim = new Claim(newMembership.getId(),
-            i == 0 ? firstClaimAmount : new BigDecimal(20), ZonedDateTime.now());
+            i == 0 ? firstClaimAmount : new BigDecimal(20), ZonedDateTime.now(), ClaimStatus.PENDING);
         claimDao.insert(claim);
       }
     }

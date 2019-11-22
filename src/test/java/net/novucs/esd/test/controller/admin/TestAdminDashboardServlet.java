@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.novucs.esd.constants.ClaimStatus;
 import net.novucs.esd.controllers.admin.AdminDashboardServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
@@ -125,7 +126,7 @@ public class TestAdminDashboardServlet {
     Membership m = new Membership(bob.getId(), BigDecimal.ZERO, "active", ZonedDateTime.now(),
         true);
     membershipDao.insert(m);
-    claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now()));
+    claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now(), ClaimStatus.PENDING));
   }
 
   @Test
