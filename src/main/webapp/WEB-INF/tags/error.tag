@@ -17,6 +17,11 @@
               <div class="text-center">
                 <p>
                   ${empty message ? "An unknown error has occured." : message}
+                  <% if (request.getAttribute("error") != null) { %>
+                    <br/><br/>
+                    <strong>Message:</strong><br/>
+                    <%=request.getAttribute("error")%>
+                  <% } %>
                 </p>
                 <br/>
                 <a href="javascript:window.history.back();" class="waves-effect waves-light btn-large">Go Back</a>

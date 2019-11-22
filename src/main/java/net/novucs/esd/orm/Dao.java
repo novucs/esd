@@ -4,10 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 import java.util.StringJoiner;
 import net.novucs.esd.util.ReflectUtil;
-
 
 /**
  * The type Dao.
@@ -40,7 +39,7 @@ public class Dao<M> {
    * @throws SQLException the sql exception
    */
   public M selectById(int id) throws SQLException {
-    return select().where(new Where().eq("id", id)).one();
+    return select().where(new Where().eq("id", id)).first();
   }
 
   /**
@@ -52,30 +51,40 @@ public class Dao<M> {
     return new Select<M>(this);
   }
 
+  public void delete(List<M> models) throws SQLException {
+    //noinspection unchecked,SuspiciousToArrayCall
+    delete((M[]) models.toArray(new Object[0]));
+  }
+
   /**
    * Delete.
    *
-   * @param toDelete the to delete
+   * @param models the to models delete
    * @throws SQLException the sql exception
    */
-  public void delete(M toDelete) throws SQLException {
-    String query = deleteSQL(toDelete);
+  @SafeVarargs
+  public final void delete(M... models) throws SQLException {
+    String query = deleteSQL();
     try (Connection connection = connectionSource.getConnection();
         PreparedStatement statement = connection.prepareStatement(query)) {
-      statement.executeUpdate();
+      ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
+      for (M model : models) {
+        Integer primaryKey = ReflectUtil.getValue(model, primaryKeyColumn);
+        statement.setInt(1, primaryKey);
+        statement.addBatch();
+      }
+      statement.executeBatch();
     }
   }
 
-  private String deleteSQL(M model) {
+  private String deleteSQL() {
     ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
-    Integer primaryKey = ReflectUtil.getValue(model, primaryKeyColumn);
     StringJoiner deleteJoiner = new StringJoiner(" ");
     deleteJoiner.add("DELETE FROM");
     deleteJoiner.add(parsedModel.getSQLTableName());
     deleteJoiner.add("WHERE");
     deleteJoiner.add(primaryKeyColumn.getSQLName());
-    deleteJoiner.add("=");
-    deleteJoiner.add(primaryKey.toString());
+    deleteJoiner.add("= ?");
     return deleteJoiner.toString();
   }
 
@@ -119,23 +128,33 @@ public class Dao<M> {
     return updateJoiner.toString();
   }
 
+  public void insert(List<M> models) throws SQLException {
+    //noinspection unchecked,SuspiciousToArrayCall
+    insert((M[]) models.toArray(new Object[0]));
+  }
+
   /**
    * Insert.
    *
-   * @param model the model
+   * @param models the models
    * @throws SQLException the sql exception
    */
-  public void insert(M model) throws SQLException {
+  @SafeVarargs
+  public final void insert(M... models) throws SQLException {
     String query = insertSQL();
     try (Connection connection = this.connectionSource.getConnection();
         PreparedStatement statement = connection
-            .prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            .prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      parsedModel.setStatementValues(statement, model);
-      statement.executeUpdate();
+      for (M model : models) {
+        parsedModel.setStatementValues(statement, model);
+        statement.executeUpdate();
 
-      try (ResultSet rs = statement.getGeneratedKeys()) {
-        if (rs.next()) {
+        try (ResultSet rs = statement.getGeneratedKeys()) {
+          if (!rs.next()) {
+            throw new SQLException("Failed to fetch all generated keys");
+          }
+
           ParsedColumn primaryKeyColumn = parsedModel.getPrimaryKey();
           int primaryKey = rs.getInt(1);
           ReflectUtil.setValue(model, primaryKeyColumn, primaryKey);

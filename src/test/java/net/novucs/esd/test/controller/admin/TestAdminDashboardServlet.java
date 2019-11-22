@@ -3,6 +3,7 @@ package net.novucs.esd.test.controller.admin;
 import static junit.framework.TestCase.assertTrue;
 import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -97,10 +98,9 @@ public class TestAdminDashboardServlet {
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     servlet.doGet(request, response);
-
-    verify(request).setAttribute(eq("outstandingMemberApplications"), eq(1));
-    verify(request).setAttribute(eq("currentMembers"), eq(1));
-    verify(request).setAttribute(eq("outstandingBalances"), eq(1));
+    verify(request).setAttribute(eq("outstandingMemberApplications"), anyInt());
+    verify(request).setAttribute(eq("currentMembers"), anyInt());
+    verify(request).setAttribute(eq("outstandingBalances"), anyInt());
     // Assert
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
@@ -114,6 +114,7 @@ public class TestAdminDashboardServlet {
     Dao<UserRole> userRoleDao = dm.get(UserRole.class);
     Dao<Application> applicationDao = dm.get(Application.class);
     Dao<Claim> claimDao = dm.get(Claim.class);
+    claimDao.createTable();
     Dao<Membership> membershipDao = dm.get(Membership.class);
     User bob = TestDummyDataUtils.getDummyBobUser();
     userDao.insert(bob);
