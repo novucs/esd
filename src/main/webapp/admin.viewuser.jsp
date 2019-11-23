@@ -1,10 +1,10 @@
-<%@ page import="net.novucs.esd.constants.ClaimStatus" %>
+<%@ page import="net.novucs.esd.constants.ClaimStatusUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="CS_APPROVED" value="<%=ClaimStatus.APPROVED%>"/>
-<c:set var="CS_PENDING" value="<%=ClaimStatus.PENDING%>"/>
-<c:set var="CS_REJECTED" value="<%=ClaimStatus.REJECTED%>"/>
+<c:set var="CS_APPROVED" value="<%=ClaimStatusUtils.APPROVED%>"/>
+<c:set var="CS_PENDING" value="<%=ClaimStatusUtils.PENDING%>"/>
+<c:set var="CS_REJECTED" value="<%=ClaimStatusUtils.REJECTED%>"/>
 
 <div>
     <form class="row" method="post" action="" role="form">

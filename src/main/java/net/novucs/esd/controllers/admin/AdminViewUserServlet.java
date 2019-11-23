@@ -1,14 +1,9 @@
 package net.novucs.esd.controllers.admin;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -21,7 +16,6 @@ import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
-import net.novucs.esd.orm.Select;
 import net.novucs.esd.orm.Where;
 
 public class AdminViewUserServlet extends BaseServlet {
@@ -40,7 +34,8 @@ public class AdminViewUserServlet extends BaseServlet {
   @Inject
   private Dao<UserRole> userRoleDao;
 
-  @Inject Dao<Role> roleDao;
+  @Inject
+  private Dao<Role> roleDao;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -66,12 +61,11 @@ public class AdminViewUserServlet extends BaseServlet {
         claims = claimDao.select().where(query).all();
       }
 
-      List<Integer> ids = userRoleDao.select().where(new Where().eq("user_id", user.getId())).all()
-          .stream().map(UserRole::getRoleId)
+      List<Integer> ids = userRoleDao.select().where(new Where().eq("user_id",
+          user.getId())).all().stream().map(UserRole::getRoleId)
           .collect(Collectors.toList());
 
-      List<Role> roles = new ArrayList<>();
-      String text = "";
+      StringBuffer buffer = new StringBuffer();
       if (!ids.isEmpty()) {
         Where query = new Where().eq("id", ids.get(0));
         int maxIds = ids.size() - 1;
@@ -82,22 +76,19 @@ public class AdminViewUserServlet extends BaseServlet {
             .map(Role::getName).collect(Collectors.toList());
 
         for (String name : roleNames) {
-          text += name + ",  ";
+          buffer.append(name);
+          buffer.append(",  ");
         }
-
-        text = text.substring(0, text.length() - 3);
       }
 
-      request.setAttribute("roleText", text);
+      String roles = buffer.substring(0, buffer.length() - 3);
+
+      request.setAttribute("roleText", roles);
       request.setAttribute("claims", claims);
       request.setAttribute("memberships", userMemberships);
-
       super.forward(request, response, "View User", "admin.viewuser");
-    } catch (SQLException e) {
+    } catch (SQLException | ServletException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    } catch (Exception e) {
-      e.printStackTrace();
-      Logger.getLogger(AdminViewUserServlet.class.getName()).log(Level.SEVERE, e.getMessage());
     }
   }
 

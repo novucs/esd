@@ -1,6 +1,6 @@
 package net.novucs.esd.constants;
 
-public class ClaimStatus {
+public class ClaimStatusUtils {
 
   public static final String PENDING = "Pending Approval";
 
