@@ -56,23 +56,26 @@
                                         <div class="input-field col s6">
                                             <input placeholder="Full Name" name="fullname"
                                                    id="fullname" type="text"
-                                                   class="validate">
+                                                   class="validate"
+                                                   value="<%= userName.getName() %>">
                                             <label for="fullname">Full name</label>
                                         </div>
                                         <div class="input-field col s6">
                                             <input type="date" class="date"
                                                    name="date_of_birth"
-                                            >
+                                                   value="<%= userName.getDateOfBirth().toLocalDate() %>">
                                             <label>Date of Birth</label>
                                         </div>
                                         <div class="input-field col s6">
                                             <input id="new_email" name="email" type="text"
-                                                   class="validate">
+                                                   class="validate"
+                                                   value="<%= userName.getEmail() %>">
                                             <label for="new_email">Email</label>
                                         </div>
                                         <div class="input-field col s6">
                                             <input id="address" class="validate" type="text"
                                                    name="address"
+                                                   value="<%= userName.getAddress() %>"
                                             >
                                             <label>Address</label>
                                         </div>
