@@ -69,7 +69,9 @@ public class UserSettingsServlet extends BaseServlet {
     try {
       userDao.update(user);
     } catch (SQLException e) {
-      session.pushError("There has been a sql error. Please refresh the page and try again");
+      request.setAttribute("error", "There was an error updating your account settings.");
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      return;
     }
 
     // Feedback
