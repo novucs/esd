@@ -11,7 +11,7 @@
         <th>Email</th>
         <th>D.O.B</th>
         <th>Address</th>
-        <th class="collection-header"><%= userName.getName() %>'s Role</th>
+        <th>Role</th>
         <th>Edit</th>
     </tr>
     </thead>
