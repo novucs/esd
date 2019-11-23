@@ -47,7 +47,7 @@ public class AdminViewUserServlet extends BaseServlet {
 
       User user = userDao.selectById(Integer.parseInt(userId));
 
-      if(user == null){
+      if (user == null) {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
       }
@@ -85,7 +85,7 @@ public class AdminViewUserServlet extends BaseServlet {
           buffer.append(name);
           buffer.append(",  ");
         }
-       roles = buffer.substring(0, buffer.length() - 3);
+        roles = buffer.substring(0, buffer.length() - 3);
       }
 
 
