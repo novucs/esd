@@ -24,6 +24,17 @@ public class UserSettingsServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+    try {
+      User user = userDao.selectById(Integer.parseInt(request.getParameter("userId")));
+      if (user == null) {
+        request.setAttribute("error", "Invalid User ID specified.");
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+      }
+    } catch (SQLException e) {
+      Logger.getLogger(UserSettingsServlet.class.getName())
+          .log(Level.WARNING, "Unable to find user.");
+    }
     super.forward(request, response, "Account Settings", "user.settings");
   }
 
@@ -68,7 +79,10 @@ public class UserSettingsServlet extends BaseServlet {
     // Save User
     try {
       userDao.update(user);
+      request.setAttribute("updated", true);
     } catch (SQLException e) {
+      Logger.getLogger(UserSettingsServlet.class.getName())
+          .log(Level.SEVERE, "Unable to update account settings.", e);
       request.setAttribute("error", "There was an error updating your account settings.");
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
