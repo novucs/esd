@@ -46,6 +46,11 @@ public class AdminViewUserServlet extends BaseServlet {
     try {
 
       User user = userDao.selectById(Integer.parseInt(userId));
+
+      if(user == null){
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+      }
       request.setAttribute("user", user);
 
       List<Membership> userMemberships = membershipDao.select()
@@ -66,6 +71,7 @@ public class AdminViewUserServlet extends BaseServlet {
           .collect(Collectors.toList());
 
       StringBuffer buffer = new StringBuffer();
+      String roles = "";
       if (!ids.isEmpty()) {
         Where query = new Where().eq("id", ids.get(0));
         int maxIds = ids.size() - 1;
@@ -79,9 +85,9 @@ public class AdminViewUserServlet extends BaseServlet {
           buffer.append(name);
           buffer.append(",  ");
         }
+       roles = buffer.substring(0, buffer.length() - 3);
       }
 
-      String roles = buffer.substring(0, buffer.length() - 3);
 
       request.setAttribute("roleText", roles);
       request.setAttribute("claims", claims);
