@@ -149,7 +149,7 @@ public class DatabaseLifecycle {
   private boolean developmentDataExists() throws SQLException {
     return daoManager.get(Role.class)
         .select()
-        .where(new Where().eq("name", "NewMember"))
+        .where(new Where().eq("name", "Member"))
         .first() != null;
   }
 
