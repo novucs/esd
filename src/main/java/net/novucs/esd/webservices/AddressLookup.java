@@ -48,7 +48,7 @@ public class AddressLookup {
     // Parse the address components for address data
     JsonArray addressComponent = addressResponse.getJsonArray("results")
             .getJsonObject(0)
-          .getJsonArray("address_components");
+            .getJsonArray("address_components");
 
     // Fetch the data from addressEndpoint
     String street = addressComponent
