@@ -16,76 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AddressLookupServlet extends BaseServlet {
 
-  private static final long serialVersionUID = 1426081247044519303L;
-  private static final String GOOGLE_MAPS_API_KEY =
-      "AIzaSyBgLep4XYUU26_O1C5o5NZKF_22w65HOZI";
-  private static final String GOOGLE_MAPS_ENDPOINT =
-      "https://maps.googleapis.com/maps/api/geocode/json?key="
-          + GOOGLE_MAPS_API_KEY + "&sensor=false";
-
-  /**
-   * Lookup an Address from a Postal Code and return its full address.
-   *
-   * @param houseName  The House Number / Name
-   * @param postalCode The Postal Code
-   * @return Formatted Address
-   * @throws IOException if an I/O error occurs
-   */
-  public String lookupAddress(String houseName, String postalCode) throws IOException {
-    // Setup Postal Code lookup via Google API
-    URL postcodeLookup = new URL(GOOGLE_MAPS_ENDPOINT + "&address=" + postalCode);
-    JsonObject postcodeResponse = readJsonObject(postcodeLookup);
-
-    // Grab the latitude and longitude
-    JsonObject location = postcodeResponse.getJsonArray("results")
-        .getJsonObject(0)
-        .getJsonObject("geometry")
-        .getJsonObject("location");
-    String lat = Double.toString(location.getJsonNumber("lat").doubleValue());
-    String lng = Double.toString(location.getJsonNumber("lng").doubleValue());
-
-    // Use the latitude and longitude to request additional address information
-    URL addressEndpoint = new URL(GOOGLE_MAPS_ENDPOINT + "&latlng=" + lat + "," + lng);
-    JsonObject addressResponse = readJsonObject(addressEndpoint);
-
-    // Parse the address components for address data
-    JsonArray addressComponent = addressResponse.getJsonArray("results")
-        .getJsonObject(0)
-        .getJsonArray("address_components");
-
-    // Fetch the data from addressEndpoint
-    String street = addressComponent
-        .getJsonObject(1).getJsonString("long_name").getString();
-    String town = addressComponent
-        .getJsonObject(2).getJsonString("long_name").getString();
-    String county = addressComponent
-        .getJsonObject(3).getJsonString("long_name").getString();
-
-    // Concatenate the address data together and return it
-    StringJoiner addr = new StringJoiner(", ");
-    addr.add(houseName);
-    addr.add(street);
-    addr.add(town);
-    addr.add(county);
-    return addr.toString();
-  }
-
-  /**
-   * Reads a JSON Object from a Reader.
-   *
-   * @param lookupUrl The URL to read from
-   * @return A JsonObject
-   * @throws IOException if an I/O error occurs
-   */
-  private JsonObject readJsonObject(URL lookupUrl) throws IOException {
-    BufferedReader in = new BufferedReader(new InputStreamReader(lookupUrl.openStream()));
-    JsonObject json;
-    try (JsonReader reader = Json.createReader(in)) {
-      json = reader.readObject();
-    }
-    return json;
-  }
-
   /**
    * Handles the HTTP <code>GET</code> method.
    *
@@ -114,11 +44,15 @@ public class AddressLookupServlet extends BaseServlet {
     if (request.getParameter("action") == null) {
       super.forward(request, response, "Lookup Data", "address");
     } else if (request.getParameter("action").equals("lookup")) {
-      String address = lookupAddress(request.getParameter("houseno"),
-          request.getParameter("postcode"));
+      String address = getAddressOptions(request.getParameter("postcode"));
       request.setAttribute("addressData", Arrays.asList(address));
       super.forward(request, response, "Lookup Data", "address");
     }
+  }
+  
+  private String getAddressOptions(String postCode) {
+    // do something u fuckin mong twat
+    return "";
   }
 
   /**
