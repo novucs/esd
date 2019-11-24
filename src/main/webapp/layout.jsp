@@ -21,7 +21,7 @@
   </head>
   <body>
     <t:navigation hasSession="<%=userHasSession%>" isMember="<%=userIsMember%>" isAdmin="<%=userIsAdmin%>"/>
-    <% if (userHasSession) { %>
+    <% if (userHasSession && !request.getAttribute("name").equals("homepage")) { %>
       <main class="container">
         <jsp:include page="breadcrumb.jsp" />
         <jsp:include page="${page}" />
