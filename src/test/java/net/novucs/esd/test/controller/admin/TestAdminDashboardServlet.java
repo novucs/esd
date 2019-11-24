@@ -1,7 +1,7 @@
 package net.novucs.esd.test.controller.admin;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -30,7 +30,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class TestAdminDashboardServlet {
   @Before
   public void initialiseTest() {
     userSession = new Session();
-    userSession.setUser(TestDummyDataUtils.getDummyUser());
+    userSession.setUser(TestDummyDataUtil.getDummyUser());
   }
 
   @Test
@@ -70,18 +70,12 @@ public class TestAdminDashboardServlet {
 
   private void setServletDaos(AdminDashboardServlet servlet)
       throws SQLException, ReflectiveOperationException {
-    DaoManager dm = createTestDaoManager();
-    dm.init(DatabaseLifecycle.MODEL_CLASSES);
-    Dao<User> userDao = dm.get(User.class);
-    Dao<Role> roleDao = dm.get(Role.class);
-    Dao<UserRole> userRoleDao = dm.get(UserRole.class);
-    Dao<Application> applicationDao = dm.get(Application.class);
-    Dao<Claim> claimDao = dm.get(Claim.class);
-    ReflectUtil.setFieldValue(servlet, "userDao", userDao);
-    ReflectUtil.setFieldValue(servlet, "userRoleDao", userRoleDao);
-    ReflectUtil.setFieldValue(servlet, "roleDao", roleDao);
-    ReflectUtil.setFieldValue(servlet, "applicationDao", applicationDao);
-    ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);
+    DaoManager daoManager = createTestDaoManager(true);
+    ReflectUtil.setFieldValue(servlet, "userDao", daoManager.get(User.class));
+    ReflectUtil.setFieldValue(servlet, "userRoleDao", daoManager.get(UserRole.class));
+    ReflectUtil.setFieldValue(servlet, "roleDao", daoManager.get(Role.class));
+    ReflectUtil.setFieldValue(servlet, "applicationDao", daoManager.get(Application.class));
+    ReflectUtil.setFieldValue(servlet, "claimDao", daoManager.get(Claim.class));
   }
 
   @Test
@@ -107,7 +101,7 @@ public class TestAdminDashboardServlet {
   }
 
   private void createRequiredAttributeData()
-      throws SQLException {
+      throws SQLException, ReflectiveOperationException {
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -117,7 +111,7 @@ public class TestAdminDashboardServlet {
     Dao<Claim> claimDao = dm.get(Claim.class);
     claimDao.createTable();
     Dao<Membership> membershipDao = dm.get(Membership.class);
-    User bob = TestDummyDataUtils.getDummyBobUser();
+    User bob = TestDummyDataUtil.getDummyBobUser();
     userDao.insert(bob);
     Role member = new Role("Member");
     roleDao.insert(member);

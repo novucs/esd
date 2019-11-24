@@ -127,11 +127,7 @@ public final class Claim {
       return false;
     }
     Claim claim = (Claim) o;
-    return Objects.equals(getId(), claim.getId())
-        && Objects.equals(getMembershipId(), claim.getMembershipId())
-        && Objects.equals(pounds, claim.pounds)
-        && Objects.equals(pence, claim.pence)
-        && Objects.equals(claimDate, claim.getClaimDate());
+    return Objects.equals(id, claim.id);
   }
 
   public ClaimStatus getStatus() {
@@ -144,7 +140,6 @@ public final class Claim {
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getMembershipId(), pounds, pence, getClaimDate());
+    return Objects.hash(id);
   }
-
 }

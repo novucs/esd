@@ -24,7 +24,7 @@ public class TestDatabaseLifecycle {
   @ClassRule
   public static final EnvironmentVariables ENVIRONMENT = new EnvironmentVariables();
   private static final String DB_URL = "jdbc:derby:memory:testDB;create=true";
-  private static final String USERNAME = "UserAccount";
+  private static final String USERNAME = "Jeff";
 
   /**
    * Sets up.

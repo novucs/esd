@@ -1,7 +1,7 @@
 package net.novucs.esd.test.controller.admin;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.admin.AdminViewUserServlet;
-import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
@@ -28,7 +27,8 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.orm.Where;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class TestAdminViewUserServlet {
   @Before
   public void initialiseTest() {
     userSession = new Session();
-    userSession.setUser(TestDummyDataUtils.getDummyUser());
+    userSession.setUser(TestDummyDataUtil.getDummyUser());
   }
 
   @Test
@@ -56,9 +56,8 @@ public class TestAdminViewUserServlet {
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
 
-    DaoManager dm = createTestDaoManager();
-    dm.init(DatabaseLifecycle.MODEL_CLASSES);
-    User bob = TestDummyDataUtils.getDummyBobUser();
+    DaoManager dm = createTestDaoManager(true);
+    User bob = TestDummyDataUtil.getDummyBobUser();
     Dao<User> userDao = dm.get(User.class);
     Dao<Membership> membershipDao = dm.get(Membership.class);
     Dao<UserRole> userRoleDao = dm.get(UserRole.class);
@@ -85,7 +84,7 @@ public class TestAdminViewUserServlet {
 
   private void setDaoFields(AdminViewUserServlet servlet, DaoManager dm, Dao<User> userDao,
       Dao<Membership> membershipDao, Dao<UserRole> userRoleDao,
-      Dao<Role> roleDao)  throws ReflectiveOperationException {
+      Dao<Role> roleDao) throws ReflectiveOperationException {
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
     ReflectUtil.setFieldValue(servlet, "userRoleDao", userRoleDao);
     ReflectUtil.setFieldValue(servlet, "roleDao", roleDao);
@@ -97,9 +96,8 @@ public class TestAdminViewUserServlet {
       Dao<UserRole> userRoleDao, Dao<Role> roleDao)
       throws SQLException {
     userDao.insert(user);
-    Role admin = TestDummyDataUtils.getAdminRole();
-    roleDao.insert(admin);
-    userRoleDao.insert(new UserRole(user.getId(), admin.getId()));
+    Role adminRole = roleDao.select().where(new Where().eq("name", "Administrator")).one();
+    userRoleDao.insert(new UserRole(user.getId(), adminRole.getId()));
     membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,
         "EXPIRED", ZonedDateTime.now(), true));
     membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,

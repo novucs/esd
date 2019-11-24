@@ -19,7 +19,7 @@ public class User {
   @Column
   private String name;
 
-  @Column
+  @Column(unique = "email_uq")
   private String email;
 
   @Column

@@ -1,6 +1,6 @@
 package net.novucs.esd.test.controller.member;
 
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;

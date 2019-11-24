@@ -1,6 +1,6 @@
 package net.novucs.esd.test.controller;
 
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -19,14 +19,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.MakePaymentServlet;
-import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,8 +59,7 @@ public class TestMakePaymentServlet {
       BigDecimal currentMembershipBalance)
       throws SQLException, ReflectiveOperationException {
 
-    DaoManager dm = createTestDaoManager();
-    dm.init(DatabaseLifecycle.MODEL_CLASSES);
+    DaoManager dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
     userDao.insert(user);
     Dao<Membership> membershipDao = dm.get(Membership.class);
@@ -114,7 +112,7 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtils.getDummyUser();
+    User user = TestDummyDataUtil.getDummyUser();
 
     setServletDaos(servlet,
         user,
@@ -156,7 +154,7 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtils.getDummyUser();
+    User user = TestDummyDataUtil.getDummyUser();
 
     setServletDaos(servlet,
         user,
@@ -197,7 +195,7 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtils.getDummyUser();
+    User user = TestDummyDataUtil.getDummyUser();
 
     setServletDaos(servlet,
         user,
@@ -239,7 +237,7 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtils.getDummyUser();
+    User user = TestDummyDataUtil.getDummyUser();
 
     setServletDaos(servlet,
         user,
@@ -283,7 +281,7 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtils.getDummyUser();
+    User user = TestDummyDataUtil.getDummyUser();
 
     setServletDaos(servlet,
         user,
@@ -325,7 +323,7 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtils.getDummyUser();
+    User user = TestDummyDataUtil.getDummyUser();
 
     setServletDaos(servlet,
         user,

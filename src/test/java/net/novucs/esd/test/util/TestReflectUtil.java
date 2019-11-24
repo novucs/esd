@@ -1,6 +1,6 @@
 package net.novucs.esd.test.util;
 
-import static net.novucs.esd.test.util.TestUtils.assertNotConstructable;
+import static net.novucs.esd.test.util.TestUtil.assertNotConstructable;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class TestReflectUtil {
 
   private ParsedColumn createDummyParsedColumn() {
     return new ParsedColumn(String.class, "this is not an attribute",
-        false, null, false);
+        false, null, false, null);
   }
 
   /**

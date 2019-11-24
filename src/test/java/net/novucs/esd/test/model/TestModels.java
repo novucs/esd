@@ -1,6 +1,6 @@
 package net.novucs.esd.test.model;
 
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
