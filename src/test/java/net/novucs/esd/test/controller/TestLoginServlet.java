@@ -82,7 +82,7 @@ public class TestLoginServlet {
     ReflectUtil.setFieldValue(loginServlet, "roleDao", dm.get(Role.class));
     HttpServletRequest request = mock(HttpServletRequest.class);
 
-    User userToLogin = userDao.select().where(new Where().eq("name", "Jeff")).first();
+    User userToLogin = userDao.select().where(new Where().eq("name", "Member")).first();
     when(request.getParameter("username")).thenReturn(userToLogin.getEmail());
     when(request.getParameter("password")).thenReturn("password1");
     HttpSession session = mock(HttpSession.class);
