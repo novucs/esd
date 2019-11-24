@@ -119,12 +119,20 @@ public class DatabaseLifecycle {
     daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
 
     if ("NewMember".equalsIgnoreCase(roleName)) {
+      Application application = new Application(user.getId(), BigDecimal.TEN);
+      application.setStatus("APPROVED");
+      daoManager.get(Application.class).insert(application);
+
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(), BigDecimal.ZERO, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
       ));
     }
 
     if ("FullMember".equalsIgnoreCase(roleName)) {
+      Application application = new Application(user.getId(), BigDecimal.TEN);
+      application.setStatus("APPROVED");
+      daoManager.get(Application.class).insert(application);
+
       // Past membership
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(), BigDecimal.ZERO, "EXPIRED", ZonedDateTime.now().minusMonths(15), true
