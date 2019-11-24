@@ -17,7 +17,9 @@ import javax.ws.rs.core.MediaType;
 @Path("/address")
 public class AddressLookup {
 
-  public AddressLookup() { }
+  public AddressLookup() {
+    // Left empty on purpose.
+  }
   
   private static final String GOOGLE_MAPS_API_KEY =
       "AIzaSyBgLep4XYUU26_O1C5o5NZKF_22w65HOZI";

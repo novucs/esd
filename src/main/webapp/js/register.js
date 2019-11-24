@@ -12,14 +12,22 @@
     let adrPostCode = document.querySelector("#address-postcode");
     
     let request = new XMLHttpRequest();
+    postCode = postCode.replace(/\s/g, ""); // Remove whitespaces
     request.open("GET", "./api/address?pc=" + postCode, true);
     request.send();
     request.onload = (() => {
-      let json = JSON.parse(request.responseText);
-      updateElement(adrStreet, json.street);
-      updateElement(adrCity, json.town);
-      updateElement(adrCounty, json.county);
-      updateElement(adrPostCode, json.postcode);
+      try {
+        let json = JSON.parse(request.responseText);
+      
+        if (json) {
+          updateElement(adrStreet, json.street);
+          updateElement(adrCity, json.town);
+          updateElement(adrCounty, json.county);
+          updateElement(adrPostCode, json.postcode);
+        }
+      } catch (e) {
+        alert("Unable to retrieve Post Code details.");
+      }
     });
   });
   
