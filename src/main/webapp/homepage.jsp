@@ -1,8 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<head>
-    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <title>XYZ Drivers Association</title>
-</head>
 <div>
     <div class="container align-center">
         <div class="card">
