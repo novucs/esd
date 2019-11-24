@@ -159,14 +159,19 @@ public class DatabaseLifecycle {
 
     for (String roleName : Role.DEFAULT_VALUES) {
       daoManager.get(Role.class).insert(new Role(roleName));
-      setupDummyUser(roleName, roleName);
     }
 
-    setupDummyUser("Larry", Role.DEFAULT_VALUES.get(0));
-    setupDummyUser("Garry", Role.DEFAULT_VALUES.get(1));
-    setupDummyUser("Harry", Role.DEFAULT_VALUES.get(2));
-    setupDummyUser("Barry", Role.DEFAULT_VALUES.get(3));
-    setupDummyUser("Jeff", Role.DEFAULT_VALUES.get(4));
+    setupDummyUser("Larry", "NewMember");
+    setupDummyUser("Garry", "FullMember");
+    setupDummyUser("Harry", "Member");
+    setupDummyUser("Barry", "User");
+    setupDummyUser("Jeff", "Administrator");
+
+    setupDummyUser("NewMember", "NewMember");
+    setupDummyUser("FullMember", "FullMember");
+    setupDummyUser("Member", "Member");
+    setupDummyUser("User", "User");
+    setupDummyUser("Administrator", "Administrator");
   }
 
   /**
