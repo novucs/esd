@@ -59,13 +59,13 @@ public class UserSettingsServlet extends BaseServlet {
     String currentPassword = request.getParameter("current_password");
     String newPassword = request.getParameter("new_password");
 
-    if (password.authenticate(request.getParameter("current_password"))) {
-      if (!currentPassword.isEmpty() && !newPassword.isEmpty() && !currentPassword
-          .equals(newPassword)) {
-        user.setNeedsPasswordChange(0);
-        user.setPassword(Password.fromPlaintext(newPassword));
-        request.setAttribute("updated", true);
-      }
+    if (!currentPassword.isEmpty()
+        && !newPassword.isEmpty()
+        && !currentPassword.equals(newPassword)
+        && password.authenticate(request.getParameter("current_password"))) {
+      user.setNeedsPasswordChange(0);
+      user.setPassword(Password.fromPlaintext(newPassword));
+      request.setAttribute("updated", true);
     }
 
     // Save User
@@ -80,7 +80,7 @@ public class UserSettingsServlet extends BaseServlet {
     }
 
     // Feedback
-    super.forward(request, response, "Account Settings", "member.dashboard");
+    super.forward(request, response, "Dashboard", "member.dashboard");
   }
 
   @Override
