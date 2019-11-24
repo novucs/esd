@@ -151,6 +151,7 @@ public class DatabaseLifecycle {
 
     for (String roleName : Role.DEFAULT_VALUES) {
       daoManager.get(Role.class).insert(new Role(roleName));
+      setupDummyUser(roleName, roleName);
     }
 
     setupDummyUser("Larry", Role.DEFAULT_VALUES.get(0));
