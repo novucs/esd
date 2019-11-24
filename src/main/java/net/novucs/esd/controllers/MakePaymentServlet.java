@@ -21,6 +21,7 @@ import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.constants.StripeUtils;
 import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
@@ -45,7 +46,7 @@ public class MakePaymentServlet extends BaseServlet {
   private Dao<Membership> membershipDao;
 
   @Inject
-  private Dao<net.novucs.esd.model.Application> applicationDao;
+  private Dao<Application> applicationDao;
 
   @Inject
   private Dao<Payment> paymentDao;
@@ -59,7 +60,7 @@ public class MakePaymentServlet extends BaseServlet {
 
     DecimalFormat df = new DecimalFormat("#.##");
     Session session = Session.fromRequest(request);
-    net.novucs.esd.model.Application application;
+    Application application;
     List<Membership> allUserMemberships;
 
     try {
@@ -115,7 +116,7 @@ public class MakePaymentServlet extends BaseServlet {
     Session session = Session.fromRequest(request);
     String reference = request.getParameter("reference");
     float balance = Float.parseFloat(amount) / 100f;
-    net.novucs.esd.model.Application application;
+    Application application;
     List<Membership> allUserMemberships;
 
     Stripe.apiKey = StripeUtils.TEST_SECRET_KEY;
