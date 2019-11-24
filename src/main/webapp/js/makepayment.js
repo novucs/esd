@@ -22,25 +22,25 @@ function initStripe(amount, reference){
       color: "red",
     }
   };
-    var elements = stripe.elements();
+  var elements = stripe.elements();
 
-    // Create an instance of the card Element.
-    var cardNumber = elements.create('cardNumber', {style: style});
+  // Create an instance of the card Element.
+  var cardNumber = elements.create('cardNumber', {style: style});
 
-    // Add an instance of the card Element into the `card-element` <div>.
-    cardNumber.mount('#card-number');
+  // Add an instance of the card Element into the `card-element` <div>.
+  cardNumber.mount('#card-number');
 
-    // Create an instance of the card Element.
-    var cardExpiry = elements.create('cardExpiry', {style: style});
+  // Create an instance of the card Element.
+  var cardExpiry = elements.create('cardExpiry', {style: style});
 
-    // Add an instance of the card Element into the `card-element` <div>.
-    cardExpiry.mount('#card-expiry');
+  // Add an instance of the card Element into the `card-element` <div>.
+  cardExpiry.mount('#card-expiry');
 
-    // Create an instance of the card Element.
-    var cardCvc = elements.create('cardCvc', {style: style});
+  // Create an instance of the card Element.
+  var cardCvc = elements.create('cardCvc', {style: style});
 
-    // Add an instance of the card Element into the `card-element` <div>.
-    cardCvc.mount('#card-cvc');
+  // Add an instance of the card Element into the `card-element` <div>.
+  cardCvc.mount('#card-cvc');
 
 
   function stripeTokenHandler(token) {
