@@ -7,13 +7,13 @@
         <c:choose>
             <c:when test="${registerStatus == 'success'}">
                 <t:registersuccess />
-           </c:when>
+            </c:when>
             <c:when test="${registerStatus == 'fail'}">
                 <t:registerfail />
-           </c:when>
-           <c:otherwise>
+            </c:when>
+            <c:otherwise>
                 <t:registerform />
-           </c:otherwise>
+            </c:otherwise>
         </c:choose>
     </div>
 </div>
