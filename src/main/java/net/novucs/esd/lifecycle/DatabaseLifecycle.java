@@ -163,12 +163,6 @@ public class DatabaseLifecycle {
       daoManager.get(Role.class).insert(new Role(roleName));
     }
 
-    setupDummyUser("Larry", "Member");
-    setupDummyUser("Garry", "Member");
-    setupDummyUser("Harry", "Member");
-    setupDummyUser("Barry", "User");
-    setupDummyUser("Jeff", "Administrator");
-
     setupDummyUser("NewMember", "Member");
     setupDummyUser("FullMember", "Member");
     setupDummyUser("Member", "Member");
