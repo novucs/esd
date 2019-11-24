@@ -68,11 +68,22 @@
                         </div>
                     </div>
                     <div class="col s6">
-                        <div class="input-field">
-                            <input name="address-postcode"
-                                   id="address-postcode" type="text" class=validate
-                                   minLength=7 required/>
-                            <label for="address-postcode">Postcode</label>
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="input-field">
+                                    <input name="address-postcode"
+                                           id="address-postcode" type="text" class=validate
+                                           minLength=7 required/>
+                                    <label for="address-postcode">Postcode</label>
+                                </div>
+                            </div>
+                            <div class="col s4">
+                                <button id="lookup-btn"
+                                        class="waves-effect btn secondary-content left-align"
+                                        type="button" name="lookup">
+                                    Lookup
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col s6">
