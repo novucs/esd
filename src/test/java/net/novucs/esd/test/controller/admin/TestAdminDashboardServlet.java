@@ -23,6 +23,7 @@ import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
@@ -125,7 +126,8 @@ public class TestAdminDashboardServlet {
     Membership m = new Membership(bob.getId(), BigDecimal.ZERO, "active", ZonedDateTime.now(),
         true);
     membershipDao.insert(m);
-    claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now()));
+    claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now(),
+        ClaimStatus.PENDING));
   }
 
   @Test

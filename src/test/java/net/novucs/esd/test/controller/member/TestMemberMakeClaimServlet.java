@@ -23,6 +23,7 @@ import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
@@ -102,7 +103,8 @@ public class TestMemberMakeClaimServlet {
       membershipDao.insert(newMembership);
       for (int i = 0; i < claimCount; i++) {
         Claim claim = new Claim(newMembership.getId(),
-            i == 0 ? firstClaimAmount : new BigDecimal(20), ZonedDateTime.now());
+            i == 0 ? firstClaimAmount : new BigDecimal(20), ZonedDateTime.now(),
+            ClaimStatus.PENDING);
         claimDao.insert(claim);
       }
     }
