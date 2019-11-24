@@ -1,4 +1,4 @@
-package net.novucs.esd.test.controller;
+package net.novucs.esd.test.controller.member;
 
 import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;

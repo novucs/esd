@@ -1,6 +1,7 @@
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
     let elems = document.querySelectorAll('.dropdown-trigger');
+    let modalElm = document.querySelectorAll('.modal');
     elems.forEach((e, i) => {
       try {
         M.Dropdown.init(e, {
@@ -9,6 +10,7 @@
           coverTrigger: false,
           constrainWidth: false
         });
+        M.Modal.init(modalElm);
       } catch (e) {
         console.warn("Unable to instantiate Dropdown.");
       }
