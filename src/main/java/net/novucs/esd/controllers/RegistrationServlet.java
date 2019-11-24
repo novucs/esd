@@ -34,13 +34,12 @@ public class RegistrationServlet extends BaseServlet {
 
   @Inject
   private Dao<Role> roleDao;
-  
+
   @Inject
   private Dao<UserRole> userRoleDao;
-  
+
   @Inject
   private Dao<UserLog> userLogDao;
-
 
 
   @Override
@@ -69,17 +68,17 @@ public class RegistrationServlet extends BaseServlet {
 
       // Get the 'User' role
       Role userRole = roleDao.select()
-              .where(new Where().eq("name", "User"))
-              .first();
-      
+          .where(new Where().eq("name", "User"))
+          .first();
+
       // Insert new user to database.
       userDao.insert(user);
       UserLog userLog = parseUserLog(request, user);
-      userLogDao.insert(userLog); 
+      userLogDao.insert(userLog);
       userRoleDao.insert(new UserRole(user.getId(), userRole.getId()));
     } catch (SQLException e) {
       Logger.getLogger(RegistrationServlet.class.getName())
-              .log(Level.SEVERE, null, e);
+          .log(Level.SEVERE, null, e);
       request.setAttribute("registerStatus", "fail");
       super.forward(request, response, "Database error", PAGE);
       return;

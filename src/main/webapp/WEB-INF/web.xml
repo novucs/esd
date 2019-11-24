@@ -77,7 +77,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>MemberMakePaymentServlet</servlet-name>
-    <servlet-class>net.novucs.esd.controllers.member.MemberMakePaymentServlet</servlet-class>
+    <servlet-class>net.novucs.esd.controllers.MakePaymentServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MemberMakePaymentServlet</servlet-name>
@@ -195,7 +195,6 @@
   <filter-mapping>
     <filter-name>MemberFilter</filter-name>
     <url-pattern>/claims</url-pattern>
-    <url-pattern>/makepayment</url-pattern>
     <url-pattern>/payments</url-pattern>
   </filter-mapping>
   <error-page>

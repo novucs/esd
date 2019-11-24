@@ -26,7 +26,6 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

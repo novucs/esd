@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.RolePermission;
 import net.novucs.esd.model.User;
@@ -44,6 +45,7 @@ public class DatabaseLifecycle {
       Application.class,
       Claim.class,
       Membership.class,
+      Payment.class,
       Role.class,
       RolePermission.class,
       User.class,
