@@ -53,7 +53,7 @@ public final class TestDummyDataUtils {
     );
   }
 
-  public static Role getAdminRole(){
+  public static Role getAdminRole() {
     return new Role("Admin");
   }
 
