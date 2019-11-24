@@ -14,10 +14,6 @@
                 <span>Drivers Association</span>
             </a>
             <% if (userNoSession) { %>
-            <a href="." class="brand-logo">
-                <span>XYZ</span>
-                <span>Drivers Association</span>
-            </a>
             <nav class="navigation-bar">
                 <div class="nav-wrapper">
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
