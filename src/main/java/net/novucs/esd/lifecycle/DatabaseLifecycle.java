@@ -104,6 +104,7 @@ public class DatabaseLifecycle {
     return daoManager.get(clazz);
   }
 
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   private void setupDummyUser(String name, String roleName) throws SQLException {
     Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
     User user = new User(
@@ -152,6 +153,7 @@ public class DatabaseLifecycle {
         .first() != null;
   }
 
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   public void setupDevelopmentData() throws SQLException {
     if (developmentDataExists()) {
       return;
@@ -161,14 +163,14 @@ public class DatabaseLifecycle {
       daoManager.get(Role.class).insert(new Role(roleName));
     }
 
-    setupDummyUser("Larry", "NewMember");
-    setupDummyUser("Garry", "FullMember");
+    setupDummyUser("Larry", "Member");
+    setupDummyUser("Garry", "Member");
     setupDummyUser("Harry", "Member");
     setupDummyUser("Barry", "User");
     setupDummyUser("Jeff", "Administrator");
 
-    setupDummyUser("NewMember", "NewMember");
-    setupDummyUser("FullMember", "FullMember");
+    setupDummyUser("NewMember", "Member");
+    setupDummyUser("FullMember", "Member");
     setupDummyUser("Member", "Member");
     setupDummyUser("User", "User");
     setupDummyUser("Administrator", "Administrator");
