@@ -66,7 +66,7 @@ public class TestAdminViewUserServlet {
 
     // When
     when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
-    when(request.getParameter("userId")).thenReturn("1");
+    when(request.getParameter("userId")).thenReturn(String.valueOf(bob.getId()));
     when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
