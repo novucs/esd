@@ -70,7 +70,6 @@ public class AdminViewUserServlet extends BaseServlet {
           user.getId())).all().stream().map(UserRole::getRoleId)
           .collect(Collectors.toList());
 
-      StringBuffer buffer = new StringBuffer();
       String roles = "";
       if (!ids.isEmpty()) {
         Where query = new Where().eq("id", ids.get(0));
@@ -78,16 +77,9 @@ public class AdminViewUserServlet extends BaseServlet {
         for (int i = 1; i <= maxIds; i++) {
           query.or().eq("id", ids.get(i));
         }
-        List<String> roleNames = roleDao.select().where(query).all().stream()
-            .map(Role::getName).collect(Collectors.toList());
-
-        for (String name : roleNames) {
-          buffer.append(name);
-          buffer.append(",  ");
-        }
-        roles = buffer.substring(0, buffer.length() - 3);
+        roles = roleDao.select().where(query).all().stream()
+            .map(Role::getName).collect(Collectors.joining(", "));
       }
-
 
       request.setAttribute("roleText", roles);
       request.setAttribute("claims", claims);

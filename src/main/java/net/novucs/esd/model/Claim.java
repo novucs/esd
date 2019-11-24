@@ -45,13 +45,14 @@ public final class Claim {
    *
    * @param membershipId the membership id
    */
-  public Claim(Integer membershipId, BigDecimal amount, ZonedDateTime claimDate, String status) {
+  public Claim(Integer membershipId, BigDecimal amount, ZonedDateTime claimDate,
+      ClaimStatus status) {
     this.membershipId = membershipId;
     double doubleBalance = amount.doubleValue();
     pounds = (int) doubleBalance;
     pence = (int) ((doubleBalance - pounds) * 100);
     this.claimDate = claimDate;
-    this.status = status;
+    this.status = status.name();
   }
 
   /**
@@ -133,12 +134,12 @@ public final class Claim {
         && Objects.equals(claimDate, claim.getClaimDate());
   }
 
-  public String getStatus() {
-    return status;
+  public ClaimStatus getStatus() {
+    return ClaimStatus.valueOf(this.status);
   }
 
-  public void setStatus(String status) {
-    this.status = status;
+  public void setStatus(ClaimStatus status) {
+    this.status = status.name();
   }
 
   @Override

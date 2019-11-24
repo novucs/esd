@@ -18,12 +18,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.constants.ClaimStatusUtils;
 import net.novucs.esd.controllers.admin.AdminDashboardServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
@@ -127,7 +127,7 @@ public class TestAdminDashboardServlet {
         true);
     membershipDao.insert(m);
     claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now(),
-        ClaimStatusUtils.PENDING));
+        ClaimStatus.PENDING));
   }
 
   @Test
