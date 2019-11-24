@@ -120,7 +120,6 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("updated"), eq(true));
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
@@ -148,7 +147,7 @@ public class TestUserSettingsServlet {
         "1 ESD Lane");
     when(request.getParameter(eq("date_of_birth"))).thenReturn(
         "1970-01-01");
-    when(request.getParameter(eq("current_password"))).thenReturn("enterprise");
+    when(request.getParameter(eq("current_password"))).thenReturn("bob");
     when(request.getParameter(eq("new_password"))).thenReturn("enterprise");
     when(request.getParameterValues(eq("roles"))).thenReturn(roles);
     when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
@@ -156,7 +155,6 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("updated"), eq(true));
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
@@ -190,7 +188,6 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("updated"), eq(true));
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
@@ -213,8 +210,7 @@ public class TestUserSettingsServlet {
     servlet.doGet(request, response);
 
     // Verify
-    verify(request).setAttribute(eq("error"), anyString());
-    verify(response).sendError(anyInt());
+    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   @Test
