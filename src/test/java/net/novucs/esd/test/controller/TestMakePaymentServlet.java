@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.MakePaymentServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
@@ -26,7 +27,6 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.test.TestDummyDataUtils;
-import net.novucs.esd.util.Constants.MEMBERSHIP;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +86,7 @@ public class TestMakePaymentServlet {
       Membership newMembership = new Membership(
           user.getId(),
           currentMembershipBalance,
-          MEMBERSHIP.STATUS_ACTIVE,
+          MembershipUtils.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership
       );
@@ -138,7 +138,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
   }
 
   /**
@@ -162,7 +162,7 @@ public class TestMakePaymentServlet {
         user,
         false,
         false,
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
 
@@ -203,7 +203,7 @@ public class TestMakePaymentServlet {
         user,
         false,
         true,
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
 
@@ -221,7 +221,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
   }
 
   /**
@@ -245,7 +245,7 @@ public class TestMakePaymentServlet {
         user,
         true,
         true,
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
 
@@ -264,7 +264,7 @@ public class TestMakePaymentServlet {
     // Assert
     verify(request).setAttribute(AMOUNT_OWED,
         df.format(
-            BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE).multiply(BigDecimal.valueOf(2))));
+            BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE).multiply(BigDecimal.valueOf(2))));
 
   }
 
@@ -289,8 +289,8 @@ public class TestMakePaymentServlet {
         user,
         true,
         true,
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.ZERO);
 
     userSession.setUser(user);
@@ -307,7 +307,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
   }
 
   /**
@@ -331,9 +331,9 @@ public class TestMakePaymentServlet {
         user,
         true,
         true,
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
-        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE));
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
+        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE));
 
     userSession.setUser(user);
 

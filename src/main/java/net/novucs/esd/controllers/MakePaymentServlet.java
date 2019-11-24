@@ -16,6 +16,9 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.novucs.esd.constants.ApplicationUtils;
+import net.novucs.esd.constants.MembershipUtils;
+import net.novucs.esd.constants.StripeUtils;
 import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Membership;
@@ -23,9 +26,6 @@ import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
-import net.novucs.esd.util.Constants.APPLICATION;
-import net.novucs.esd.util.Constants.MEMBERSHIP;
-import net.novucs.esd.util.Constants.STRIPE;
 
 /**
  * The type Make payment servlet.
@@ -67,13 +67,13 @@ public class MakePaymentServlet extends BaseServlet {
           session.getUser().getId())).first();
 
       // Check user's application first
-      if (APPLICATION.STATUS_OPEN.equalsIgnoreCase(application.getStatus())) {
+      if (ApplicationUtils.STATUS_OPEN.equalsIgnoreCase(application.getStatus())) {
         // If application is OPEN, then user is not yet a member.
         request.setAttribute(PAY_CONTEXT, PAY_APPLICATION);
 
         // The amount they owe is the membership fee minus what they've paid so far.
         request
-            .setAttribute("amountOwed", df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)
+            .setAttribute("amountOwed", df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)
                 .subtract(application.getBalance())));
         super.forward(request, response, "Application Payment", PAGE);
       } else {
@@ -85,7 +85,7 @@ public class MakePaymentServlet extends BaseServlet {
         float balance = 0f;
         for (Membership membership : allUserMemberships) {
           balance +=
-              Float.parseFloat(membership.getBalance().toString()) - MEMBERSHIP.ANNUAL_FEE;
+              Float.parseFloat(membership.getBalance().toString()) - MembershipUtils.ANNUAL_FEE;
         }
 
         // If anything is outstanding, balance will be a negative number so inverse to positive.
@@ -118,7 +118,7 @@ public class MakePaymentServlet extends BaseServlet {
     net.novucs.esd.model.Application application;
     List<Membership> allUserMemberships;
 
-    Stripe.apiKey = STRIPE.TEST_SECRET_KEY;
+    Stripe.apiKey = StripeUtils.TEST_SECRET_KEY;
     // Build params for Stripe charge request
     Map<String, Object> params = new HashMap<>();
     params.put("amount", amount);
@@ -166,9 +166,9 @@ public class MakePaymentServlet extends BaseServlet {
             .where(new Where().eq(USER_ID, session.getUser().getId())).all();
         for (Membership membership : allUserMemberships) {
           if (BigDecimal.ZERO.equals(membership.getBalance())) {
-            membership.setBalance(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE));
+            membership.setBalance(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE));
             membershipDao.update(membership);
-            balance -= MEMBERSHIP.ANNUAL_FEE;
+            balance -= MembershipUtils.ANNUAL_FEE;
             if (balance == 0) {
               break;
             }
