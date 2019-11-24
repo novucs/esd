@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Locale;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -17,10 +18,6 @@ import javax.ws.rs.core.MediaType;
 @Path("/address")
 public class AddressLookup {
 
-  public AddressLookup() {
-    // Left empty on purpose.
-  }
-  
   private static final String GOOGLE_MAPS_API_KEY =
       "AIzaSyBgLep4XYUU26_O1C5o5NZKF_22w65HOZI";
 
@@ -62,14 +59,13 @@ public class AddressLookup {
             .getJsonObject(3).getJsonString("long_name").getString();
 
     // Concatenate the address data together and return it
-    String json = Json.createObjectBuilder()
+    return Json.createObjectBuilder()
             .add("street", street)
             .add("town", town)
             .add("county", county)
-            .add("postcode", postalCode.toUpperCase())
+            .add("postcode", postalCode.toUpperCase(Locale.ENGLISH))
             .build()
             .toString();
-    return json;
   }
 
   /**
