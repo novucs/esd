@@ -4,8 +4,10 @@ FROM openjdk:8-slim
 ENV GLASSFISH_HOME=/app
 ENV GLASSFISH_VERSION=4.1.1
 COPY googleapi.crt $JAVA_HOME/jre/lib/security
+COPY stripeapi.cer $JAVA_HOME/jre/lib/security
 RUN cd $JAVA_HOME/jre/lib/security && \
-    keytool -keystore cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias googleapicert -file googleapi.crt
+    keytool -keystore cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias googleapicert -file googleapi.crt && \
+    keytool -keystore cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias stripeapicert -file stripeapi.cer
 
 RUN apt-get update && apt-get install -y wget zip netcat && \
     wget "http://download.oracle.com/glassfish/${GLASSFISH_VERSION}/release/glassfish-${GLASSFISH_VERSION}.zip" -O glassfish.zip && \

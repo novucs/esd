@@ -66,11 +66,11 @@ public class AdminEditUserServlet extends BaseServlet {
   /**
    * Update a user.
    *
-   * @param request the request
+   * @param request  the request
    * @param response the response.
-   * @throws IOException an IO error
+   * @throws IOException      an IO error
    * @throws ServletException a Servlet error
-   * @throws SQLException a SQL error
+   * @throws SQLException     a SQL error
    */
   private void updateUser(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException, SQLException {
@@ -123,7 +123,7 @@ public class AdminEditUserServlet extends BaseServlet {
    * Edit a users roles.
    *
    * @param request the request
-   * @param user the user
+   * @param user    the user
    * @throws SQLException an error
    */
   private void addRoleAttributes(HttpServletRequest request, User user)
