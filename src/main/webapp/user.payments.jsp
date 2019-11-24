@@ -7,7 +7,6 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags/makepayment" %>
-<link rel="stylesheet" href="${baseUrl}/scss/user.payments.css" />
 <script src="${pageContext.request.contextPath}/js/user.payments.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
 
