@@ -2,7 +2,7 @@ package net.novucs.esd.test.lifecycle;
 
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.User;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class TestSession {
    */
   @Test
   public void testSessionHandlesUser() {
-    User u = TestDummyDataUtils.getDummyBobUser();
+    User u = TestDummyDataUtil.getDummyBobUser();
     session.setUser(u);
 
     Assert.assertEquals(

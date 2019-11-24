@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 import net.novucs.esd.util.ReflectUtil;
 
@@ -226,6 +229,8 @@ public class Dao<M> {
       contentsJoiner.add(column.createSQL());
     }
 
+    Map<String, List<ParsedColumn>> uniqueConstraints = new HashMap<>();
+
     for (ParsedColumn column : parsedModel.getColumns().values()) {
       StringJoiner constraintJoiner = new StringJoiner("");
       if (column.isPrimary()) {
@@ -233,6 +238,37 @@ public class Dao<M> {
         constraintJoiner.add(column.getSQLName());
         constraintJoiner.add(")");
       }
+
+      if (column.hasUniqueConstraint()) {
+        List<ParsedColumn> constraints = uniqueConstraints.get(column.getUniqueConstraint());
+
+        if (constraints == null) {
+          constraints = new ArrayList<>();
+        }
+
+        constraints.add(column);
+        uniqueConstraints.put(column.getUniqueConstraint(), constraints);
+      }
+
+      contentsJoiner.merge(constraintJoiner);
+    }
+
+    for (Map.Entry<String, List<ParsedColumn>> entry : uniqueConstraints.entrySet()) {
+      String constraintName = entry.getKey();
+      List<ParsedColumn> columns = entry.getValue();
+
+      StringJoiner constraintJoiner = new StringJoiner(" ");
+      constraintJoiner.add("CONSTRAINT");
+      constraintJoiner.add(constraintName);
+      constraintJoiner.add("UNIQUE");
+
+      StringJoiner columnsJoiner = new StringJoiner(", ", "(", ")");
+
+      for (ParsedColumn column : columns) {
+        columnsJoiner.add(column.getSQLName());
+      }
+
+      constraintJoiner.add(columnsJoiner.toString());
       contentsJoiner.merge(constraintJoiner);
     }
 

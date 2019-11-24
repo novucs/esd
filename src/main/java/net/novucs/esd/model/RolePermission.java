@@ -16,7 +16,7 @@ public final class RolePermission {
   @Column(foreign = Role.class)
   private Integer roleId;
 
-  @Column
+  @Column(unique = "name_uq")
   private String name;
 
   /**
@@ -100,13 +100,11 @@ public final class RolePermission {
       return false;
     }
     RolePermission that = (RolePermission) o;
-    return Objects.equals(getId(), that.getId())
-        && Objects.equals(getRoleId(), that.getRoleId())
-        && Objects.equals(getName(), that.getName());
+    return Objects.equals(id, that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getRoleId(), getName());
+    return Objects.hash(id);
   }
 }

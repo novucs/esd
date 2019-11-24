@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
+import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Test;
@@ -66,6 +67,8 @@ public class TestEachModel<M> {
       return new BigDecimal("100.5");
     } else if (type == ZonedDateTime.class) {
       return DUMMY_DATE_TIME;
+    } else if (type == ClaimStatus.class) {
+      return ClaimStatus.APPROVED;
     }
     throw new IllegalArgumentException("No test data for type: " + type.getName());
   }

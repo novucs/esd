@@ -13,10 +13,10 @@ public final class UserRole {
   @Column(primary = true)
   private Integer id;
 
-  @Column(foreign = User.class)
+  @Column(foreign = User.class, unique = "user_role_uq")
   private Integer userId;
 
-  @Column(foreign = Role.class)
+  @Column(foreign = Role.class, unique = "user_role_uq")
   private Integer roleId;
 
   /**
@@ -100,13 +100,11 @@ public final class UserRole {
       return false;
     }
     UserRole userRole = (UserRole) o;
-    return Objects.equals(getId(), userRole.getId())
-        && Objects.equals(getUserId(), userRole.getUserId())
-        && Objects.equals(getRoleId(), userRole.getRoleId());
+    return Objects.equals(id, userRole.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getUserId(), getRoleId());
+    return Objects.hash(id);
   }
 }

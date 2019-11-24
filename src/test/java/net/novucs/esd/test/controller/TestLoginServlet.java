@@ -1,6 +1,6 @@
 package net.novucs.esd.test.controller;
 
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -73,13 +73,7 @@ public class TestLoginServlet {
   @Test
   public void testLoginSuccess()
       throws SQLException, ReflectiveOperationException, ServletException, IOException {
-    DaoManager dm = createTestDaoManager();
-    dm.init(DatabaseLifecycle.MODEL_CLASSES);
-
-    DatabaseLifecycle databaseLifecycle = new DatabaseLifecycle();
-    ReflectUtil.setFieldValue(databaseLifecycle, "daoManager", dm);
-    databaseLifecycle.setupDevelopmentData();
-
+    DaoManager dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
 
     LoginServlet loginServlet = new LoginServlet();
@@ -88,7 +82,7 @@ public class TestLoginServlet {
     ReflectUtil.setFieldValue(loginServlet, "roleDao", dm.get(Role.class));
     HttpServletRequest request = mock(HttpServletRequest.class);
 
-    User userToLogin = userDao.select().where(new Where().eq("name", "UserAccount")).first();
+    User userToLogin = userDao.select().where(new Where().eq("name", "Jeff")).first();
     when(request.getParameter("username")).thenReturn(userToLogin.getEmail());
     when(request.getParameter("password")).thenReturn("password1");
     HttpSession session = mock(HttpSession.class);
