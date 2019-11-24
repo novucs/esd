@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.MakePaymentServlet;
-import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Membership;

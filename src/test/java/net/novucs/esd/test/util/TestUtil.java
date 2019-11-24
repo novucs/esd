@@ -72,7 +72,7 @@ public final class TestUtil {
       try {
         ReflectUtil.setFieldValue(databaseLifecycle, "daoManager", daoManager);
       } catch (ReflectiveOperationException e) {
-        throw new RuntimeException(e);
+        throw new RuntimeException(e);  // NOPMD
       }
       databaseLifecycle.setupDevelopmentData();
     }
