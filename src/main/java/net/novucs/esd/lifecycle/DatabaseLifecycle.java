@@ -119,7 +119,7 @@ public class DatabaseLifecycle {
     daoManager.get(User.class).insert(user);
     daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
 
-    if ("NewMember".equalsIgnoreCase(roleName)) {
+    if ("NewMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
@@ -129,7 +129,7 @@ public class DatabaseLifecycle {
       ));
     }
 
-    if ("FullMember".equalsIgnoreCase(roleName)) {
+    if ("FullMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
