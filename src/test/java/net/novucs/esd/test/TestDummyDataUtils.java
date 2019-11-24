@@ -54,7 +54,7 @@ public final class TestDummyDataUtils {
   }
 
   public static Role getAdminRole() {
-    return new Role("Admin");
+    return new Role("Administrator");
   }
 
 }
