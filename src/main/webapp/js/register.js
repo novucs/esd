@@ -25,7 +25,7 @@
   
   let updateElement = ((ele, text) => {
     ele.value = text;
-    ele.click();
+    ele.focus();
   });
   
   document.addEventListener('DOMContentLoaded', () => {
