@@ -63,7 +63,6 @@ public final class Membership {
 
     this.claimFromDate = isNewMember ? startDate.plusMonths(6) : startDate;
 
-
     setBalance(balance);
   }
 

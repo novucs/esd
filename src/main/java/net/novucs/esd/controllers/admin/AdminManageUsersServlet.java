@@ -21,7 +21,7 @@ public class AdminManageUsersServlet extends BaseServlet {
 
   private static final String USER_SEARCH_QUERY = "userSearchQuery";
 
-  private final String[] pageSizes = { "15", "30", "50" };
+  private final String[] pageSizes = {"15", "30", "50"};
 
   @Inject
   private Dao<User> userDao;
@@ -46,7 +46,7 @@ public class AdminManageUsersServlet extends BaseServlet {
         users = userDao.select().offset(
             (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
       } else {
-        String[] columns = { "name", "email" };
+        String[] columns = {"name", "email"};
         users = userDao.select().where(new Where().search(searchQuery, columns)).offset(
             (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
       }
