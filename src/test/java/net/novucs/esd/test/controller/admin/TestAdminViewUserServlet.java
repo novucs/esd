@@ -61,8 +61,11 @@ public class TestAdminViewUserServlet {
     User bob = TestDummyDataUtils.getDummyBobUser();
     Dao<User> userDao = dm.get(User.class);
     Dao<Membership> membershipDao = dm.get(Membership.class);
-    setDaoFields(servlet, dm, userDao, membershipDao);
-    setData(bob, userDao, membershipDao);
+    Dao<UserRole> userRoleDao = dm.get(UserRole.class);
+    Dao<Role> roleDao = dm.get(Role.class);
+
+    setDaoFields(servlet, dm, userDao, membershipDao, userRoleDao, roleDao);
+    setData(bob, userDao, membershipDao, userRoleDao, roleDao);
 
     // When
     when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
@@ -81,19 +84,26 @@ public class TestAdminViewUserServlet {
   }
 
   private void setDaoFields(AdminViewUserServlet servlet, DaoManager dm, Dao<User> userDao,
-      Dao<Membership> membershipDao)  throws ReflectiveOperationException {
+      Dao<Membership> membershipDao, Dao<UserRole> userRoleDao,
+      Dao<Role> roleDao)  throws ReflectiveOperationException {
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
-    ReflectUtil.setFieldValue(servlet, "userRoleDao", dm.get(UserRole.class));
-    ReflectUtil.setFieldValue(servlet, "roleDao", dm.get(Role.class));
+    ReflectUtil.setFieldValue(servlet, "userRoleDao", userRoleDao);
+    ReflectUtil.setFieldValue(servlet, "roleDao", roleDao);
     ReflectUtil.setFieldValue(servlet, "membershipDao", membershipDao);
     ReflectUtil.setFieldValue(servlet, "claimDao", dm.get(Claim.class));
   }
 
-  private void setData(User user, Dao<User> userDao, Dao<Membership> membershipDao)
+  private void setData(User user, Dao<User> userDao, Dao<Membership> membershipDao,
+      Dao<UserRole> userRoleDao, Dao<Role> roleDao)
       throws SQLException {
     userDao.insert(user);
+    Role admin = TestDummyDataUtils.getAdminRole();
+    roleDao.insert(admin);
+    userRoleDao.insert(new UserRole(user.getId(), admin.getId()));
     membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,
-        "STATUS", ZonedDateTime.now(), true));
+        "EXPIRED", ZonedDateTime.now(), true));
+    membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,
+        "ACTIVE", ZonedDateTime.now(), false));
   }
 
   @Test
