@@ -46,6 +46,25 @@
                         </div>
                     </div>
                     <div class="col s6">
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="input-field">
+                                    <input name="address-postcode"
+                                           id="address-postcode" type="text" class=validate
+                                           minLength=7 required/>
+                                    <label for="address-postcode">Postcode</label>
+                                </div>
+                            </div>
+                            <div class="col s4" style="padding-top: 20px;">
+                                <button id="lookup-btn"
+                                        class="waves-effect btn secondary-content left-align"
+                                        type="button" name="lookup">
+                                    Lookup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s6">
                         <div class="input-field">
                             <input name="address-street" id="address-street"
                                    type="text" required/>
@@ -68,26 +87,7 @@
                         </div>
                     </div>
                     <div class="col s6">
-                        <div class="row">
-                            <div class="col s8">
-                                <div class="input-field">
-                                    <input name="address-postcode"
-                                           id="address-postcode" type="text" class=validate
-                                           minLength=7 required/>
-                                    <label for="address-postcode">Postcode</label>
-                                </div>
-                            </div>
-                            <div class="col s4">
-                                <button id="lookup-btn"
-                                        class="waves-effect btn secondary-content left-align"
-                                        type="button" name="lookup">
-                                    Lookup
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col s6">
-                        <div style="padding-top: 30px;">
+                        <div style="padding-top: 20px;">
                             <button id="register-button"
                                     class="waves-effect btn secondary-content left-align"
                                     type="submit" name="register">
