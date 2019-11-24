@@ -32,4 +32,12 @@ public @interface Column {
    * @return the boolean
    */
   boolean nullable() default false;
+
+  /**
+   * Adds the column to the provided named unique constraint.
+   *
+   * @return the unique constraint name
+   */
+  String unique() default "";
+
 }

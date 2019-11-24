@@ -1,6 +1,7 @@
 package net.novucs.esd.test.controller;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.HomepageServlet;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
@@ -30,17 +32,17 @@ public class TestHomepageServlet {
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException {
     // Given
-    HomepageServlet servlet = new HomepageServlet();
     HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpServletResponse response = mock(HttpServletResponse.class);
-
-    // When
-    when(request.getRequestDispatcher("/homepage.jsp")).thenAnswer(
+    when(request.getRequestDispatcher("/layout.jsp")).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+    when(request.getSession(anyBoolean())).thenReturn(mock(HttpSession.class));
+
+    HomepageServlet servlet = new HomepageServlet();
+    HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).getRequestDispatcher(eq("/homepage.jsp"));
+    verify(request).getRequestDispatcher(eq("/layout.jsp"));
   }
 
   /**

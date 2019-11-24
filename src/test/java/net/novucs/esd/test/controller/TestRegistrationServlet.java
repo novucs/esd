@@ -1,6 +1,6 @@
 package net.novucs.esd.test.controller;
 
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -79,12 +79,7 @@ public class TestRegistrationServlet {
   public void testRequestPostsRegistrationPageSuccess()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
     // Given
-    DaoManager dm = createTestDaoManager();
-    dm.init(DatabaseLifecycle.MODEL_CLASSES);
-
-    DatabaseLifecycle databaseLifecycle = new DatabaseLifecycle();
-    ReflectUtil.setFieldValue(databaseLifecycle, "daoManager", dm);
-    databaseLifecycle.setupDevelopmentData();
+    DaoManager dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
     Dao<UserLog> userLogDao = dm.get(UserLog.class);
 

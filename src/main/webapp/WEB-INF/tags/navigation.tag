@@ -1,7 +1,10 @@
+<%@ tag import="net.novucs.esd.lifecycle.Session" %>
 <%@tag description="Generic Header Contents" pageEncoding="UTF-8" %>
 <%@attribute name="hasSession" required="true" type="java.lang.Boolean" %>
 <%@attribute name="isMember" required="true" type="java.lang.Boolean" %>
 <%@attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
+<% Session userSession = ((Session) request.getAttribute("session")); %>
+<% Boolean userNoSession = userSession.getUser() == null; %>
 <% String baseUrl = request.getContextPath(); %>
 <header>
     <nav class="navigation-bar">
@@ -10,6 +13,16 @@
                 <span>XYZ</span>
                 <span>Drivers Association</span>
             </a>
+            <% if (userNoSession) { %>
+            <nav class="navigation-bar">
+                <div class="nav-wrapper">
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a href="login">Login</a></li>
+                        <li><a href="register">Register</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <% } %>
             <% if (hasSession) { %>
             <ul class="right hide-on-med-and-down">
                 <li>
