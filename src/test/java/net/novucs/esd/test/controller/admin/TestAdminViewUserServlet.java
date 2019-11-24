@@ -27,6 +27,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
+import net.novucs.esd.orm.Where;
 import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
@@ -95,9 +96,8 @@ public class TestAdminViewUserServlet {
       Dao<UserRole> userRoleDao, Dao<Role> roleDao)
       throws SQLException {
     userDao.insert(user);
-    Role admin = TestDummyDataUtil.getAdminRole();
-    roleDao.insert(admin);
-    userRoleDao.insert(new UserRole(user.getId(), admin.getId()));
+    Role adminRole = roleDao.select().where(new Where().eq("name", "Administrator")).one();
+    userRoleDao.insert(new UserRole(user.getId(), adminRole.getId()));
     membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,
         "EXPIRED", ZonedDateTime.now(), true));
     membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,
