@@ -146,6 +146,7 @@ public class DatabaseLifecycle {
     }
   }
 
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   private boolean developmentDataExists() throws SQLException {
     return daoManager.get(Role.class)
         .select()
