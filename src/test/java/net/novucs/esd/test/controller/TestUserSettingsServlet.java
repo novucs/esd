@@ -2,12 +2,14 @@ package net.novucs.esd.test.controller;
 
 import static junit.framework.TestCase.assertTrue;
 import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,14 +42,12 @@ public class TestUserSettingsServlet {
   private static final String LAYOUT_JSP_LABEL = "/layout.jsp";
 
   private transient Session userSession;
-  private transient User dummyUser;
   private transient Role userRole;
 
   @Before
   public void initialiseTest() {
     userSession = new Session();
     userSession.setUser(TestDummyDataUtils.getDummyAdminUser());
-    dummyUser = TestDummyDataUtils.getDummyUser();
     userRole = new Role("User");
   }
 
@@ -61,9 +61,9 @@ public class TestUserSettingsServlet {
 
     // Insert our Dummy User with Roles
     roleDao.insert(userRole);
-    userDao.insert(dummyUser, userSession.getUser());
+    userDao.insert(userSession.getUser());
     userRoleDao.insert(
-        new UserRole(dummyUser.getId(), userRole.getId())
+        new UserRole(userSession.getUser().getId(), userRole.getId())
     );
 
     // Reflect DAO
@@ -80,9 +80,13 @@ public class TestUserSettingsServlet {
     HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
+    // Empty Session
+    Session emptySession = new Session();
+    emptySession.setUser(null);
+
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
-    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn("696969");
+    when(session.getAttribute(SESSION_LABEL)).thenReturn(emptySession);
     when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
@@ -105,7 +109,6 @@ public class TestUserSettingsServlet {
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(dummyUser.getId().toString());
     when(request.getParameter(eq("fullname"))).thenReturn("Test User");
     when(request.getParameter(eq("email"))).thenReturn(
         "test@esd.net");
@@ -137,8 +140,6 @@ public class TestUserSettingsServlet {
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
-        dummyUser.getId().toString());
     when(request.getParameter(eq("fullname"))).thenReturn(
         "Test User");
     when(request.getParameter(eq("email"))).thenReturn(
@@ -155,6 +156,7 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
+    verify(request).setAttribute(eq("updated"), eq(true));
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
@@ -171,8 +173,6 @@ public class TestUserSettingsServlet {
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
-        dummyUser.getId().toString());
     when(request.getParameter(eq("fullname"))).thenReturn(
         "Test User");
     when(request.getParameter(eq("email"))).thenReturn(
@@ -226,8 +226,6 @@ public class TestUserSettingsServlet {
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
-        dummyUser.getId().toString());
     when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doGet(request, response);

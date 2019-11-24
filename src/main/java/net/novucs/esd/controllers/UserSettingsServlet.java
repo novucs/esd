@@ -59,10 +59,13 @@ public class UserSettingsServlet extends BaseServlet {
     String currentPassword = request.getParameter("current_password");
     String newPassword = request.getParameter("new_password");
 
-    if (!currentPassword.isEmpty() && !newPassword.isEmpty() && !currentPassword
-        .equals(newPassword) && password.authenticate(request.getParameter("current_password"))) {
-      user.setNeedsPasswordChange(0);
-      user.setPassword(Password.fromPlaintext(newPassword));
+    if (password.authenticate(request.getParameter("current_password"))) {
+      if (!currentPassword.isEmpty() && !newPassword.isEmpty() && !currentPassword
+          .equals(newPassword)) {
+        user.setNeedsPasswordChange(0);
+        user.setPassword(Password.fromPlaintext(newPassword));
+        request.setAttribute("updated", true);
+      }
     }
 
     // Save User
