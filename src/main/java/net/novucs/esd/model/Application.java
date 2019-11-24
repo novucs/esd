@@ -13,7 +13,7 @@ public final class Application {
   @Column(primary = true)
   private Integer id;
 
-  @Column(foreign = User.class)
+  @Column(foreign = User.class, unique = "user_id_uq")
   private Integer userId;
 
   /**
@@ -77,12 +77,11 @@ public final class Application {
       return false;
     }
     Application that = (Application) o;
-    return Objects.equals(getId(), that.getId())
-        && Objects.equals(getUserId(), that.getUserId());
+    return Objects.equals(id, that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getUserId());
+    return Objects.hash(id);
   }
 }

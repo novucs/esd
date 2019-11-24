@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.admin.AdminViewUserServlet;
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
@@ -31,7 +31,7 @@ public class TestAdminViewUserServlet {
   @Before
   public void initialiseTest() {
     userSession = new Session();
-    userSession.setUser(TestDummyDataUtils.getDummyUser());
+    userSession.setUser(TestDummyDataUtil.getDummyUser());
   }
 
   @Test

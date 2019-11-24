@@ -196,23 +196,11 @@ public final class Membership {
       return false;
     }
     Membership that = (Membership) o;
-    return Objects.equals(getId(), that.getId())
-        && Objects.equals(getUserId(), that.getUserId())
-        && Objects.equals(pounds, that.pounds)
-        && Objects.equals(pence, that.pence)
-        && Objects.equals(startDate, that.getStartDate())
-        && Objects.equals(claimFromDate, that.getClaimFromDate())
-        && Objects.equals(getStatus(), that.getStatus());
+    return Objects.equals(id, that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(),
-        getUserId(),
-        pounds,
-        pence,
-        getStartDate(),
-        getClaimFromDate(),
-        getStatus());
+    return Objects.hash(id);
   }
 }
