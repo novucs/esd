@@ -68,7 +68,8 @@ public class MakePaymentServlet extends BaseServlet {
           session.getUser().getId())).first();
 
       // Check user's application first
-      if (ApplicationUtils.STATUS_OPEN.equalsIgnoreCase(application.getStatus())) {
+      if (application != null && ApplicationUtils.STATUS_OPEN
+          .equalsIgnoreCase(application.getStatus())) {
         // If application is OPEN, then user is not yet a member.
         request.setAttribute(PAY_CONTEXT, PAY_APPLICATION);
 
