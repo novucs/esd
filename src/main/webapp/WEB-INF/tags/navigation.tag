@@ -56,8 +56,6 @@
                     <li><a href="${baseUrl}/admin/applications">Manage Applications</a></li>
                     <li><a href="${baseUrl}/admin/claims">Manage Claims</a></li>
                     <li><a href="${baseUrl}/admin/payments">Manage Payments</a></li>
-                    <li class="divider" tabindex="-1"></li>
-                    <li><a href="${baseUrl}/admin/users/search">Search Users</a></li>
                 </ul>
                 <% } %>
                 <!-- Dropdown Trigger -->
