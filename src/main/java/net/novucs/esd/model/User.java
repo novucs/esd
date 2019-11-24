@@ -219,17 +219,11 @@ public class User {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(getId(), user.getId())
-        && Objects.equals(getName(), user.getName())
-        && Objects.equals(getEmail(), user.getEmail())
-        && Objects.equals(getPassword(), user.getPassword())
-        && Objects.equals(getAddress(), user.getAddress())
-        && Objects.equals(getDateOfBirth(), user.getDateOfBirth())
-        && Objects.equals(getStatus(), user.getStatus());
+    return Objects.equals(id, user.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getName(), getEmail(), getPassword(), getAddress(), getStatus());
+    return Objects.hash(id);
   }
 }
