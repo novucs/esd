@@ -40,47 +40,6 @@ public class ParsedModel<M> {
   }
 
   /**
-   * Of parsed model.
-   *
-   * @param <M>        the type parameter
-   * @param modelClass the model class
-   * @return the parsed model
-   */
-  public static <M> ParsedModel<M> of(Class<M> modelClass) {
-    if (MODEL_CACHE.containsKey(modelClass)) {
-      //noinspection unchecked
-      return (ParsedModel<M>) MODEL_CACHE.get(modelClass);
-    }
-
-    LinkedHashMap<String, ParsedColumn> columns = new LinkedHashMap<>();
-
-    for (Field field : modelClass.getDeclaredFields()) {
-      Column[] columnAnnotations = field.getAnnotationsByType(Column.class);
-      if (columnAnnotations.length == 0) {
-        continue;
-      }
-
-      if (columnAnnotations.length > 1) {
-        throw new IllegalStateException("Fields should only have one @Column declaration. "
-            + columnAnnotations.length + " found on " + modelClass.getName() + " " + field
-            .getName());
-      }
-
-      Column column = columnAnnotations[0];
-      Class<?> type = field.getType();
-      Class<?> foreignReference = column.foreign() == void.class ? null : column.foreign();
-      ParsedColumn parsedColumn = new ParsedColumn(
-          type, field.getName(), column.primary(), foreignReference, column.nullable());
-      columns.put(field.getName(), parsedColumn);
-    }
-
-    String tableName = camelToSnake(modelClass.getSimpleName());
-    ParsedModel<M> parsedModel = new ParsedModel<>(modelClass, tableName, columns);
-    MODEL_CACHE.put(modelClass, parsedModel);
-    return parsedModel;
-  }
-
-  /**
    * Gets table name.
    *
    * @return the table name
@@ -119,6 +78,47 @@ public class ParsedModel<M> {
    */
   public Map<String, ParsedColumn> getColumns() {
     return columns;
+  }
+
+  /**
+   * Of parsed model.
+   *
+   * @param <M>        the type parameter
+   * @param modelClass the model class
+   * @return the parsed model
+   */
+  public static <M> ParsedModel<M> of(Class<M> modelClass) {
+    if (MODEL_CACHE.containsKey(modelClass)) {
+      //noinspection unchecked
+      return (ParsedModel<M>) MODEL_CACHE.get(modelClass);
+    }
+
+    LinkedHashMap<String, ParsedColumn> columns = new LinkedHashMap<>();
+
+    for (Field field : modelClass.getDeclaredFields()) {
+      Column[] columnAnnotations = field.getAnnotationsByType(Column.class);
+      if (columnAnnotations.length == 0) {
+        continue;
+      }
+
+      if (columnAnnotations.length > 1) {
+        throw new IllegalStateException("Fields should only have one @Column declaration. "
+            + columnAnnotations.length + " found on " + modelClass.getName() + " " + field
+            .getName());
+      }
+
+      Column column = columnAnnotations[0];
+      Class<?> type = field.getType();
+      Class<?> foreignReference = column.foreign() == void.class ? null : column.foreign();
+      ParsedColumn parsedColumn = new ParsedColumn(
+          type, field.getName(), column.primary(), foreignReference, column.nullable());
+      columns.put(field.getName(), parsedColumn);
+    }
+
+    String tableName = camelToSnake(modelClass.getSimpleName());
+    ParsedModel<M> parsedModel = new ParsedModel<>(modelClass, tableName, columns);
+    MODEL_CACHE.put(modelClass, parsedModel);
+    return parsedModel;
   }
 
   /**

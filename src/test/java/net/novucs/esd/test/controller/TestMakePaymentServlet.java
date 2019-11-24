@@ -25,7 +25,8 @@ import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.util.Password;
+import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.util.Constants.MEMBERSHIP;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +38,7 @@ import org.mockito.stubbing.Answer;
 public class TestMakePaymentServlet {
 
   private static final String LAYOUT = "/layout.jsp";
-  private static final String ACTIVE_MEMBERSHIP = "ACTIVE";
-  private static final String APPLICATION = "APPLICATION";
-  private static final String USER_NAME = "User Name";
-  private static final String USER_EMAIL = "user@email.com";
-  private static final String USER_PASSWORD = "password1";
-  private static final String USER_ADDRESS = "1 Esd Lane, UWE, A12 BC3";
   private static final String SESSION = "session";
-  private static final int MEMBERSHIP_FEE = 10;
   private static final String AMOUNT_OWED = "amountOwed";
   private static final String DECIMAL_FORMAT = "#.##";
   private transient Session userSession;
@@ -92,7 +86,7 @@ public class TestMakePaymentServlet {
       Membership newMembership = new Membership(
           user.getId(),
           currentMembershipBalance,
-          ACTIVE_MEMBERSHIP,
+          MEMBERSHIP.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership
       );
@@ -120,16 +114,7 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        APPLICATION,
-        0
-    );
+    User user = TestDummyDataUtils.getDummyUser();
 
     setServletDaos(servlet,
         user,
@@ -152,7 +137,8 @@ public class TestMakePaymentServlet {
 
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP_FEE)));
+    verify(request)
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)));
   }
 
   /**
@@ -170,22 +156,13 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        APPLICATION,
-        0
-    );
+    User user = TestDummyDataUtils.getDummyUser();
 
     setServletDaos(servlet,
         user,
         false,
         false,
-        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
 
@@ -220,22 +197,13 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        APPLICATION,
-        0
-    );
+    User user = TestDummyDataUtils.getDummyUser();
 
     setServletDaos(servlet,
         user,
         false,
         true,
-        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
 
@@ -252,7 +220,8 @@ public class TestMakePaymentServlet {
 
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP_FEE)));
+    verify(request)
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)));
   }
 
   /**
@@ -270,22 +239,13 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        APPLICATION,
-        0
-    );
+    User user = TestDummyDataUtils.getDummyUser();
 
     setServletDaos(servlet,
         user,
         true,
         true,
-        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
 
@@ -303,7 +263,8 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request).setAttribute(AMOUNT_OWED,
-        df.format(BigDecimal.valueOf(MEMBERSHIP_FEE).multiply(BigDecimal.valueOf(2))));
+        df.format(
+            BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE).multiply(BigDecimal.valueOf(2))));
 
   }
 
@@ -322,23 +283,14 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        APPLICATION,
-        0
-    );
+    User user = TestDummyDataUtils.getDummyUser();
 
     setServletDaos(servlet,
         user,
         true,
         true,
-        BigDecimal.valueOf(MEMBERSHIP_FEE),
-        BigDecimal.valueOf(MEMBERSHIP_FEE),
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
         BigDecimal.ZERO);
 
     userSession.setUser(user);
@@ -354,7 +306,8 @@ public class TestMakePaymentServlet {
 
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP_FEE)));
+    verify(request)
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)));
   }
 
   /**
@@ -372,24 +325,15 @@ public class TestMakePaymentServlet {
     MakePaymentServlet servlet = new MakePaymentServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        APPLICATION,
-        0
-    );
+    User user = TestDummyDataUtils.getDummyUser();
 
     setServletDaos(servlet,
         user,
         true,
         true,
-        BigDecimal.valueOf(MEMBERSHIP_FEE),
-        BigDecimal.valueOf(MEMBERSHIP_FEE),
-        BigDecimal.valueOf(MEMBERSHIP_FEE));
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE),
+        BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE));
 
     userSession.setUser(user);
 

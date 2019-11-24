@@ -24,34 +24,6 @@ public class Session {
   private User user;
 
   /**
-   * Gets session.
-   *
-   * @param request the request
-   * @return the session
-   */
-  public static Session fromRequest(HttpServletRequest request) {
-    HttpSession httpSession = request.getSession(false);
-
-    // If a session doesn't exist, request GlassFish make a new one
-    if (httpSession == null) {
-      httpSession = request.getSession(true);
-    }
-
-    // Check if we have a session handler in our session
-    Session sessionHandler;
-    if (httpSession.getAttribute(ATTRIBUTE_NAME) == null) {
-      // Create a session
-      sessionHandler = new Session();
-      httpSession.setAttribute(ATTRIBUTE_NAME, sessionHandler);
-    } else {
-      // Invoke our old session
-      sessionHandler = (Session) httpSession.getAttribute(ATTRIBUTE_NAME);
-    }
-
-    return sessionHandler;
-  }
-
-  /**
    * Push error.
    *
    * @param message the message
@@ -100,7 +72,6 @@ public class Session {
     return roles;
   }
 
-
   /**
    * Get the user role names.
    *
@@ -133,7 +104,7 @@ public class Session {
   /**
    * Add a filter to the session e.g. page size.
    *
-   * @param filterName  Name of the filter
+   * @param filterName Name of the filter
    * @param filterValue Value of the filter
    */
   public void setFilter(String filterName, Object filterValue) {
@@ -156,5 +127,33 @@ public class Session {
    */
   public Object getFilter(String filterName) {
     return this.filters.get(filterName);
+  }
+
+  /**
+   * Gets session.
+   *
+   * @param request the request
+   * @return the session
+   */
+  public static Session fromRequest(HttpServletRequest request) {
+    HttpSession httpSession = request.getSession(false);
+
+    // If a session doesn't exist, request GlassFish make a new one
+    if (httpSession == null) {
+      httpSession = request.getSession(true);
+    }
+
+    // Check if we have a session handler in our session
+    Session sessionHandler;
+    if (httpSession.getAttribute(ATTRIBUTE_NAME) == null) {
+      // Create a session
+      sessionHandler = new Session();
+      httpSession.setAttribute(ATTRIBUTE_NAME, sessionHandler);
+    } else {
+      // Invoke our old session
+      sessionHandler = (Session) httpSession.getAttribute(ATTRIBUTE_NAME);
+    }
+
+    return sessionHandler;
   }
 }

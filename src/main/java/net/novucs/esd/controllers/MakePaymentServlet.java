@@ -18,12 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
+import net.novucs.esd.util.Constants.APPLICATION;
+import net.novucs.esd.util.Constants.MEMBERSHIP;
+import net.novucs.esd.util.Constants.STRIPE;
 
 /**
  * The type Make payment servlet.
@@ -31,23 +33,19 @@ import net.novucs.esd.orm.Where;
 public class MakePaymentServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
-  private static final int MEMBERSHIP_FEE = 10;
-  private static final String STRIPE_KEY = "sk_test_kMQ6gPhFRqsyWex4O8FxMU4200Poyj5KwH";
-  private static final String USER_ID = "user_id";
-  private static final String PAGE = "user.payments";
-  private static final String PAY_CONTEXT = "payContext";
-
-  private static final String APPLICATION_STATUS_OPEN = "OPEN";
-  private static final String PAY_SUCCESS = "PAY_SUCCESS";
-  private static final String PAY_FAIL = "PAY_FAIL";
-  private static final String PAY_APPLICATION = "PAY_APPLICATION";
-  private static final String PAY_MEMBERSHIP = "PAY_MEMBERSHIP";
+  public static final String USER_ID = "user_id";
+  public static final String PAGE = "user.payments";
+  public static final String PAY_CONTEXT = "payContext";
+  public static final String PAY_SUCCESS = "PAY_SUCCESS";
+  public static final String PAY_FAIL = "PAY_FAIL";
+  public static final String PAY_APPLICATION = "PAY_APPLICATION";
+  public static final String PAY_MEMBERSHIP = "PAY_MEMBERSHIP";
 
   @Inject
   private Dao<Membership> membershipDao;
 
   @Inject
-  private Dao<Application> applicationDao;
+  private Dao<net.novucs.esd.model.Application> applicationDao;
 
   @Inject
   private Dao<Payment> paymentDao;
@@ -61,7 +59,7 @@ public class MakePaymentServlet extends BaseServlet {
 
     DecimalFormat df = new DecimalFormat("#.##");
     Session session = Session.fromRequest(request);
-    Application application;
+    net.novucs.esd.model.Application application;
     List<Membership> allUserMemberships;
 
     try {
@@ -69,13 +67,14 @@ public class MakePaymentServlet extends BaseServlet {
           session.getUser().getId())).first();
 
       // Check user's application first
-      if (APPLICATION_STATUS_OPEN.equalsIgnoreCase(application.getStatus())) {
+      if (APPLICATION.STATUS_OPEN.equalsIgnoreCase(application.getStatus())) {
         // If application is OPEN, then user is not yet a member.
         request.setAttribute(PAY_CONTEXT, PAY_APPLICATION);
 
         // The amount they owe is the membership fee minus what they've paid so far.
-        request.setAttribute("amountOwed", df.format(BigDecimal.valueOf(MEMBERSHIP_FEE)
-            .subtract(application.getBalance())));
+        request
+            .setAttribute("amountOwed", df.format(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE)
+                .subtract(application.getBalance())));
         super.forward(request, response, "Application Payment", PAGE);
       } else {
         // User application is closed so they are a member
@@ -84,9 +83,9 @@ public class MakePaymentServlet extends BaseServlet {
         allUserMemberships = membershipDao.select()
             .where(new Where().eq(USER_ID, session.getUser().getId())).all();
         float balance = 0f;
-        for (Membership membership : allUserMemberships
-        ) {
-          balance += Float.parseFloat(membership.getBalance().toString()) - MEMBERSHIP_FEE;
+        for (Membership membership : allUserMemberships) {
+          balance +=
+              Float.parseFloat(membership.getBalance().toString()) - MEMBERSHIP.ANNUAL_FEE;
         }
 
         // If anything is outstanding, balance will be a negative number so inverse to positive.
@@ -116,10 +115,10 @@ public class MakePaymentServlet extends BaseServlet {
     Session session = Session.fromRequest(request);
     String reference = request.getParameter("reference");
     float balance = Float.parseFloat(amount) / 100f;
-    Application application;
+    net.novucs.esd.model.Application application;
     List<Membership> allUserMemberships;
 
-    Stripe.apiKey = STRIPE_KEY;
+    Stripe.apiKey = STRIPE.TEST_SECRET_KEY;
     // Build params for Stripe charge request
     Map<String, Object> params = new HashMap<>();
     params.put("amount", amount);
@@ -165,12 +164,11 @@ public class MakePaymentServlet extends BaseServlet {
         // Get all the user's membership and loop through them, updating the balance where required.
         allUserMemberships = membershipDao.select()
             .where(new Where().eq(USER_ID, session.getUser().getId())).all();
-        for (Membership membership : allUserMemberships
-        ) {
-          if (Float.parseFloat(membership.getBalance().toString()) == 0) {
-            membership.setBalance(BigDecimal.valueOf(MEMBERSHIP_FEE));
+        for (Membership membership : allUserMemberships) {
+          if (BigDecimal.ZERO.equals(membership.getBalance())) {
+            membership.setBalance(BigDecimal.valueOf(MEMBERSHIP.ANNUAL_FEE));
             membershipDao.update(membership);
-            balance -= MEMBERSHIP_FEE;
+            balance -= MEMBERSHIP.ANNUAL_FEE;
             if (balance == 0) {
               break;
             }
