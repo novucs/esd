@@ -10,7 +10,8 @@ class NotificationSocket {
   onmessage(event){
     const notification = JSON.parse(event.data);
     M.toast({
-      html: notification.message
+      html: notification.message,
+      classes: "rounded"
     });
   }
 

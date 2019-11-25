@@ -38,7 +38,7 @@ public class NotificationSessionHandler {
 
   public void sendNotification(Notification notification) throws IOException, SQLException {
     NotificationSession recipientSession = sessions.values().stream().filter(s ->
-        s.getUserId() == notification.getRecipientId()).findFirst().get();
+        s.getUserId() == notification.getRecipientId()).findFirst().orElse(null);
 
     if(recipientSession != null){
       JsonObject notificationJson = Json.createObjectBuilder().add("message",

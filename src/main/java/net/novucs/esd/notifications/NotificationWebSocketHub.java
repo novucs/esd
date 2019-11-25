@@ -75,7 +75,7 @@ public class NotificationWebSocketHub {
 
   private void pollNotificationQueue(String userId) throws SQLException {
     List<Notification> notifications = notificationDao.select().where(new Where().eq(
-        "recipientId", userId)).all();
+        "recipient_id", userId)).all();
 
     if (!notifications.isEmpty()) {
 
@@ -83,7 +83,7 @@ public class NotificationWebSocketHub {
       try {
         for (Notification notification : notifications) {
           sessionHandler.sendNotification(notification);
-          notifications.add(notification);
+          notificationsToDelete.add(notification);
         }
       } catch (Exception e) {
         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE,

@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.Notification;
 import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.RolePermission;
@@ -50,7 +51,8 @@ public class DatabaseLifecycle {
       RolePermission.class,
       User.class,
       UserLog.class,
-      UserRole.class
+      UserRole.class,
+      Notification.class
   ));
 
   private DaoManager daoManager;

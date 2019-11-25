@@ -8,18 +8,18 @@ import net.novucs.esd.orm.Table;
 public class Notification {
 
   @Column(primary = true)
-  private int id;
+  private Integer id;
 
   @Column
   private String message;
 
   @Column(foreign = User.class)
-  private int senderId;
+  private Integer senderId;
 
   @Column(foreign = User.class)
-  private int recipientId;
+  private Integer recipientId;
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
@@ -35,7 +35,7 @@ public class Notification {
     this.message = message;
   }
 
-  public int getSenderId() {
+  public Integer getSenderId() {
     return senderId;
   }
 
@@ -43,7 +43,7 @@ public class Notification {
     this.senderId = senderId;
   }
 
-  public int getRecipientId() {
+  public Integer getRecipientId() {
     return recipientId;
   }
 
