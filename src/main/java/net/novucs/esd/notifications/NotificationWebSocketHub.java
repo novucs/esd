@@ -78,14 +78,13 @@ public class NotificationWebSocketHub {
         "recipient_id", userId)).all();
 
     if (!notifications.isEmpty()) {
-
       List<Notification> notificationsToDelete = new ArrayList<>();
       try {
         for (Notification notification : notifications) {
           sessionHandler.sendNotification(notification);
           notificationsToDelete.add(notification);
         }
-      } catch (Exception e) {
+      } catch (IOException e) {
         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE,
             "Failed to send notifications.", e);
       } finally {

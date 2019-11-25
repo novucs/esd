@@ -1,7 +1,6 @@
 package net.novucs.esd.notifications;
 
 import javax.websocket.Session;
-import net.novucs.esd.model.Notification;
 
 public class NotificationSession {
 
@@ -9,11 +8,7 @@ public class NotificationSession {
 
   private int userId;
 
-  public NotificationSession(){
-
-  }
-
-  public NotificationSession(Session session, int userId){
+  public NotificationSession(Session session, int userId) {
     this.session = session;
     this.userId = userId;
   }

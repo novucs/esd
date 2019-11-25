@@ -19,11 +19,24 @@ public class Notification {
   @Column(foreign = User.class)
   private Integer recipientId;
 
+  /**
+   * Instantiates a new Notifications.
+   */
+  public Notification() {
+    // This constructor is intentionally empty.
+  }
+
+  public Notification(String message, Integer senderId, Integer recipientId) {
+    this.message = message;
+    this.senderId = senderId;
+    this.recipientId = recipientId;
+  }
+
   public Integer getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -39,7 +52,7 @@ public class Notification {
     return senderId;
   }
 
-  public void setSenderId(int senderId) {
+  public void setSenderId(Integer senderId) {
     this.senderId = senderId;
   }
 
@@ -47,7 +60,7 @@ public class Notification {
     return recipientId;
   }
 
-  public void setRecipientId(int recipientId) {
+  public void setRecipientId(Integer recipientId) {
     this.recipientId = recipientId;
   }
 

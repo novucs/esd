@@ -2,7 +2,6 @@ package net.novucs.esd.notifications;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +31,7 @@ public class NotificationSessionHandler {
     sessions.remove(toRemove.get().getUserId());
   }
 
-  public NotificationSession getSession(String sessionId){
+  public NotificationSession getSession(String sessionId) {
     return sessions.get(sessionId);
   }
 
@@ -40,12 +39,12 @@ public class NotificationSessionHandler {
     NotificationSession recipientSession = sessions.values().stream().filter(s ->
         s.getUserId() == notification.getRecipientId()).findFirst().orElse(null);
 
-    if(recipientSession != null){
+    if (recipientSession == null) {
+      notificationDao.insert(notification);
+    } else {
       JsonObject notificationJson = Json.createObjectBuilder().add("message",
           notification.getMessage()).build();
       this.sendNotificationToSession(recipientSession.getSession(), notificationJson);
-    } else {
-      notificationDao.insert(notification);
     }
   }
 
