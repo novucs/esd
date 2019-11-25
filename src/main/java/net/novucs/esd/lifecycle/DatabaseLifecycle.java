@@ -104,6 +104,7 @@ public class DatabaseLifecycle {
     return daoManager.get(clazz);
   }
 
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   private void setupDummyUser(String name, String roleName) throws SQLException {
     Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
     User user = new User(
@@ -118,7 +119,7 @@ public class DatabaseLifecycle {
     daoManager.get(User.class).insert(user);
     daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
 
-    if ("NewMember".equalsIgnoreCase(roleName)) {
+    if ("NewMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
@@ -128,7 +129,7 @@ public class DatabaseLifecycle {
       ));
     }
 
-    if ("FullMember".equalsIgnoreCase(roleName)) {
+    if ("FullMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
@@ -145,13 +146,15 @@ public class DatabaseLifecycle {
     }
   }
 
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   private boolean developmentDataExists() throws SQLException {
     return daoManager.get(Role.class)
         .select()
-        .where(new Where().eq("name", "NewMember"))
+        .where(new Where().eq("name", "Member"))
         .first() != null;
   }
 
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   public void setupDevelopmentData() throws SQLException {
     if (developmentDataExists()) {
       return;
@@ -159,14 +162,13 @@ public class DatabaseLifecycle {
 
     for (String roleName : Role.DEFAULT_VALUES) {
       daoManager.get(Role.class).insert(new Role(roleName));
-      setupDummyUser(roleName, roleName);
     }
 
-    setupDummyUser("Larry", Role.DEFAULT_VALUES.get(0));
-    setupDummyUser("Garry", Role.DEFAULT_VALUES.get(1));
-    setupDummyUser("Harry", Role.DEFAULT_VALUES.get(2));
-    setupDummyUser("Barry", Role.DEFAULT_VALUES.get(3));
-    setupDummyUser("Jeff", Role.DEFAULT_VALUES.get(4));
+    setupDummyUser("NewMember", "Member");
+    setupDummyUser("FullMember", "Member");
+    setupDummyUser("Member", "Member");
+    setupDummyUser("User", "User");
+    setupDummyUser("Administrator", "Administrator");
   }
 
   /**
