@@ -145,12 +145,12 @@ public class DatabaseLifecycle {
 
       // Past membership
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.ZERO, "EXPIRED", ZonedDateTime.now().minusMonths(15), true
+          user.getId(), BigDecimal.TEN, "EXPIRED", ZonedDateTime.now().minusMonths(15), true
       ));
 
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.ZERO, "ACTIVE", ZonedDateTime.now().minusMonths(3), false
+          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(3), false
       ));
     }
   }
