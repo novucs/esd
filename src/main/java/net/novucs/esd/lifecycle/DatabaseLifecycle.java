@@ -136,7 +136,7 @@ public class DatabaseLifecycle {
       daoManager.get(Application.class).insert(application);
 
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.ZERO, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
+          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
       ));
     } else if ("FullMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
