@@ -11,4 +11,6 @@
 
 <!-- Place scripts that are used by all pages here -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/notifcationsocket.js"></script>
+<script src="${pageContext.request.contextPath}/js/notification.js"></script>
 <script src="${pageContext.request.contextPath}/js/site.js"></script>
