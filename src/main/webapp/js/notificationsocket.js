@@ -11,7 +11,9 @@ class NotificationSocket {
     const notification = JSON.parse(event.data);
     M.toast({
       html: notification.message,
-      classes: "rounded"
+      classes: "yellow accent-3 black-text",
+      displayLength: 999999999999999999999999999999,
+      activationPercent: 0.3
     });
   }
 
