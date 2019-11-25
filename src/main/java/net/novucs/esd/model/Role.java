@@ -13,8 +13,6 @@ import net.novucs.esd.orm.Table;
 public final class Role {
 
   public static final List<String> DEFAULT_VALUES = Arrays.asList(
-      "NewMember",
-      "FullMember",
       "Member",
       "User",
       "Administrator"

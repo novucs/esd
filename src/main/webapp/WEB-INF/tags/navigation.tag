@@ -4,7 +4,6 @@
 <%@attribute name="isMember" required="true" type="java.lang.Boolean" %>
 <%@attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
 <% Session userSession = ((Session) request.getAttribute("session")); %>
-<% Boolean userNoSession = userSession.getUser() == null; %>
 <% String baseUrl = request.getContextPath(); %>
 <header>
     <nav class="navigation-bar">
@@ -13,7 +12,7 @@
                 <span>XYZ</span>
                 <span>Drivers Association</span>
             </a>
-            <% if (userNoSession) { %>
+            <% if (!hasSession) { %>
             <nav class="navigation-bar">
                 <div class="nav-wrapper">
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
