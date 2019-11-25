@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.RolePermission;
 import net.novucs.esd.model.User;
@@ -26,6 +27,7 @@ import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
+import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
 
@@ -43,6 +45,7 @@ public class DatabaseLifecycle {
       Application.class,
       Claim.class,
       Membership.class,
+      Payment.class,
       Role.class,
       RolePermission.class,
       User.class,
@@ -101,58 +104,71 @@ public class DatabaseLifecycle {
     return daoManager.get(clazz);
   }
 
-  public void setupDevelopmentData() throws SQLException {
-    DateUtil dateUtil = new DateUtil();
-    ZonedDateTime dateOfBirth = dateUtil.getDateFromString("2000-01-01");
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+  private void setupDummyUser(String name, String roleName) throws SQLException {
+    Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
+    User user = new User(
+        name,
+        name + "@esd.net",
+        Password.fromPlaintext("password1"),
+        "1 ESD Lane",
+        new DateUtil().getDateFromString("2000-01-01"),
+        "ACTIVE",
+        1
+    );
+    daoManager.get(User.class).insert(user);
+    daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
 
-    for (String roleName : Arrays
-        .asList("User", "Member", "NewMember", "FullMember", "Administrator")) {
+    if ("NewMember".equalsIgnoreCase(name)) {
+      Application application = new Application(user.getId(), BigDecimal.TEN);
+      application.setStatus("APPROVED");
+      daoManager.get(Application.class).insert(application);
 
-      Role role = new Role(
-          "NewMember".equalsIgnoreCase(roleName)
-              || "FullMember".equalsIgnoreCase(roleName) ? "Member" : roleName);
-
-      daoManager.get(Role.class).insert(role);
-      User user = new User(
-          roleName + "Account",
-          roleName + "@esd.net",
-          Password.fromPlaintext("password1"),
-          "1 ESD Lane",
-          dateOfBirth,
-          "ACTIVE",
-          1
-      );
-      daoManager.get(User.class).insert(user);
-      daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
-
-      if ("NewMember".equalsIgnoreCase(roleName)) {
-        Membership membership = new Membership(
-            user.getId(),
-            BigDecimal.ZERO,
-            "ACTIVE",
-            ZonedDateTime.now().minusMonths(1),
-            true
-        );
-        daoManager.get(Membership.class).insert(membership);
-      } else if ("FullMember".equalsIgnoreCase(roleName)) {
-        Membership pastMembership = new Membership(
-            user.getId(),
-            BigDecimal.ZERO,
-            "EXPIRED",
-            ZonedDateTime.now().minusMonths(15),
-            true
-        );
-        Membership currentMembership = new Membership(
-            user.getId(),
-            BigDecimal.ZERO,
-            "ACTIVE",
-            ZonedDateTime.now().minusMonths(3),
-            false
-        );
-        daoManager.get(Membership.class).insert(pastMembership);
-        daoManager.get(Membership.class).insert(currentMembership);
-      }
+      daoManager.get(Membership.class).insert(new Membership(
+          user.getId(), BigDecimal.ZERO, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
+      ));
     }
+
+    if ("FullMember".equalsIgnoreCase(name)) {
+      Application application = new Application(user.getId(), BigDecimal.TEN);
+      application.setStatus("APPROVED");
+      daoManager.get(Application.class).insert(application);
+
+      // Past membership
+      daoManager.get(Membership.class).insert(new Membership(
+          user.getId(), BigDecimal.ZERO, "EXPIRED", ZonedDateTime.now().minusMonths(15), true
+      ));
+
+      // Current membership
+      daoManager.get(Membership.class).insert(new Membership(
+          user.getId(), BigDecimal.ZERO, "ACTIVE", ZonedDateTime.now().minusMonths(3), false
+      ));
+    }
+  }
+
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+  private boolean developmentDataExists() throws SQLException {
+    return daoManager.get(Role.class)
+        .select()
+        .where(new Where().eq("name", "Member"))
+        .first() != null;
+  }
+
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+  public void setupDevelopmentData() throws SQLException {
+    if (developmentDataExists()) {
+      return;
+    }
+
+    for (String roleName : Role.DEFAULT_VALUES) {
+      daoManager.get(Role.class).insert(new Role(roleName));
+    }
+
+    setupDummyUser("NewMember", "Member");
+    setupDummyUser("FullMember", "Member");
+    setupDummyUser("Member", "Member");
+    setupDummyUser("User", "User");
+    setupDummyUser("Administrator", "Administrator");
   }
 
   /**

@@ -195,7 +195,7 @@
     </module>
     <module name="AbbreviationAsWordInName">
       <property name="severity" value="warning"/>
-      <property name="ignoreFinal" value="false"/>
+      <property name="ignoreFinal" value="true"/>
       <property name="allowedAbbreviationLength" value="3"/>
     </module>
     <module name="OverloadMethodsDeclarationOrder"/>

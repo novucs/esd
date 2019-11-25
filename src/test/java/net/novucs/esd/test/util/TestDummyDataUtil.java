@@ -1,13 +1,14 @@
-package net.novucs.esd.test;
+package net.novucs.esd.test.util;
 
 import java.time.ZonedDateTime;
+import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
 
-public final class TestDummyDataUtils {
+public final class TestDummyDataUtil {
 
-  private TestDummyDataUtils() {
+  private TestDummyDataUtil() {
     // Intentionally left empty & private.
   }
 
@@ -51,4 +52,9 @@ public final class TestDummyDataUtils {
         1
     );
   }
+
+  public static Role getAdminRole() {
+    return new Role("Administrator");
+  }
+
 }

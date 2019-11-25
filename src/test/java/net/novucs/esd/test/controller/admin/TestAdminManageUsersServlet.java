@@ -1,7 +1,7 @@
 package net.novucs.esd.test.controller.admin;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
@@ -24,9 +24,8 @@ import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -53,7 +52,7 @@ public class TestAdminManageUsersServlet {
   @Before
   public void initialiseTest() {
     userSession = mock(Session.class);
-    userSession.setUser(TestDummyDataUtils.getDummyUser());
+    userSession.setUser(TestDummyDataUtil.getDummyUser());
   }
 
   @Test
@@ -88,7 +87,7 @@ public class TestAdminManageUsersServlet {
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
-    userDao.insert(TestDummyDataUtils.getDummyUser());
+    userDao.insert(TestDummyDataUtil.getDummyUser());
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
@@ -193,7 +192,7 @@ public class TestAdminManageUsersServlet {
   }
 
   private void addUserData(Dao<User> userDao) throws SQLException {
-    userDao.insert(TestDummyDataUtils.getDummyBobUser());
-    userDao.insert(TestDummyDataUtils.getDummyAdminUser());
+    userDao.insert(TestDummyDataUtil.getDummyBobUser());
+    userDao.insert(TestDummyDataUtil.getDummyAdminUser());
   }
 }
