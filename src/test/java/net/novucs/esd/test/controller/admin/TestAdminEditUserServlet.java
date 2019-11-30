@@ -1,7 +1,7 @@
 package net.novucs.esd.test.controller.admin;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
@@ -28,7 +28,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,16 +44,16 @@ public class TestAdminEditUserServlet {
   private static final String ERRORS_LABEL = "errors";
   private static final String LAYOUT_JSP_LABEL = "/layout.jsp";
 
-  private transient Session userSession;
-  private transient User dummyUser;
-  private transient Role userRole;
-  private transient Role adminRole;
+  private Session userSession;
+  private User dummyUser;
+  private Role userRole;
+  private Role adminRole;
 
   @Before
   public void initialiseTest() {
     userSession = new Session();
-    userSession.setUser(TestDummyDataUtils.getDummyAdminUser());
-    dummyUser = TestDummyDataUtils.getDummyUser();
+    userSession.setUser(TestDummyDataUtil.getDummyAdminUser());
+    dummyUser = TestDummyDataUtil.getDummyUser();
     userRole = new Role("User");
     adminRole = new Role("Administrator");
   }

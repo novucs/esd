@@ -111,7 +111,8 @@ public class ParsedModel<M> {
       Class<?> type = field.getType();
       Class<?> foreignReference = column.foreign() == void.class ? null : column.foreign();
       ParsedColumn parsedColumn = new ParsedColumn(
-          type, field.getName(), column.primary(), foreignReference, column.nullable());
+          type, field.getName(), column.primary(), foreignReference, column.nullable(),
+          column.unique());
       columns.put(field.getName(), parsedColumn);
     }
 

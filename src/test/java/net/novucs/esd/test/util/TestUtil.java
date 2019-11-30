@@ -5,15 +5,19 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.orm.ConnectionSource;
 import net.novucs.esd.orm.DaoManager;
+import net.novucs.esd.util.ReflectUtil;
 
 /**
  * The type Test utils.
  */
-public final class TestUtils {
+public final class TestUtil {
 
-  private TestUtils() {
+  private TestUtil() {
     throw new IllegalStateException();
   }
 
@@ -40,11 +44,39 @@ public final class TestUtils {
    *
    * @return the dao manager
    */
-  public static DaoManager createTestDaoManager() {
+  public static DaoManager createTestDaoManager() throws SQLException {
+    return createTestDaoManager(false);
+  }
+
+  /**
+   * Create test dao manager dao manager.
+   *
+   * @param setupDatabaseLifecycle should the database lifecycle be setup?
+   * @return the dao manager
+   */
+  public static DaoManager createTestDaoManager(boolean setupDatabaseLifecycle)
+      throws SQLException {
+    try {
+      DriverManager.getConnection("jdbc:derby:memory:testDB;drop=true");
+    } catch (SQLException ignore) { // NOPMD
+    }
     String dbUrl = "jdbc:derby:memory:testDB;create=true";
     String dbUser = "impact";
     String dbPass = "derbypass";
     ConnectionSource connectionSource = new ConnectionSource(dbUrl, dbUser, dbPass);
-    return new DaoManager(connectionSource);
+    DaoManager daoManager = new DaoManager(connectionSource);
+
+    if (setupDatabaseLifecycle) {
+      daoManager.init(DatabaseLifecycle.MODEL_CLASSES);
+      DatabaseLifecycle databaseLifecycle = new DatabaseLifecycle();
+      try {
+        ReflectUtil.setFieldValue(databaseLifecycle, "daoManager", daoManager);
+      } catch (ReflectiveOperationException e) {
+        throw new RuntimeException(e);  // NOPMD
+      }
+      databaseLifecycle.setupDevelopmentData();
+    }
+
+    return daoManager;
   }
 }

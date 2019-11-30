@@ -4,7 +4,6 @@
 <%@attribute name="isMember" required="true" type="java.lang.Boolean" %>
 <%@attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
 <% Session userSession = ((Session) request.getAttribute("session")); %>
-<% Boolean userNoSession = userSession.getUser() == null; %>
 <% String baseUrl = request.getContextPath(); %>
 <header>
     <nav class="navigation-bar">
@@ -13,7 +12,7 @@
                 <span>XYZ</span>
                 <span>Drivers Association</span>
             </a>
-            <% if (userNoSession) { %>
+            <% if (!hasSession) { %>
             <nav class="navigation-bar">
                 <div class="nav-wrapper">
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -30,18 +29,18 @@
                         Member
                     </a>
                 </li>
-                <% if (isMember) { %>
                 <ul id="memberDropdown" class="dropdown-content">
                     <li><a href="${baseUrl}/dashboard">Dashboard</a></li>
+                    <% if (isMember) { %>
                     <li class="divider" tabindex="-1"></li>
                     <li><a href="${baseUrl}/profile">My Profile</a></li>
                     <li><a href="${baseUrl}/claims">My Claims</a></li>
                     <li><a href="${baseUrl}/payments">My Payments</a></li>
                     <li class="divider" tabindex="-1"></li>
-                    <li><a href="${baseUrl}/makepayment">Make a Payment</a></li>
                     <li><a href="${baseUrl}/makeclaim">Make a Claim</a></li>
+                    <% } %>
+                    <li><a href="${baseUrl}/makepayment">Pay for Membership</a></li>
                 </ul>
-                <% } %>
                 <% if (isAdmin) { %>
                 <li>
                     <a href="${baseUrl}/admin/dashboard" class="dropdown-trigger"
@@ -56,8 +55,6 @@
                     <li><a href="${baseUrl}/admin/applications">Manage Applications</a></li>
                     <li><a href="${baseUrl}/admin/claims">Manage Claims</a></li>
                     <li><a href="${baseUrl}/admin/payments">Manage Payments</a></li>
-                    <li class="divider" tabindex="-1"></li>
-                    <li><a href="${baseUrl}/admin/users/search">Search Users</a></li>
                 </ul>
                 <% } %>
                 <!-- Dropdown Trigger -->

@@ -4,14 +4,6 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
   version="4.0">
   <servlet>
-    <servlet-name>ExampleServerlet</servlet-name>
-    <servlet-class>net.novucs.esd.ExampleServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ExampleServerlet</servlet-name>
-    <url-pattern>/example</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>HomepageServlet</servlet-name>
     <servlet-class>net.novucs.esd.controllers.HomepageServlet</servlet-class>
   </servlet>
@@ -42,14 +34,6 @@
   <servlet-mapping>
     <servlet-name>RegistrationServlet</servlet-name>
     <url-pattern>/register</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>AddressLookup</servlet-name>
-    <servlet-class>net.novucs.esd.controllers.AddressLookupServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddressLookup</servlet-name>
-    <url-pattern>/api/addressLookup.do</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>MemberDashboardServlet</servlet-name>
@@ -130,14 +114,6 @@
   <servlet-mapping>
     <servlet-name>AdminManageUsersServlet</servlet-name>
     <url-pattern>/admin/users</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>AdminSearchUsersServlet</servlet-name>
-    <servlet-class>net.novucs.esd.controllers.admin.AdminSearchUsersServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AdminSearchUsersServlet</servlet-name>
-    <url-pattern>/admin/users/search</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>AdminViewUserServlet</servlet-name>
