@@ -80,7 +80,7 @@ public class UserSettingsServlet extends BaseServlet {
     }
 
     // Feedback
-    super.forward(request, response, "Dashboard", "member.dashboard");
+    super.forward(request, response, "Success", "User.Settings.Success");
   }
 
   @Override
