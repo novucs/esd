@@ -44,7 +44,7 @@ task netbeansdeploy(type: Copy) {
     from war.archiveFile
     // TODO: Change this glassfish installation location to whichever machine is
     //  performing the demo.
-    into "C:\\Users\\$username\\AppData\\Roaming\\Netbeans\\8.2\\config\\GF_4.1.1\\domain1\\autodeploy"
+    into "C:\\Users\\${username}.CAMPUS\\AppData\\Roaming\\Netbeans\\8.2\\config\\GF_4.1.1\\domain1\\autodeploy"
     rename "esd-${project.version}.war", "app.war"
 }
 

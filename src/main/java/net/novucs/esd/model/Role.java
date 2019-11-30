@@ -1,5 +1,7 @@
 package net.novucs.esd.model;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
@@ -10,10 +12,16 @@ import net.novucs.esd.orm.Table;
 @Table
 public final class Role {
 
+  public static final List<String> DEFAULT_VALUES = Arrays.asList(
+      "Member",
+      "User",
+      "Administrator"
+  );
+
   @Column(primary = true)
   private Integer id;
 
-  @Column
+  @Column(unique = "name_uq")
   private String name;
 
   /**
@@ -77,12 +85,11 @@ public final class Role {
       return false;
     }
     Role role = (Role) o;
-    return Objects.equals(getId(), role.getId())
-        && Objects.equals(getName(), role.getName());
+    return Objects.equals(id, role.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getName());
+    return Objects.hash(id);
   }
 }

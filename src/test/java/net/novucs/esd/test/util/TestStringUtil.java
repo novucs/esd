@@ -1,6 +1,6 @@
 package net.novucs.esd.test.util;
 
-import static net.novucs.esd.test.util.TestUtils.assertNotConstructable;
+import static net.novucs.esd.test.util.TestUtil.assertNotConstructable;
 import static org.junit.Assert.assertEquals;
 
 import net.novucs.esd.util.StringUtil;

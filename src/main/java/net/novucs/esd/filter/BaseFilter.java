@@ -33,6 +33,7 @@ public abstract class BaseFilter implements Filter {
     return basePath.isEmpty()
         || "register".equalsIgnoreCase(basePath)
         || "login".equalsIgnoreCase(basePath)
+        || basePath.contains("api")
         || basePath.matches("^.*(css|jpg|jpeg|png|gif|js)$");
   }
 

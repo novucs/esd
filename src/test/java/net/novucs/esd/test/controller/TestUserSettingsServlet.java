@@ -1,7 +1,7 @@
 package net.novucs.esd.test.controller;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.novucs.esd.test.util.TestUtils.createTestDaoManager;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
@@ -26,7 +26,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.test.TestDummyDataUtils;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class TestUserSettingsServlet {
   @Before
   public void initialiseTest() {
     userSession = new Session();
-    userSession.setUser(TestDummyDataUtils.getDummyAdminUser());
+    userSession.setUser(TestDummyDataUtil.getDummyAdminUser());
     userRole = new Role("User");
   }
 

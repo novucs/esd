@@ -123,14 +123,11 @@ public final class UserLog {
       return false;
     }
     UserLog userLog = (UserLog) o;
-    return Objects.equals(getId(), userLog.getId())
-        && Objects.equals(getUserId(), userLog.getUserId())
-        && Objects.equals(getMessage(), userLog.getMessage())
-        && Objects.equals(getIp(), userLog.getIp());
+    return Objects.equals(id, userLog.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getUserId(), getMessage(), getIp());
+    return Objects.hash(id);
   }
 }

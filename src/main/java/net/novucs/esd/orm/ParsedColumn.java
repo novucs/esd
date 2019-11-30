@@ -23,6 +23,7 @@ public class ParsedColumn {
   private final boolean primary;
   private final Class<?> foreignReference;
   private final boolean nullable;
+  private final String unique;
 
   /**
    * Instantiates a new Parsed column.
@@ -32,9 +33,10 @@ public class ParsedColumn {
    * @param primary          the primary
    * @param foreignReference the foreign reference
    * @param nullable         the nullable
+   * @param unique           the unique constraint
    */
   public ParsedColumn(Class<?> type, String name, boolean primary,
-      Class<?> foreignReference, boolean nullable) {
+      Class<?> foreignReference, boolean nullable, String unique) {
     if (primary && (type != Integer.class || !"id".equals(name))) {
       throw new IllegalStateException("Primary keys must be integers named ID");
     }
@@ -44,6 +46,7 @@ public class ParsedColumn {
     this.primary = primary;
     this.foreignReference = foreignReference;
     this.nullable = nullable;
+    this.unique = unique;
   }
 
   /**
@@ -116,6 +119,24 @@ public class ParsedColumn {
    */
   public boolean isNullable() {
     return nullable;
+  }
+
+  /**
+   * Check if the column has a unique constraint.
+   *
+   * @return <code>true</code> if the column has a unique constraint.
+   */
+  public boolean hasUniqueConstraint() {
+    return unique != null && !unique.isEmpty();
+  }
+
+  /**
+   * Get the unique constraint for this column.
+   *
+   * @return the unique constraint name.
+   */
+  public String getUniqueConstraint() {
+    return hasUniqueConstraint() ? unique : null;
   }
 
   /**
