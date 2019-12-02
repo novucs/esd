@@ -1,11 +1,15 @@
 <%@ page import="java.util.List" %>
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
+<%@ page import="net.novucs.esd.model.User" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <% Session userSession = ((Session) request.getSession().getAttribute("session")); %>
 <% Boolean userHasSession = userSession.getUser() != null; %>
 <% Boolean userIsMember = userSession.hasRole("Member"); %>
 <% Boolean userIsAdmin = userSession.hasRole("Administrator"); %>
+<c:set var="user" value="<%=userSession.getUser()%>"/>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,7 +26,10 @@
   <body>
     <t:navigation hasSession="<%=userHasSession%>" isMember="<%=userIsMember%>" isAdmin="<%=userIsAdmin%>"/>
     <% if (userHasSession && !request.getAttribute("name").equals("homepage")) { %>
-      <main class="container">
+      <script type="text/javascript">
+        const userId = "${user.id}";
+      </script>
+    <main class="container">
         <jsp:include page="breadcrumb.jsp" />
         <jsp:include page="${page}" />
       </main>
