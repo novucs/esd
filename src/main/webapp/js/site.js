@@ -1,3 +1,6 @@
+const notificationSocket = new NotificationSocket(
+    "ws://localhost:8080/app/notifications/", userId);
+
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
     let elems = document.querySelectorAll('.dropdown-trigger');
@@ -17,3 +20,6 @@
     });
   });
 })();
+
+
+
