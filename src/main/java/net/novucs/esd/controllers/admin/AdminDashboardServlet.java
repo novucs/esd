@@ -80,10 +80,12 @@ public class AdminDashboardServlet extends BaseServlet {
   }
 
   private int sumClaims(List<Claim> claims, LocalDate from, LocalDate to) throws SQLException {
-    return claims.stream().filter(
-        r -> r.getClaimDate().toLocalDate().isAfter(from) &&
-            r.getClaimDate().toLocalDate().isBefore(to)).map(Claim::getAmount).map(
-        BigDecimal::intValue).mapToInt(Integer::intValue).sum();
+    return claims.stream().filter((r) ->
+        r.getClaimDate().toLocalDate().isAfter(from)
+            && r.getClaimDate().toLocalDate().isBefore(to))
+        .map(Claim::getAmount).map(BigDecimal::intValue)
+        .mapToInt(Integer::intValue)
+        .sum();
   }
 
   @Override

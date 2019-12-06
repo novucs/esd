@@ -35,13 +35,13 @@ public class NotificationWebSocketHub {
 
   @OnOpen
   public void open(@PathParam("userId") String userId, Session session) throws SQLException {
-    try{
+    try {
       NotificationSession notificationSession = new NotificationSession(session,
           Integer.parseInt(userId));
       sessionHandler.addSession(session.getId(), notificationSession);
       // Poll the notifications in the database and see if any of them pertain to this session.
       pollNotificationQueue(userId);
-    } catch (NumberFormatException e){
+    } catch (NumberFormatException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Could not recognise user ID"
           + "for websocket.");
     }

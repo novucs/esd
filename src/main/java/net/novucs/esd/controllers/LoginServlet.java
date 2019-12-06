@@ -42,15 +42,13 @@ public class LoginServlet extends BaseServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
     String username = request.getParameter("username");
-    User user;
-
-    if(username == null){
+    if (username == null) {
       Session.fromRequest(request).pushError("Username not provided");
       return;
     }
 
+    User user;
     try {
       user = userDao.select().where(new Where().eq("email", username)).first();
     } catch (SQLException e) {

@@ -130,10 +130,11 @@ public class Session {
   }
 
   /**
-   *
-   * Clears all filters in the session
+   * Clears all filters in the session.
    */
-  public void clearFilters(){ this.filters.clear(); }
+  public void clearFilters() {
+    this.filters.clear();
+  }
 
   /**
    * Gets session.
