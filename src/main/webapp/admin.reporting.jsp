@@ -32,11 +32,6 @@
         </div>
     </div>
 </form>
-
-<script type="text/javascript">
-  const showDates = "${showReport == null}";
-</script>
-
 <c:choose>
     <c:when test="${showReport != null}">
         <div class="row rounded-container">
@@ -62,14 +57,14 @@
                 </div>
                 <div class="row top-margin-30">
                     <div class="col s12 center-align">
-                        Report shows figures from
+                        Showing figures from
                         <strong>
                                 ${fromFormatted}
                         </strong>
                         to
                         <strong>
                                 ${toFormatted}
-                        <strong/>
+                        </strong>
                     </div>
                 </div>
             </div>
