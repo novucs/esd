@@ -1,7 +1,9 @@
 package net.novucs.esd.controllers.admin;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -46,7 +48,8 @@ public class AdminDashboardServlet extends BaseServlet {
       List<UserRole> userRoles = userRoleDao.select().all();
       int outstandingApplications = applicationDao.select().where(new Where()
           .eq("status", ApplicationUtils.STATUS_OPEN)).all().size();
-      int claims = claimDao.select().all().size();
+      List<Claim> claims = claimDao.select().all();
+      int numberOfClaims = claims.size();
       int members = 0;
 
       for (User u : numberOfUsers) {
@@ -57,17 +60,30 @@ public class AdminDashboardServlet extends BaseServlet {
         }
       }
 
+      LocalDate today = LocalDate.now();
+      LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+      LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
+      int monthlyClaimSum = sumClaims(claims, oneMonthAgo, today);
+      int quarterlyClaimSum = sumClaims(claims, threeMonthsAgo, today)
+
       request.setAttribute("outstandingMemberApplications", outstandingApplications);
       request.setAttribute("currentMembers", members);
-      request.setAttribute("outstandingBalances", claims);
+      request.setAttribute("outstandingBalances", numberOfClaims);
 
       // todo: Update when reporting is set in place
-      request.setAttribute("monthlyClaimCost", "200");
-      request.setAttribute("quarterlyClaimCost", "20000");
+      request.setAttribute("monthlyClaimCost", String.valueOf(monthlyClaimSum));
+      request.setAttribute("quarterlyClaimCost", String.valueOf(quarterlyClaimSum));
       super.forward(request, response, "Dashboard", "admin.dashboard");
     } catch (SQLException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private int sumClaims(List<Claim> claims, LocalDate from, LocalDate to) throws SQLException {
+    return claims.stream().filter(
+        r -> r.getClaimDate().toLocalDate().isAfter(from) &&
+            r.getClaimDate().toLocalDate().isBefore(to)).map(Claim::getAmount).map(
+        BigDecimal::intValue).mapToInt(Integer::intValue).sum();
   }
 
   @Override
