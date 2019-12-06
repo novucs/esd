@@ -46,6 +46,11 @@ public class LoginServlet extends BaseServlet {
     String username = request.getParameter("username");
     User user;
 
+    if(username == null){
+      Session.fromRequest(request).pushError("Username not provided");
+      return;
+    }
+
     try {
       user = userDao.select().where(new Where().eq("email", username)).first();
     } catch (SQLException e) {

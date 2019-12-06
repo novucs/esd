@@ -130,6 +130,12 @@ public class Session {
   }
 
   /**
+   *
+   * Clears all filters in the session
+   */
+  public void clearFilters(){ this.filters.clear(); }
+
+  /**
    * Gets session.
    *
    * @param request the request

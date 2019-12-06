@@ -43,12 +43,12 @@
                 <t:tile title="<%=String.valueOf(request.getAttribute("quarterlyClaimCost"))%>"
                         label="Quarterly claim cost"
                         icon="date_range"/>
-                <div class="reporting">
+                <a class="reporting" href="${pageContext.request.contextPath}/admin/reporting"">
                     <t:tile title=""
                             colour="black reporting"
                             label="View Reports"
                             icon="insert_chart"/>
-                </div>
+                </a>
             </div>
         </div>
     </div>
