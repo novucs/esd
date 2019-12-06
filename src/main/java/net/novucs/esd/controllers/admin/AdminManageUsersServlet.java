@@ -11,7 +11,6 @@ import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
-import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.PaginationUtil;
 
 public class AdminManageUsersServlet extends BaseServlet {
@@ -63,11 +62,8 @@ public class AdminManageUsersServlet extends BaseServlet {
     // Here we will set the filters in the users session.
 
     String searchQuery = request.getParameter("search-users-query");
-    PaginationUtil.postPagination(request, PAGE_SIZE_FILTER);
-
-    if (searchQuery != null) {
-      Session.fromRequest(request).setFilter(USER_SEARCH_QUERY, searchQuery);
-    }
+    PaginationUtil.postPaginationWithSearch(request, PAGE_SIZE_FILTER, USER_SEARCH_QUERY,
+        searchQuery);
 
     response.sendRedirect("users");
   }
