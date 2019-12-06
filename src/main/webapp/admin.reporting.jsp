@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <form class="row" method="post" name="reporting-form">
     <div class="col s12 ">
@@ -52,7 +53,6 @@
                         </div>
                     </div>
                 </div>
-                <hr/>
                 <div class="row top-margin-30">
                     <div class="col s4 center-align">
                         Recieved from memberships: &pound;${membershipSum}
@@ -64,6 +64,7 @@
                         Turnover: &pound;${turnover}
                     </div>
                 </div>
+                <hr/>
                 <div id="claims" class="row top-margin-30">
                     <div  class="col s12 center-align">
                     <c:choose>
