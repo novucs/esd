@@ -46,7 +46,7 @@
                 <a class="reporting" href="${pageContext.request.contextPath}/admin/reporting"">
                     <t:tile title=""
                             colour="black reporting"
-                            label="View Reports"
+                            label="Reporting"
                             icon="insert_chart"/>
                 </a>
             </div>
