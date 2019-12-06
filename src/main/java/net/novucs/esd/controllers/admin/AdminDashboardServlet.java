@@ -64,7 +64,7 @@ public class AdminDashboardServlet extends BaseServlet {
       LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
       LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
       int monthlyClaimSum = sumClaims(claims, oneMonthAgo, today);
-      int quarterlyClaimSum = sumClaims(claims, threeMonthsAgo, today)
+      int quarterlyClaimSum = sumClaims(claims, threeMonthsAgo, today);
 
       request.setAttribute("outstandingMemberApplications", outstandingApplications);
       request.setAttribute("currentMembers", members);
