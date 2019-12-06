@@ -1,8 +1,6 @@
 <%@ page import="net.novucs.esd.model.ReportType" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="CLAIMS" value="<%=ReportType.Claims.name()%>"/>
-<c:set var="MEMBERSHIP" value="<%=ReportType.Membership.name()%>"/>
-<c:set var="ALL" value="<%=ReportType.AllRevenue.name()%>"/>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <form class="row" method="post" name="reporting-form">
     <div class="col s12 ">
@@ -41,6 +39,18 @@
                         <h4>
                             Turnover Report
                         </h4>
+                        <div class="row top-margin-30">
+                            <div class="col s12 center-align">
+                                Showing figures from
+                                <strong>
+                                        ${fromFormatted}
+                                </strong>
+                                to
+                                <strong>
+                                        ${toFormatted}
+                                </strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr/>
@@ -55,17 +65,58 @@
                         Turnover: &pound;${turnover}
                     </div>
                 </div>
-                <div class="row top-margin-30">
-                    <div class="col s12 center-align">
-                        Showing figures from
-                        <strong>
-                                ${fromFormatted}
-                        </strong>
-                        to
-                        <strong>
-                                ${toFormatted}
-                        </strong>
-                    </div>
+                <div id="claims" class="row top-margin-30">
+                    <div  class="col s12 center-align">
+                    <c:choose>
+                        <c:when test="${fn:length(claims) > 0}">
+                            <c:forEach var="claim" items="${claims}">
+                                <div class="row">
+                                    <div class="col s3">
+                                        <label>
+                                            ID:&nbsp;
+                                        </label>
+                                        <span>
+                                                ${claim.id}
+                                        </span>
+                                    </div>
+                                    <div class="col s3">
+                                        <label>
+                                            Claim Date:&nbsp;
+                                        </label>
+                                        <fmt:parseDate value="${claim.claimDate.toLocalDate()}"
+                                                       type="date" pattern="yyyy-MM-dd"
+                                                       var="parsedClaimDate"/>
+                                        <fmt:formatDate value="${parsedClaimDate}" type="date"
+                                                        pattern="dd-MM-yyyy" var="formatClaimDate"
+                                        />
+                                            ${formatClaimDate}
+                                    </div>
+                                    <div class="col s3">
+                                        <label>
+                                            Claim Amount:&nbsp;
+                                        </label>
+                                        <span>
+                                            &pound;${claim.pounds}.${claim.pence == 0 ? '00' : claim.pence}
+                                        </span>
+                                    </div>
+                                    <c:set var="claimStatusColor" scope="session"
+                                           value="${claim.status.equals(CS_APPROVED) ?
+                                            'green-text' : (claim.status.equals(CS_PENDING) ?
+                                            'orange-text' : 'red-text')}"/>
+                                    <div class="col s3">
+                                        <label>
+                                            Status:&nbsp;
+                                        </label>
+                                        <span class="${claimStatusColor}">
+                                                ${claim.status}
+                                        </span>
+                                    </div>
+                                    <br/>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                    </c:choose>
+                </div>
                 </div>
             </div>
         </div>

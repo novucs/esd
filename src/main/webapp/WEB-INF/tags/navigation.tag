@@ -8,7 +8,7 @@
 <header>
     <nav class="navigation-bar">
         <div class="nav-wrapper ${hasSession ? 'container' : ''}">
-            <a href="." class="brand-logo">
+            <a href="${pageContext.request.contextPath}/${isAdmin ? 'admin/dashboard/' : 'dashboard'}" class="brand-logo">
                 <span>XYZ</span>
                 <span>Drivers Association</span>
             </a>
