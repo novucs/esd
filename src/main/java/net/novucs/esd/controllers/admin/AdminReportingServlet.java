@@ -18,6 +18,7 @@ import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.orm.Dao;
 
@@ -56,7 +57,7 @@ public class AdminReportingServlet extends BaseServlet {
       int claimSum = (int) session.getFilter("claimSum");
       long membershipSum = (long) session.getFilter("membershipSum");
 
-      request.setAttribute("claims", session.getFilter("claimsMade"));
+      request.setAttribute("claims", session.getFilter("claims"));
       request.setAttribute("claimSum", claimSum);
       request.setAttribute("membershipSum", membershipSum);
       request.setAttribute("turnover", membershipSum - claimSum);
@@ -77,16 +78,19 @@ public class AdminReportingServlet extends BaseServlet {
       // Here we are going to get all of the totals and show them as a report.
 
       List<Claim> claimsMade = claimDao.select().all().stream().filter(
-          r -> r.getClaimDate().toLocalDate().isAfter(from)
-              && r.getClaimDate().toLocalDate().isBefore(to)).collect(Collectors.toList());
+          (r) -> r.getClaimDate().toLocalDate().isAfter(from.minusDays(1))
+              && r.getClaimDate().toLocalDate().isBefore(to.plusDays(1)))
+          .collect(Collectors.toList());
 
-      int claimSum = claimsMade.stream().map(Claim::getAmount).map(
-          BigDecimal::intValue).mapToInt(Integer::intValue).sum();
+      int claimSum = claimsMade.stream().filter((c) -> c.getStatus().equals(ClaimStatus.APPROVED))
+          .map(Claim::getAmount)
+          .map(BigDecimal::intValue)
+          .mapToInt(Integer::intValue).sum();
 
       long membershipSum = membershipDao.select().all().stream().filter(
-          r -> r.getStartDate().toLocalDate().isAfter(from)
+          r -> r.getStartDate().toLocalDate().isAfter(from.minusDays(1))
               && r.getStatus().equals(MembershipUtils.STATUS_ACTIVE)
-              && r.getStartDate().toLocalDate().isBefore(to)
+              && r.getStartDate().toLocalDate().isBefore(to.plusDays(1))
           ).count() * MembershipUtils.ANNUAL_FEE;
 
       Session session = Session.fromRequest(request);

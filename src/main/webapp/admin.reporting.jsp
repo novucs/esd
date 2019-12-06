@@ -23,7 +23,7 @@
             </div>
             <div class="col s4 input-field">
                 <button type="submit" class="waves-effect btn waves-light xyz-button">
-                    Submit
+                    Generate Report
                 </button>
             </div>
         </div>
@@ -72,7 +72,7 @@
                                 <div class="row">
                                     <div class="col s3">
                                         <label>
-                                            ID:&nbsp;
+                                            Id:&nbsp;
                                         </label>
                                         <span>
                                                 ${claim.id}
