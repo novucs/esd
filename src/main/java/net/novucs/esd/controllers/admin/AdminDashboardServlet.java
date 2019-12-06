@@ -13,6 +13,7 @@ import net.novucs.esd.constants.ApplicationUtils;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
@@ -81,8 +82,9 @@ public class AdminDashboardServlet extends BaseServlet {
 
   private int sumClaims(List<Claim> claims, LocalDate from, LocalDate to) throws SQLException {
     return claims.stream().filter((r) ->
-        r.getClaimDate().toLocalDate().isAfter(from)
-            && r.getClaimDate().toLocalDate().isBefore(to))
+        r.getClaimDate().toLocalDate().isAfter(from.minusDays(1))
+            && r.getClaimDate().toLocalDate().isBefore(to.plusDays(1))
+            && r.getStatus().equals(ClaimStatus.APPROVED))
         .map(Claim::getAmount).map(BigDecimal::intValue)
         .mapToInt(Integer::intValue)
         .sum();
