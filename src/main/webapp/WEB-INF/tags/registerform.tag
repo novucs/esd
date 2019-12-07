@@ -18,13 +18,20 @@
                             <label for="full-name">Full Name</label>
                         </div>
                     </div>
+                    <div class="col s6">
+                        <div class="input-field">
+                            <input name="username" id="username"
+                                   type="text" readonly/>
+                            <label for="username">Generated Username</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col s6">
                         <div class="input-field">
-                            <input name="username" id="username" type="email"
+                            <input name="email" id="email" type="email"
                                    class="validate" required/>
-                            <label for="username">Email Address</label>
+                            <label for="email">Email Address</label>
                         </div>
                     </div>
                     <div class="col s6">

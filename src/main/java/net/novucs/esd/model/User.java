@@ -19,6 +19,9 @@ public class User {
   @Column
   private String name;
 
+  @Column(unique = "username_uq")
+  private String username;
+
   @Column(unique = "email_uq")
   private String email;
 
@@ -55,9 +58,10 @@ public class User {
    * @param status              the status
    * @param needsPasswordChange does the User need a password change
    */
-  public User(String name, String email, Password password, String address,
+  public User(String name, String username, String email, Password password, String address,
       ZonedDateTime dateOfBirth, String status, Integer needsPasswordChange) {
     this.name = name;
+    this.username = username;
     this.email = email.toLowerCase(Locale.UK);
     this.password = password;
     this.address = address;
@@ -100,6 +104,24 @@ public class User {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  /**
+   * Get username.
+   *
+   * @return username
+   */
+  public String getUsername() {
+    return username;
+  }
+
+  /**
+   * Set the username.
+   *
+   * @param username username
+   */
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   /**
