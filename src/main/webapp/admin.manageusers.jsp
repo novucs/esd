@@ -75,4 +75,4 @@
         </div>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/js/admin.manageusers.js"></script>
+<script src="${pageContext.request.contextPath}/js/pagination.js" type="text/javascript"></script>
