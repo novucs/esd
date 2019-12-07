@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col s12">
                                 <div class="input-field">
-                                    <input name="username" placeholder="" id="username" type="email"
+                                    <input name="username" placeholder="" id="username" type="text"
                                            class="validate"
                                            autocomplete="off" required/>
                                     <label for="username">Username</label>
