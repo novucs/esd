@@ -30,6 +30,7 @@ public class RegistrationServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
+  private static final String USERNAME_LABEL = "username";
   private static final String PAGE = "register";
 
   @Inject
@@ -66,7 +67,7 @@ public class RegistrationServlet extends BaseServlet {
 
       // Ensure user with same username does not already exist.
       User matchedUsername = userDao.select()
-          .where(new Where().eq("username", user.getUsername()))
+          .where(new Where().eq(USERNAME_LABEL, user.getUsername()))
           .first();
 
       if (matchedEmail != null || matchedUsername != null) {
@@ -97,7 +98,7 @@ public class RegistrationServlet extends BaseServlet {
 
     // Set password attribute so temporary password
     // can be provided to user on registration success page.
-    request.setAttribute("username", user.getUsername());
+    request.setAttribute(USERNAME_LABEL, user.getUsername());
     request.setAttribute("email", user.getEmail());
     request.setAttribute("password", Password
         .getPasswordFromDateOfBirth(request.getParameter("dob")));
@@ -108,7 +109,7 @@ public class RegistrationServlet extends BaseServlet {
   private String getAvailableUsername(String name) {
     try {
       // Do a search for the input (i.e. "j-smith")
-      User foundUser = userDao.select().where(new Where().eq("username", name)).first();
+      User foundUser = userDao.select().where(new Where().eq(USERNAME_LABEL, name)).first();
       if (foundUser == null) {
         return name;
       }
@@ -117,31 +118,34 @@ public class RegistrationServlet extends BaseServlet {
       String firstCharacter = String.valueOf(name.charAt(0));
       String lastName = name.substring(name.lastIndexOf('-') + 1);
       List<User> foundUsers = userDao.select()
-          .where(new Where().search(firstCharacter + " " + lastName, "username"))
+          .where(new Where().search(firstCharacter + " " + lastName, USERNAME_LABEL))
           .all();
 
       // Find the highest number from the found users
       Integer highestIterator = -1;
       for (User u : foundUsers) {
         String digitsFromName = u.getUsername().replaceAll("\\D+", "");
+
+        // Ensure that digits are found, otherwise we'll hit a NumberFormatException
         if (digitsFromName.length() > 0) {
           Integer numberFromName = Integer.parseInt(digitsFromName);
           if (highestIterator < numberFromName) {
             highestIterator = numberFromName;
           }
         } else {
-          highestIterator = 2; // If j-smith exists, lets give them j2-smith
+          // If j-smith exists, lets give them j2-smith (incremented later)
+          highestIterator = 1;
         }
       }
 
-      // Concat their username with our highest iterator
+      // Concat their username with our highest iterator, increased by 1
       highestIterator++;
       return firstCharacter + highestIterator.toString() + "-" + lastName;
     } catch (SQLException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
     }
 
-    // Fallback, handled via doPost
+    // Fallback, duplicate usernames are handled via doPost
     return name;
   }
 
