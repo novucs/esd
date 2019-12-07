@@ -97,6 +97,7 @@ public class TestRegistrationServlet {
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString(DOB);
     User userToCreate = new User(
         "RegistrationServlet Test User 1",
+        "test-user1",
         "email@email.com",
         password,
         "House, A Street, A city, County, AB12 C34",
@@ -152,6 +153,7 @@ public class TestRegistrationServlet {
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString(DOB);
     User targetUser = new User(
         "RegistrationServlet Test User 2",
+        "test-user5",
         "email@email.com",
         password,
         "House, A Street, A city, County, AB12 C34",
@@ -186,7 +188,7 @@ public class TestRegistrationServlet {
   private void setupRequest(HttpServletRequest request, String password, User user,
       String dateOfBirth) {
     when(request.getParameter("full-name")).thenReturn(user.getName());
-    when(request.getParameter("username")).thenReturn(user.getEmail());
+    when(request.getParameter("email")).thenReturn(user.getEmail());
     when(request.getParameter("password")).thenReturn(password);
 
     String[] address = user.getAddress().split(", ");

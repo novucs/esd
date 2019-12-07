@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.StringJoiner;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -21,6 +20,7 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
+import net.novucs.esd.util.StringUtil;
 
 /**
  * The type Registration servlet.
@@ -56,8 +56,7 @@ public class RegistrationServlet extends BaseServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
 
-    String generatedPassword = generatePassword();
-    User user = parseUser(request, generatedPassword);
+    User user = parseUser(request);
     try {
       // Ensure user with same email does not already exist.
       User matched = userDao.select()
@@ -92,29 +91,27 @@ public class RegistrationServlet extends BaseServlet {
 
     // Set password attribute so temporary password
     // can be provided to user on registration success page.
-    request.setAttribute("password", generatedPassword);
+    request.setAttribute("username", user.getUsername());
+    request.setAttribute("email", user.getEmail());
+    request.setAttribute("password", Password
+        .getPasswordFromDateOfBirth(request.getParameter("dob")));
     request.setAttribute("registerStatus", "success");
     super.forward(request, response, "Registration Success", PAGE);
   }
 
-  private String generatePassword() {
-    // Use last 12 characters of random uuid to create password
-    String uuid = UUID.randomUUID().toString();
-    String[] uuidArray = uuid.split("-");
-    return uuidArray[uuidArray.length - 1];
-  }
-
-  private User parseUser(HttpServletRequest request, String randomPassword) {
+  private User parseUser(HttpServletRequest request) {
     String name = request.getParameter("full-name");
-    String email = request.getParameter("username");
-    Password password = Password.fromPlaintext(randomPassword);
+    String email = request.getParameter("email");
     String address = parseAddress(request);
     DateUtil dateUtil = new DateUtil();
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString(request.getParameter("dob"));
     return new User(
         name,
+        StringUtil.parseUsername(name),
         email,
-        password,
+        Password.fromPlaintext(
+            Password.getPasswordFromDateOfBirth(request.getParameter("dob"))
+        ),
         address,
         dateOfBirth,
         "APPLICATION",
