@@ -117,6 +117,7 @@ public class TestLoginServlet {
 
     User userToCreate = new User(
         "LoginTestUser2",
+        "test-user2",
         "user@test.com",
         Password.fromPlaintext("pass"),
         "House,A Street,A city,County,AB12 C34",
@@ -167,6 +168,7 @@ public class TestLoginServlet {
 
     User userToCreate = new User(
         "LoginTestUser3",
+        "test-user3",
         "user@test.com",
         Password.fromPlaintext("correctPassword"),
         "House,A Street,A city,County,AB12 C34",

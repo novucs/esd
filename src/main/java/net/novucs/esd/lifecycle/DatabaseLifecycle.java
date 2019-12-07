@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -111,6 +112,7 @@ public class DatabaseLifecycle {
     Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
     User user = new User(
         name,
+        name.toLowerCase(Locale.UK),
         name + "@esd.net",
         Password.fromPlaintext("password1"),
         "1 ESD Lane",

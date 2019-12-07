@@ -4,8 +4,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
@@ -49,6 +55,26 @@ public final class Password {
     } catch (InvalidKeySpecException e) {
       throw new IllegalStateException("Invalid SecretKeyFactory", e);
     }
+  }
+
+  /**
+   * Get a password from a date string.
+   *
+   * @param dateTimeStr the date string (2000-06-21)
+   * @return String
+   */
+  public static String getPasswordFromDateOfBirth(String dateTimeStr) {
+    String pattern = "ddMMyy";
+    Date formattedDate;
+    String password = "password1"; // Default
+    try {
+      formattedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.UK).parse(dateTimeStr);
+      password = new SimpleDateFormat(pattern, Locale.UK).format(formattedDate);
+    } catch (ParseException e) {
+      Logger.getLogger(Password.class.getName()).log(Level.WARNING, null, e);
+    }
+
+    return password;
   }
 
   /**
