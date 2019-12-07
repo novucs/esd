@@ -1,7 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="p" tagdir="/WEB-INF/tags/pagination" %>
 
 <div>
     <div class="row no-bottom-margin">
@@ -56,23 +56,7 @@
     </div>
     <div class="row no-bottom-margin">
         <div class="col s2 input-field">
-            <select name="page-size" id="page-size" form="filter-form">
-                <c:forEach begin="0" end="${fn:length(pageSizes) - 1}" varStatus="loop">
-                    <c:choose>
-                        <c:when test="${pageSizes[loop.index] == ps}">
-                            <option selected value="${pageSizes[loop.index]}">
-                                    ${pageSizes[loop.index]}
-                            </option>
-                        </c:when>
-                        <c:otherwise>
-                            <option value="${pageSizes[loop.index]}">
-                                    ${pageSizes[loop.index]}
-                            </option>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </select>
-            <label for="page-size">Page Size</label>
+            <p:pagesize formName="filter-form" />
         </div>
         <div class="col s1 input-field">
             <form method="post" id="filter-form">
@@ -86,50 +70,7 @@
     <div class="row" class="pagination-control">
         <div class="col s12 center-align">
             <ul class="pagination">
-                <c:choose>
-                    <c:when test="${pn == 1 || maxPages == 1}">
-                        <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="waves-effect">
-                            <a href="${pageContext.request.contextPath}/admin/users?pn=${pn - 1}">
-                                <i class="material-icons">
-                                    chevron_left
-                                </i>
-                            </a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-                <c:forEach begin="1" end="${maxPages}" varStatus="loop">
-                    <c:choose>
-                        <c:when test="${loop.index == pn}">
-                            <li class="active">
-                                <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}">
-                                        ${loop.index}
-                                </a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="waves-effect">
-                                <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}">
-                                        ${loop.index}
-                                </a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-                <c:choose>
-                    <c:when test="${param.pn == maxPages || maxPages == 1}">
-                        <li class="disabled"><a href="#!"><i
-                                class="material-icons">chevron_right</i></a></li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="waves-effect"><a
-                                href="${pageContext.request.contextPath}/admin/users?pn=${pn + 1}"><i
-                                class="material-icons">chevron_right</i></a></li>
-                    </c:otherwise>
-                </c:choose>
+                <p:pagination />
             </ul>
         </div>
     </div>
