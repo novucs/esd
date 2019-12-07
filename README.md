@@ -16,7 +16,7 @@ Other Documents:
     * [Task Delivery Form](https://docs.google.com/spreadsheets/d/1-5r7Yi7BovaCbgftWTqmsubh2VlF4ouDdRF-nPyDsko/edit)
 * **Sprint 3**
     * [Presentation Slides](https://docs.google.com/presentation/d/1q2mJgQHingdMyAw4NXjSFsJb8oVNx9GofDLeoxIDZjU/edit)
-    * [Gantt Chart (TBC: _wait until Gantt Chart for Sprint 2 has been updated_)](#)
+    * [Gantt Chart](https://docs.google.com/spreadsheets/d/1Ua7PtZcJYE-qvPrg2mjr4YjVvDZo_MoQC2TtQb325yI/edit)
     * [Team Meeting Logs](https://docs.google.com/document/d/1r0Pu6YhI5z23BqKXwB39bS6SIBOFrYxTUzmpTRiq3YI/edit)
     * [Task Delivery Form](https://docs.google.com/spreadsheets/d/1UfioC87OfOkk2d729NzKIA3hb9DUk3TxMGpayKVh9zQ/edit)
 
