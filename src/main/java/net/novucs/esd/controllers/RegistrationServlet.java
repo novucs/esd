@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,13 +60,18 @@ public class RegistrationServlet extends BaseServlet {
     User user = parseUser(request);
     try {
       // Ensure user with same email does not already exist.
-      User matched = userDao.select()
+      User matchedEmail = userDao.select()
           .where(new Where().eq("email", user.getEmail()))
           .first();
 
-      if (matched != null) {
+      // Ensure user with same username does not already exist.
+      User matchedUsername = userDao.select()
+          .where(new Where().eq("username", user.getUsername()))
+          .first();
+
+      if (matchedEmail != null || matchedUsername != null) {
         request.setAttribute("registerStatus", "fail");
-        super.forward(request, response, "Email already in use", PAGE);
+        super.forward(request, response, "Username or email address already in use", PAGE);
         return;
       }
 
@@ -99,6 +105,46 @@ public class RegistrationServlet extends BaseServlet {
     super.forward(request, response, "Registration Success", PAGE);
   }
 
+  private String getAvailableUsername(String name) {
+    try {
+      // Do a search for the input (i.e. "j-smith")
+      User foundUser = userDao.select().where(new Where().eq("username", name)).first();
+      if (foundUser == null) {
+        return name;
+      }
+
+      // Find users with the same type of username
+      String firstCharacter = String.valueOf(name.charAt(0));
+      String lastName = name.substring(name.lastIndexOf('-') + 1);
+      List<User> foundUsers = userDao.select()
+          .where(new Where().search(firstCharacter + " " + lastName, "username"))
+          .all();
+
+      // Find the highest number from the found users
+      Integer highestIterator = -1;
+      for (User u : foundUsers) {
+        String digitsFromName = u.getUsername().replaceAll("\\D+", "");
+        if (digitsFromName.length() > 0) {
+          Integer numberFromName = Integer.parseInt(digitsFromName);
+          if (highestIterator < numberFromName) {
+            highestIterator = numberFromName;
+          }
+        } else {
+          highestIterator = 2; // If j-smith exists, lets give them j2-smith
+        }
+      }
+
+      // Concat their username with our highest iterator
+      highestIterator++;
+      return firstCharacter + highestIterator.toString() + "-" + lastName;
+    } catch (SQLException e) {
+      Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+    }
+
+    // Fallback, handled via doPost
+    return name;
+  }
+
   private User parseUser(HttpServletRequest request) {
     String name = request.getParameter("full-name");
     String email = request.getParameter("email");
@@ -107,7 +153,7 @@ public class RegistrationServlet extends BaseServlet {
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString(request.getParameter("dob"));
     return new User(
         name,
-        StringUtil.parseUsername(name),
+        getAvailableUsername(StringUtil.parseUsername(name)),
         email,
         Password.fromPlaintext(
             Password.getPasswordFromDateOfBirth(request.getParameter("dob"))
