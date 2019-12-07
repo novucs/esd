@@ -143,6 +143,14 @@
     <servlet-name>UserSettingsServlet</servlet-name>
     <url-pattern>/settings</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>AdminReportingServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.admin.AdminReportingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminReportingServlet</servlet-name>
+    <url-pattern>/admin/reporting</url-pattern>
+  </servlet-mapping>
   <session-config>
     <session-timeout>
       20
