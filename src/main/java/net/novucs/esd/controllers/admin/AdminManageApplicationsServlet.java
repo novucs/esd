@@ -46,7 +46,7 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     @SuppressWarnings("SqlResolve")
     PreparedStatement statement = userDao.getConnectionSource().getConnection().prepareStatement(
         "SELECT "
-            + "    application1.\"id\" AS \"application1_id\", "
+            + "    app.\"id\" AS \"app_id\", "
             + "    \"user\".\"id\", "
             + "    \"user\".\"name\", "
             + "    \"user\".\"username\", "
@@ -54,8 +54,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
             + "    \"user\".\"address\", "
             + "    \"user\".\"date_of_birth\" "
             + "FROM \"user\" "
-            + "LEFT JOIN \"application\" application1 on \"user\".\"id\" = application1.\"user_id\" "
-            + "WHERE application1.\"status\" = ? "
+            + "LEFT JOIN \"application\" app on \"user\".\"id\" = app.\"user_id\" "
+            + "WHERE app.\"status\" = ? "
             + "OFFSET ? ROWS "
             + "FETCH NEXT ? ROWS ONLY ");
     statement.setString(1, PAID_STATUS);
