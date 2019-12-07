@@ -70,8 +70,6 @@ public class AdminDashboardServlet extends BaseServlet {
       request.setAttribute("outstandingMemberApplications", outstandingApplications);
       request.setAttribute("currentMembers", members);
       request.setAttribute("outstandingBalances", numberOfClaims);
-
-      // todo: Update when reporting is set in place
       request.setAttribute("monthlyClaimCost", String.valueOf(monthlyClaimSum));
       request.setAttribute("quarterlyClaimCost", String.valueOf(quarterlyClaimSum));
       super.forward(request, response, "Dashboard", "admin.dashboard");
