@@ -48,7 +48,9 @@ public class NotificationWebSocketHub {
   }
 
   @OnClose
-  public void close(Session session) { sessionHandler.removeSession(session); }
+  public void close(Session session) {
+    sessionHandler.removeSession(session);
+  }
 
   @OnError
   public void onError(Throwable error) {
