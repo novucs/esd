@@ -49,9 +49,11 @@ public class TestAdminManageUsersServlet {
 
   private static final String USER_DAO = "userDao";
 
+
   /**
-   * Initialise test user
+   * Initialise test user.
    */
+
   @Before
   public void initialiseTest() {
     userSession = mock(Session.class);
