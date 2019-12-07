@@ -11,7 +11,7 @@
             <div class="col s12 center-align">
                 It looks like an account already exists with some of the entered
                 credentials, you can attempt to
-                <a href="${pageContext.request.contextPath}">login here</a> or you can
+                <a href="${pageContext.request.contextPath}/login">login here</a> or you can
                 <a href="javascript:window.history.back();">go back to the registration</a>
                 to update your details.
             </div>
