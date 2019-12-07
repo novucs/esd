@@ -41,6 +41,12 @@ public class TestMakePaymentServlet {
   private static final String AMOUNT_OWED = "amountOwed";
   private static final String DECIMAL_FORMAT = "#.##";
   private transient Session userSession;
+  private final HttpServletResponse response = mock(HttpServletResponse.class);
+  private final HttpSession httpSession = mock(HttpSession.class);
+  private final MakePaymentServlet servlet = new MakePaymentServlet();
+  private final HttpServletRequest request = mock(HttpServletRequest.class);
+  private final User user = TestDummyDataUtil.getDummyUser();
+  private final DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
 
   /**
    * Initialise test.
@@ -108,12 +114,7 @@ public class TestMakePaymentServlet {
   @Test
   public void testRequestGetsMakePaymentApplicationToPay()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
+    // Given
     setServletDaos(servlet,
         user,
         false,
@@ -121,19 +122,12 @@ public class TestMakePaymentServlet {
         BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO);
-
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
         .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
@@ -150,12 +144,7 @@ public class TestMakePaymentServlet {
   @Test
   public void testRequestGetsMakePaymentApplicationSettled()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
+    // Given
     setServletDaos(servlet,
         user,
         false,
@@ -163,19 +152,12 @@ public class TestMakePaymentServlet {
         BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
-
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
   }
@@ -191,12 +173,6 @@ public class TestMakePaymentServlet {
   @Test
   public void testRequestGetsMakePaymentMembershipToPay()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
     setServletDaos(servlet,
         user,
         false,
@@ -208,15 +184,9 @@ public class TestMakePaymentServlet {
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
         .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
@@ -233,12 +203,7 @@ public class TestMakePaymentServlet {
   @Test
   public void testRequestGetsMakePaymentMembershipToPayMultiple()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
+    // Given
     setServletDaos(servlet,
         user,
         true,
@@ -246,24 +211,16 @@ public class TestMakePaymentServlet {
         BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.ZERO,
         BigDecimal.ZERO);
-
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request).setAttribute(AMOUNT_OWED,
         df.format(
             BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE).multiply(BigDecimal.valueOf(2))));
-
   }
 
   /**
@@ -277,12 +234,7 @@ public class TestMakePaymentServlet {
   @Test
   public void testRequestGetsMakePaymentMembershipToPaySingle()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
+    //Given
     setServletDaos(servlet,
         user,
         true,
@@ -294,15 +246,9 @@ public class TestMakePaymentServlet {
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
         .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
@@ -319,12 +265,7 @@ public class TestMakePaymentServlet {
   @Test
   public void testRequestGetsMakePaymentMembershipToPaySettled()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
+    // Given
     setServletDaos(servlet,
         user,
         true,
@@ -332,20 +273,20 @@ public class TestMakePaymentServlet {
         BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
         BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE));
-
     userSession.setUser(user);
 
     // When
+    esdWhen();
+    servlet.doGet(request, response);
+
+    // Assert
+    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
+  }
+
+  private void esdWhen() {
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    servlet.doGet(request, response);
-
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
-    // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
   }
 }

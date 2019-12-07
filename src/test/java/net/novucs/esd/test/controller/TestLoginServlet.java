@@ -42,11 +42,11 @@ public class TestLoginServlet {
 
   private static final String SESSION = "session";
 
-  private HttpServletRequest request = mock(HttpServletRequest.class);
-  private LoginServlet loginServlet = new LoginServlet();
-  private HttpServletResponse response = mock(HttpServletResponse.class);
-  private HttpSession session = mock(HttpSession.class);
-  private Session esdSession = mock(Session.class);
+  private final HttpServletRequest request = mock(HttpServletRequest.class);
+  private final LoginServlet loginServlet = new LoginServlet();
+  private final HttpServletResponse response = mock(HttpServletResponse.class);
+  private final HttpSession session = mock(HttpSession.class);
+  private final Session esdSession = mock(Session.class);
 
 
   /**

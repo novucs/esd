@@ -22,17 +22,18 @@ import org.junit.Test;
  */
 public class TestLogoutServlet {
 
+  private final LogoutServlet servlet = new LogoutServlet();
   /**
    * Test request gets map attribute.
    *
    * @throws ServletException the servlet exception
    * @throws IOException      the io exception
    */
+
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException {
     // Given
-    LogoutServlet servlet = new LogoutServlet();
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -50,9 +51,6 @@ public class TestLogoutServlet {
    */
   @Test
   public void testLogoutInServletInfo() {
-    // Given
-    LogoutServlet servlet = new LogoutServlet();
-
     // When
     String servletInfo = servlet.getServletInfo();
 
