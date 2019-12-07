@@ -9,10 +9,9 @@ import net.novucs.esd.orm.Where;
 
 public final class PaginationUtil {
 
-  public static String[] pageSizes = {"15", "30", "50"};
+  public static String[] pageSizes = {"1", "2", "3"};
 
   private PaginationUtil() {
-
   }
 
   public static void postPagination(HttpServletRequest request, String pageSizeFilterName) {
@@ -63,7 +62,7 @@ public final class PaginationUtil {
   public static void setRequestAttributes(HttpServletRequest request, int maxPages,
       double pageNumber, int pageSize) {
     request.setAttribute("maxPages", maxPages);
-    request.setAttribute("pn", pageNumber);
+    request.setAttribute("pn", (int) pageNumber);
     request.setAttribute("ps", pageSize);
     request.setAttribute("pageSizes", PaginationUtil.pageSizes);
   }
