@@ -14,15 +14,14 @@ import java.util.StringJoiner;
  * @param <M> the type parameter
  */
 // todo: support joins
+@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
 public class Select<M> {
 
   private final transient Dao<M> dao;
-  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Integer offset;
-  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Integer limit;
-  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Where where;
+  private transient String count;
 
   /**
    * Instantiates a new Select.
@@ -56,6 +55,27 @@ public class Select<M> {
   }
 
   /**
+   * How far the selection should offset all matched results by.
+   *
+   * @param columnName name of the column to use when doing a count. * for all
+   * @return number of rows for the specified column.
+   */
+  public long count(String columnName) throws SQLException {
+    this.count = columnName;
+    SQLBuilder builder = this.sql();
+
+    try (Connection connection = this.dao.getConnectionSource().getConnection();
+        PreparedStatement statement = connection.prepareStatement(builder.getQuery())) {
+
+      setParameters(builder, statement);
+      try (ResultSet resultSet = statement.executeQuery()) {
+        resultSet.next();
+        return resultSet.getLong(1);
+      }
+    }
+  }
+
+  /**
    * Limit select.
    *
    * @param limit the limit
@@ -74,12 +94,25 @@ public class Select<M> {
   public SQLBuilder sql() {
     StringJoiner selectorJoiner = new StringJoiner(" ");
     selectorJoiner.add("SELECT");
-    StringJoiner columnJoiner = new StringJoiner(", ");
-    for (ParsedColumn column : dao.getParsedModel().getColumns().values()) {
-      columnJoiner.add(column.getSQLName());
+
+    // If there is a count in this select statement, we need to
+    // check if it just trying to count all of the rows or if it were to count
+    // a specific subset of the data. Support currently exists for count all rows.
+    boolean countAll = this.count != null && this.count.equals("*");
+
+    if (this.count != null) {
+      selectorJoiner.add("COUNT");
+      selectorJoiner.add(String.format("(%s)", this.count));
     }
 
-    selectorJoiner.add(columnJoiner.toString());
+    if (!countAll) {
+      StringJoiner columnJoiner = new StringJoiner(", ");
+      for (ParsedColumn column : dao.getParsedModel().getColumns().values()) {
+        columnJoiner.add(column.getSQLName());
+      }
+      selectorJoiner.add(columnJoiner.toString());
+    }
+
     selectorJoiner.add("FROM");
     selectorJoiner.add(dao.getParsedModel().getSQLTableName());
 
@@ -91,8 +124,10 @@ public class Select<M> {
       selectorJoiner.add(builder.getQuery());
     }
 
-    selectorJoiner.add("ORDER BY");
-    selectorJoiner.add(dao.getParsedModel().getPrimaryKey().getSQLName());
+    if (!countAll) {
+      selectorJoiner.add("ORDER BY");
+      selectorJoiner.add(dao.getParsedModel().getPrimaryKey().getSQLName());
+    }
 
     if (this.offset != null) {
       selectorJoiner.add("OFFSET");
@@ -105,6 +140,7 @@ public class Select<M> {
       selectorJoiner.add(this.limit.toString());
       selectorJoiner.add("ROWS ONLY");
     }
+
 
     return new SQLBuilder(selectorJoiner.toString(), parameters);
   }
@@ -158,16 +194,7 @@ public class Select<M> {
     try (Connection connection = this.dao.getConnectionSource().getConnection();
         PreparedStatement statement = connection.prepareStatement(builder.getQuery())) {
 
-      int i = 1;
-      for (SQLParameter parameter : builder.getParameters()) {
-        Object value = parameter.getValue();
-        if (value instanceof String) {
-          statement.setString(i, (String) value);
-        } else if (value instanceof Integer) {
-          statement.setInt(i, (Integer) value);
-        }
-        i++;
-      }
+      setParameters(builder, statement);
 
       try (ResultSet resultSet = statement.executeQuery()) {
         List<M> models = new ArrayList<>();
@@ -177,6 +204,19 @@ public class Select<M> {
         }
         return models;
       }
+    }
+  }
+
+  private void setParameters(SQLBuilder builder, PreparedStatement statement) throws SQLException {
+    int i = 1;
+    for (SQLParameter parameter : builder.getParameters()) {
+      Object value = parameter.getValue();
+      if (value instanceof String) {
+        statement.setString(i, (String) value);
+      } else if (value instanceof Integer) {
+        statement.setInt(i, (Integer) value);
+      }
+      i++;
     }
   }
 }
