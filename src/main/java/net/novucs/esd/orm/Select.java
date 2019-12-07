@@ -1,7 +1,5 @@
 package net.novucs.esd.orm;
 
-import com.sun.org.apache.bcel.internal.generic.GOTO;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,16 +14,13 @@ import java.util.StringJoiner;
  * @param <M> the type parameter
  */
 // todo: support joins
+@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
 public class Select<M> {
 
   private final transient Dao<M> dao;
-  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Integer offset;
-  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Integer limit;
-  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Where where;
-  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient String count;
 
   /**
@@ -67,7 +62,6 @@ public class Select<M> {
         PreparedStatement statement = connection.prepareStatement(builder.getQuery())) {
 
       setParameters(builder, statement);
-
       try (ResultSet resultSet = statement.executeQuery()) {
         resultSet.next();
         return resultSet.getLong(1);
@@ -94,14 +88,18 @@ public class Select<M> {
   public SQLBuilder sql() {
     StringJoiner selectorJoiner = new StringJoiner(" ");
     selectorJoiner.add("SELECT");
+
+    // If there is a count in this select statement, we need to
+    // check if it just trying to count all of the rows or if it were to count
+    // a specific subset of the data. Support currently exists for count all rows.
     boolean countAll = this.count != null && this.count.equals("*");
 
-    if(this.count != null){
+    if (this.count != null) {
       selectorJoiner.add("COUNT");
       selectorJoiner.add(String.format("(%s)", this.count));
     }
 
-    if(!countAll){
+    if (!countAll) {
       StringJoiner columnJoiner = new StringJoiner(", ");
       for (ParsedColumn column : dao.getParsedModel().getColumns().values()) {
         columnJoiner.add(column.getSQLName());
@@ -120,7 +118,7 @@ public class Select<M> {
       selectorJoiner.add(builder.getQuery());
     }
 
-    if(!countAll){
+    if (!countAll) {
       selectorJoiner.add("ORDER BY");
       selectorJoiner.add(dao.getParsedModel().getPrimaryKey().getSQLName());
     }
@@ -200,9 +198,6 @@ public class Select<M> {
         }
         return models;
       }
-    } catch (Exception e){
-      System.out.println(e);
-      return new ArrayList<>();
     }
   }
 

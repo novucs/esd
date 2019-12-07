@@ -9,7 +9,7 @@ import net.novucs.esd.orm.Where;
 
 public final class PaginationUtil {
 
-  public static String[] pageSizes = {"1", "2", "3"};
+  public static String[] pageSizes = {"15", "30", "50"};
 
   private PaginationUtil() {
   }
