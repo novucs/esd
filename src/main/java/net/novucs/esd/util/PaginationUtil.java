@@ -56,7 +56,7 @@ public final class PaginationUtil {
   }
 
   public static <M> int getMaxPages(Dao<M> dao, double pageSize) throws SQLException {
-    return (int) Math.ceil(dao.select().all().size() / pageSize);
+    return (int) Math.ceil(dao.select().count("*") / pageSize);
   }
 
   public static void setRequestAttributes(HttpServletRequest request, int maxPages,

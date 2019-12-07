@@ -1,5 +1,7 @@
 package net.novucs.esd.orm;
 
+import com.sun.org.apache.bcel.internal.generic.GOTO;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +25,8 @@ public class Select<M> {
   private transient Integer limit;
   @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private transient Where where;
+  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+  private transient String count;
 
   /**
    * Instantiates a new Select.
@@ -55,6 +59,22 @@ public class Select<M> {
     return this;
   }
 
+  public long count(String count) throws SQLException {
+    this.count = count;
+    SQLBuilder builder = this.sql();
+
+    try (Connection connection = this.dao.getConnectionSource().getConnection();
+        PreparedStatement statement = connection.prepareStatement(builder.getQuery())) {
+
+      setParameters(builder, statement);
+
+      try (ResultSet resultSet = statement.executeQuery()) {
+        resultSet.next();
+        return resultSet.getLong(1);
+      }
+    }
+  }
+
   /**
    * Limit select.
    *
@@ -74,12 +94,21 @@ public class Select<M> {
   public SQLBuilder sql() {
     StringJoiner selectorJoiner = new StringJoiner(" ");
     selectorJoiner.add("SELECT");
-    StringJoiner columnJoiner = new StringJoiner(", ");
-    for (ParsedColumn column : dao.getParsedModel().getColumns().values()) {
-      columnJoiner.add(column.getSQLName());
+    boolean countAll = this.count != null && this.count.equals("*");
+
+    if(this.count != null){
+      selectorJoiner.add("COUNT");
+      selectorJoiner.add(String.format("(%s)", this.count));
     }
 
-    selectorJoiner.add(columnJoiner.toString());
+    if(!countAll){
+      StringJoiner columnJoiner = new StringJoiner(", ");
+      for (ParsedColumn column : dao.getParsedModel().getColumns().values()) {
+        columnJoiner.add(column.getSQLName());
+      }
+      selectorJoiner.add(columnJoiner.toString());
+    }
+
     selectorJoiner.add("FROM");
     selectorJoiner.add(dao.getParsedModel().getSQLTableName());
 
@@ -91,8 +120,10 @@ public class Select<M> {
       selectorJoiner.add(builder.getQuery());
     }
 
-    selectorJoiner.add("ORDER BY");
-    selectorJoiner.add(dao.getParsedModel().getPrimaryKey().getSQLName());
+    if(!countAll){
+      selectorJoiner.add("ORDER BY");
+      selectorJoiner.add(dao.getParsedModel().getPrimaryKey().getSQLName());
+    }
 
     if (this.offset != null) {
       selectorJoiner.add("OFFSET");
@@ -105,6 +136,7 @@ public class Select<M> {
       selectorJoiner.add(this.limit.toString());
       selectorJoiner.add("ROWS ONLY");
     }
+
 
     return new SQLBuilder(selectorJoiner.toString(), parameters);
   }
@@ -158,16 +190,7 @@ public class Select<M> {
     try (Connection connection = this.dao.getConnectionSource().getConnection();
         PreparedStatement statement = connection.prepareStatement(builder.getQuery())) {
 
-      int i = 1;
-      for (SQLParameter parameter : builder.getParameters()) {
-        Object value = parameter.getValue();
-        if (value instanceof String) {
-          statement.setString(i, (String) value);
-        } else if (value instanceof Integer) {
-          statement.setInt(i, (Integer) value);
-        }
-        i++;
-      }
+      setParameters(builder, statement);
 
       try (ResultSet resultSet = statement.executeQuery()) {
         List<M> models = new ArrayList<>();
@@ -177,6 +200,22 @@ public class Select<M> {
         }
         return models;
       }
+    } catch (Exception e){
+      System.out.println(e);
+      return new ArrayList<>();
+    }
+  }
+
+  private void setParameters(SQLBuilder builder, PreparedStatement statement) throws SQLException {
+    int i = 1;
+    for (SQLParameter parameter : builder.getParameters()) {
+      Object value = parameter.getValue();
+      if (value instanceof String) {
+        statement.setString(i, (String) value);
+      } else if (value instanceof Integer) {
+        statement.setInt(i, (Integer) value);
+      }
+      i++;
     }
   }
 }
