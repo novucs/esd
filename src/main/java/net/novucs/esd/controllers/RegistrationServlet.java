@@ -1,6 +1,7 @@
 package net.novucs.esd.controllers;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.StringJoiner;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserLog;
@@ -41,6 +43,8 @@ public class RegistrationServlet extends BaseServlet {
   @Inject
   private Dao<UserLog> userLogDao;
 
+  @Inject
+  private Dao<Application> applicationDao;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -73,6 +77,8 @@ public class RegistrationServlet extends BaseServlet {
 
       // Insert new user to database.
       userDao.insert(user);
+      Application application = new Application(user.getId(), BigDecimal.ZERO);
+      applicationDao.insert(application);
       UserLog userLog = parseUserLog(request, user);
       userLogDao.insert(userLog);
       userRoleDao.insert(new UserRole(user.getId(), userRole.getId()));
