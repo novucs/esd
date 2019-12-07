@@ -11,7 +11,7 @@ import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
-import net.novucs.esd.orm.Where;
+import net.novucs.esd.util.PaginationUtil;
 
 public class AdminManageUsersServlet extends BaseServlet {
 
@@ -21,7 +21,6 @@ public class AdminManageUsersServlet extends BaseServlet {
 
   private static final String USER_SEARCH_QUERY = "userSearchQuery";
 
-  private final String[] pageSizes = {"15", "30", "50"};
 
   @Inject
   private Dao<User> userDao;
@@ -32,33 +31,23 @@ public class AdminManageUsersServlet extends BaseServlet {
 
     try {
 
-      String pageNumberParameter = request.getParameter("pn");
-      Session session = super.getSession(request);
-
-      Integer pageSize = (Integer) session.getFilter(PAGE_SIZE_FILTER);
+      Session session = Session.fromRequest(request);
       String searchQuery = (String) session.getFilter(USER_SEARCH_QUERY);
-
-      pageSize = pageSize == null ? Integer.parseInt(pageSizes[0]) : pageSize;
-      double pageNumber = pageNumberParameter == null ? 1 : Double.parseDouble(pageNumberParameter);
+      int pageSize = PaginationUtil.getPageSize(request, PAGE_SIZE_FILTER);
+      double pageNumber = PaginationUtil.getPageNumber(request);
 
       List<User> users;
       if (searchQuery == null) {
-        users = userDao.select().offset(
-            (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
+        users = PaginationUtil.paginate(userDao, pageSize, pageNumber);
       } else {
         String[] columns = {"name", "email"};
-        users = userDao.select().where(new Where().search(searchQuery, columns)).offset(
-            (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
+        users = PaginationUtil.paginateWithSearch(userDao, pageSize, pageNumber,
+            searchQuery, columns);
       }
 
-      double numberOfUsers = userDao.select().all().size();
-      int max = (int) Math.ceil(numberOfUsers / (double) pageSize);
-
+      int max = PaginationUtil.getMaxPages(userDao, pageSize);
+      PaginationUtil.setRequestAttributes(request, max, pageNumber, pageSize);
       request.setAttribute("users", users);
-      request.setAttribute("maxPages", max);
-      request.setAttribute("pn", pageNumber);
-      request.setAttribute("ps", pageSize);
-      request.setAttribute("pageSizes", pageSizes);
       session.removeFilter(USER_SEARCH_QUERY);
 
       super.forward(request, response, "Manage Users", "admin.manageusers");
@@ -71,17 +60,10 @@ public class AdminManageUsersServlet extends BaseServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     // Here we will set the filters in the users session.
-    String ps = request.getParameter("page-size");
+
     String searchQuery = request.getParameter("search-users-query");
-    Session session = super.getSession(request);
-
-    if (ps != null) {
-      session.setFilter(PAGE_SIZE_FILTER, Integer.parseInt(ps));
-    }
-
-    if (searchQuery != null) {
-      session.setFilter(USER_SEARCH_QUERY, searchQuery);
-    }
+    PaginationUtil.postPaginationWithSearch(request, PAGE_SIZE_FILTER, USER_SEARCH_QUERY,
+        searchQuery);
 
     response.sendRedirect("users");
   }
