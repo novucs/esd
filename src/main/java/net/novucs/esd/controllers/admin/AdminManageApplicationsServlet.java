@@ -41,52 +41,55 @@ public class AdminManageApplicationsServlet extends BaseServlet {
   @Inject
   private Dao<User> userDao;
 
+  @SuppressWarnings("SqlResolve")
   private List<ManageApplicationResult> manageApplicationResults(int offset, int limit)
       throws SQLException {
-    @SuppressWarnings("SqlResolve")
-    PreparedStatement statement = userDao.getConnectionSource().getConnection().prepareStatement(
-        "SELECT "
-            + "    app.\"id\" AS \"app_id\", "
-            + "    \"user\".\"id\", "
-            + "    \"user\".\"name\", "
-            + "    \"user\".\"username\", "
-            + "    \"user\".\"email\", "
-            + "    \"user\".\"address\", "
-            + "    \"user\".\"date_of_birth\" "
-            + "FROM \"user\" "
-            + "LEFT JOIN \"application\" app on \"user\".\"id\" = app.\"user_id\" "
-            + "WHERE app.\"status\" = ? "
-            + "OFFSET ? ROWS "
-            + "FETCH NEXT ? ROWS ONLY ");
-    statement.setString(1, PAID_STATUS);
-    statement.setInt(2, offset);
-    statement.setInt(3, limit);
-    ResultSet resultSet = statement.executeQuery();
+    try (PreparedStatement statement = userDao.getConnectionSource()
+        .getConnection().prepareStatement(
+            "SELECT "
+                + "    app.\"id\" AS \"app_id\", "
+                + "    \"user\".\"id\", "
+                + "    \"user\".\"name\", "
+                + "    \"user\".\"username\", "
+                + "    \"user\".\"email\", "
+                + "    \"user\".\"address\", "
+                + "    \"user\".\"date_of_birth\" "
+                + "FROM \"user\" "
+                + "LEFT JOIN \"application\" app on \"user\".\"id\" = app.\"user_id\" "
+                + "WHERE app.\"status\" = ? "
+                + "OFFSET ? ROWS "
+                + "FETCH NEXT ? ROWS ONLY ")) {
+      statement.setString(1, PAID_STATUS);
+      statement.setInt(2, offset);
+      statement.setInt(3, limit);
 
-    List<ManageApplicationResult> results = new ArrayList<>();
+      try (ResultSet resultSet = statement.executeQuery()) {
+        List<ManageApplicationResult> results = new ArrayList<>();
 
-    while (resultSet.next()) {
-      int applicationId = resultSet.getInt(1);
-      int userId = resultSet.getInt(2);
-      String name = resultSet.getString(3);
-      String username = resultSet.getString(4);
-      String email = resultSet.getString(5);
-      String address = resultSet.getString(6);
-      ZonedDateTime dateOfBirth = ZonedDateTime
-          .ofInstant(resultSet.getTimestamp(7).toInstant(), ZoneOffset.UTC);
+        while (resultSet.next()) {
+          int applicationId = resultSet.getInt(1);
+          int userId = resultSet.getInt(2);
+          String name = resultSet.getString(3);
+          String username = resultSet.getString(4);
+          String email = resultSet.getString(5);
+          String address = resultSet.getString(6);
+          ZonedDateTime dateOfBirth = ZonedDateTime
+              .ofInstant(resultSet.getTimestamp(7).toInstant(), ZoneOffset.UTC);
 
-      results.add(new ManageApplicationResult(
-          applicationId,
-          userId,
-          name,
-          username,
-          email,
-          address,
-          dateOfBirth
-      ));
+          results.add(new ManageApplicationResult(
+              applicationId,
+              userId,
+              name,
+              username,
+              email,
+              address,
+              dateOfBirth
+          ));
+        }
+
+        return results;
+      }
     }
-
-    return results;
   }
 
   @Override
