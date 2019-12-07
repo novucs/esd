@@ -56,6 +56,11 @@ public class TestMemberMakeClaimServlet {
   private static final String MEMBER_STATUS_SUSPENDED = "SUSPENDED";
   private static final String MEMBER_STATUS_EXPIRED = "EXPIRED";
   private transient Session userSession;
+  private final  MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
+  private final HttpSession httpSession = mock(HttpSession.class);
+  private final HttpServletRequest request = mock(HttpServletRequest.class);
+  private final HttpServletResponse response = mock(HttpServletResponse.class);
+  private final DecimalFormat df = new DecimalFormat("#.##");
 
   /**
    * Initialise test.
@@ -126,10 +131,6 @@ public class TestMemberMakeClaimServlet {
   public void testRequestGetsMakeClaimPageNeverAMember()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
 
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
     User user = new User(
         USER_NAME,
         "test-user7",
@@ -152,12 +153,7 @@ public class TestMemberMakeClaimServlet {
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
     // Assert
@@ -173,11 +169,7 @@ public class TestMemberMakeClaimServlet {
   @Test
   public void testRequestGetsMakeClaimPageNoCurrentMembership()
       throws ServletException, IOException {
-
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
+    // Given
     User user = new User(
         USER_NAME,
         "test-user8",
@@ -204,12 +196,7 @@ public class TestMemberMakeClaimServlet {
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
     // Assert
@@ -225,11 +212,7 @@ public class TestMemberMakeClaimServlet {
   @Test
   public void testRequestGetsMakeClaimPageMembershipSixMonthWait()
       throws ServletException, IOException {
-
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
+    // Given
     User user = new User(
         USER_NAME,
         "test-user9",
@@ -255,12 +238,7 @@ public class TestMemberMakeClaimServlet {
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
     // Assert
@@ -276,11 +254,7 @@ public class TestMemberMakeClaimServlet {
   @Test
   public void testRequestGetsMakeClaimPageMembershipUsedClaimQuota()
       throws ServletException, IOException {
-
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
+    // Given
     User user = new User(
         USER_NAME,
         "test-user10",
@@ -307,13 +281,7 @@ public class TestMemberMakeClaimServlet {
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(httpSession);
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
     // Assert
@@ -330,11 +298,7 @@ public class TestMemberMakeClaimServlet {
   @Test
   public void testRequestGetsMakeClaimPageMembershipSuspended()
       throws ServletException, IOException {
-
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
+    // Given
     User user = new User(
         USER_NAME,
         "test-user11",
@@ -359,15 +323,8 @@ public class TestMemberMakeClaimServlet {
 
     }
     userSession.setUser(user);
-
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(httpSession);
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
     // Assert
@@ -383,11 +340,7 @@ public class TestMemberMakeClaimServlet {
   @Test
   public void testRequestGetsMakeClaimPageMembershipEligibleForClaimFullAmount()
       throws ServletException, IOException {
-
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
+    // Given
     User user = new User(
         USER_NAME,
         "test-user12",
@@ -414,13 +367,7 @@ public class TestMemberMakeClaimServlet {
     userSession.setUser(user);
 
     // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession()).thenReturn(httpSession);
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen();
     servlet.doGet(request, response);
 
     // Assert
@@ -436,10 +383,7 @@ public class TestMemberMakeClaimServlet {
   @Test
   public void testRequestGetsMakeClaimPageMembershipEligibleForClaimLimitedAmount()
       throws ServletException, IOException {
-    MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
+    // Given
     User user = new User(
         USER_NAME,
         "test-user13",
@@ -466,18 +410,19 @@ public class TestMemberMakeClaimServlet {
     userSession.setUser(user);
 
     // When
+    esdWhen();
+    servlet.doGet(request, response);
+
+    // Assert
+    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_FULL_CLAIM);
+    verify(request).setAttribute("maxClaimValue", df.format(50));
+  }
+
+  private void esdWhen() {
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession()).thenReturn(httpSession);
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    servlet.doGet(request, response);
-
-    DecimalFormat df = new DecimalFormat("#.##");
-    // Assert
-    verify(request).setAttribute(MEMBERSHIP_STATUS_ATTR, MEMBER_STATUS_FULL_CLAIM);
-    verify(request).setAttribute("maxClaimValue", df.format(50));
   }
 }
