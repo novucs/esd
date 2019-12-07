@@ -32,6 +32,7 @@ import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
+import net.novucs.esd.util.StringUtil;
 
 /**
  * The type Database lifecycle.
@@ -112,8 +113,8 @@ public class DatabaseLifecycle {
     Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
     User user = new User(
         name,
-        name.toLowerCase(Locale.UK),
-        name + "@esd.net",
+        StringUtil.parseUsername(name),
+        name.replace(" ", "") + "@esd.net",
         Password.fromPlaintext(password),
         "1 ESD Lane",
         new DateUtil().getDateFromString("2000-01-01"),
@@ -134,7 +135,7 @@ public class DatabaseLifecycle {
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(7), true
       ));
-    } else if ("NewMember".equalsIgnoreCase(name)) {
+    } else if ("New Member".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
@@ -142,7 +143,7 @@ public class DatabaseLifecycle {
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
       ));
-    } else if ("FullMember".equalsIgnoreCase(name)) {
+    } else if ("Full Member".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
@@ -177,23 +178,21 @@ public class DatabaseLifecycle {
       daoManager.get(Role.class).insert(new Role(roleName));
     }
 
-    setupDummyUser("NewMember", "Member", "password1");
-    setupDummyUser("FullMember", "Member", "password1");
+    setupDummyUser("New Member", "Member", "password1");
+    setupDummyUser("Full Member", "Member", "password1");
     setupDummyUser("Member", "Member", "password1");
     setupDummyUser("User", "User", "password1");
     setupDummyUser("Administrator", "Administrator", "password1");
-
-    setupDummyUser("e-simons", "Member", "221165");
-    setupDummyUser("m-malcolm", "Member", "080890");
-    setupDummyUser("me-aydin", "Member", "201068");
-    setupDummyUser("r-french", "Member", "211268");
-    setupDummyUser("m-wood", "Member", "180882");
-    setupDummyUser("e-aydin", "Member", "101068");
-    setupDummyUser("mem-3", "Member", "020398");
-    setupDummyUser("mem-4", "Member", "070887");
-    setupDummyUser("mem-5", "Member", "020388'");
-    setupDummyUser("mem-6", "Member", "070897");
-
+    setupDummyUser("Edward Simons", "Member", "221165");
+    setupDummyUser("Michael Malcolm", "Member", "080890");
+    setupDummyUser("Mehmet Edward Aydin", "Member", "201068");
+    setupDummyUser("Ruby French", "Member", "211268");
+    setupDummyUser("Melissa Wood", "Member", "180882");
+    setupDummyUser("Eddy Aydin", "Member", "101068");
+    setupDummyUser("Member 3", "Member", "020398");
+    setupDummyUser("Member 4", "Member", "070887");
+    setupDummyUser("Member 5", "Member", "020388'");
+    setupDummyUser("Member 6", "Member", "070897");
   }
 
   /**
