@@ -91,7 +91,7 @@ public class RegistrationServlet extends BaseServlet {
 
     // Set password attribute so temporary password
     // can be provided to user on registration success page.
-    request.setAttribute("password", new DateUtil()
+    request.setAttribute("password", Password
         .getPasswordFromDateOfBirth(request.getParameter("dob")));
     request.setAttribute("registerStatus", "success");
     super.forward(request, response, "Registration Success", PAGE);
@@ -108,7 +108,7 @@ public class RegistrationServlet extends BaseServlet {
         StringUtil.parseUsername(name),
         email,
         Password.fromPlaintext(
-            dateUtil.getPasswordFromDateOfBirth(request.getParameter("dob"))
+            Password.getPasswordFromDateOfBirth(request.getParameter("dob"))
         ),
         address,
         dateOfBirth,
