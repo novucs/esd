@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
-import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
@@ -31,9 +30,10 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   private static final String PAGE_SIZE_FILTER = "applicationPageSizeFilter";
 
-  private static final String PAID_STATUS = "OPEN"; // TODO: update to the paid status once complete
-  private static final String APPROVED_STATUS = "APPROVED"; // TODO: update to the approved status once complete
-  private static final String DENIED_STATUS = "DENIED"; // TODO: update to the denied status once complete
+  // TODO: update these statuses once complete
+  private static final String PAID_STATUS = "OPEN";
+  private static final String APPROVED_STATUS = "APPROVED";
+  private static final String DENIED_STATUS = "DENIED";
 
   @Inject
   private Dao<Application> applicationDao;
@@ -44,20 +44,20 @@ public class AdminManageApplicationsServlet extends BaseServlet {
   private List<ManageApplicationResult> manageApplicationResults(int offset, int limit)
       throws SQLException {
     @SuppressWarnings("SqlResolve")
-    PreparedStatement statement = userDao.getConnectionSource().getConnection().prepareStatement(" "
-        + "SELECT "
-        + "    application1.\"id\" AS \"application1_id\", "
-        + "    \"user\".\"id\", "
-        + "    \"user\".\"name\", "
-        + "    \"user\".\"username\", "
-        + "    \"user\".\"email\", "
-        + "    \"user\".\"address\", "
-        + "    \"user\".\"date_of_birth\" "
-        + "FROM \"user\" "
-        + "LEFT JOIN \"application\" application1 on \"user\".\"id\" = application1.\"user_id\" "
-        + "WHERE application1.\"status\" = ? "
-        + "OFFSET ? ROWS "
-        + "FETCH NEXT ? ROWS ONLY ");
+    PreparedStatement statement = userDao.getConnectionSource().getConnection().prepareStatement(
+        "SELECT "
+            + "    application1.\"id\" AS \"application1_id\", "
+            + "    \"user\".\"id\", "
+            + "    \"user\".\"name\", "
+            + "    \"user\".\"username\", "
+            + "    \"user\".\"email\", "
+            + "    \"user\".\"address\", "
+            + "    \"user\".\"date_of_birth\" "
+            + "FROM \"user\" "
+            + "LEFT JOIN \"application\" application1 on \"user\".\"id\" = application1.\"user_id\" "
+            + "WHERE application1.\"status\" = ? "
+            + "OFFSET ? ROWS "
+            + "FETCH NEXT ? ROWS ONLY ");
     statement.setString(1, PAID_STATUS);
     statement.setInt(2, offset);
     statement.setInt(3, limit);
@@ -132,6 +132,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
           break;
         case "deny-all":
           updateAllStatuses(DENIED_STATUS);
+          break;
+        default:
           break;
       }
     } catch (SQLException e) {
