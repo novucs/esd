@@ -11,6 +11,8 @@
 
 <!-- Place scripts that are used by all pages here -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="${pageContext.request.contextPath}/js/notificationsocket.js"></script>
 <script src="${pageContext.request.contextPath}/js/notification.js"></script>
 <script src="${pageContext.request.contextPath}/js/site.js"></script>
+
