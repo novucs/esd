@@ -107,12 +107,12 @@ public class DatabaseLifecycle {
   }
 
   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-  private void setupDummyUser(String name, String roleName) throws SQLException {
+  private void setupDummyUser(String name, String roleName, String password) throws SQLException {
     Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
     User user = new User(
         name,
         name + "@esd.net",
-        Password.fromPlaintext("password1"),
+        Password.fromPlaintext(password),
         "1 ESD Lane",
         new DateUtil().getDateFromString("2000-01-01"),
         "ACTIVE",
@@ -175,22 +175,22 @@ public class DatabaseLifecycle {
       daoManager.get(Role.class).insert(new Role(roleName));
     }
 
-    setupDummyUser("NewMember", "Member");
-    setupDummyUser("FullMember", "Member");
-    setupDummyUser("Member", "Member");
-    setupDummyUser("User", "User");
-    setupDummyUser("Administrator", "Administrator");
+    setupDummyUser("NewMember", "Member", "password1");
+    setupDummyUser("FullMember", "Member", "password1");
+    setupDummyUser("Member", "Member", "password1");
+    setupDummyUser("User", "User", "password1");
+    setupDummyUser("Administrator", "Administrator", "password1");
 
-    setupDummyUser("e-simons", "Member");
-    setupDummyUser("m-malcolm", "Member");
-    setupDummyUser("me-aydin", "Member");
-    setupDummyUser("r-french", "Member");
-    setupDummyUser("m-wood", "Member");
-    setupDummyUser("e-aydin", "Member");
-    setupDummyUser("mem-3", "Member");
-    setupDummyUser("mem-4", "Member");
-    setupDummyUser("mem-5", "Member");
-    setupDummyUser("mem-6", "Member");
+    setupDummyUser("e-simons", "Member", "221165");
+    setupDummyUser("m-malcolm", "Member", "080890");
+    setupDummyUser("me-aydin", "Member", "201068");
+    setupDummyUser("r-french", "Member", "211268");
+    setupDummyUser("m-wood", "Member", "180882");
+    setupDummyUser("e-aydin", "Member", "101068");
+    setupDummyUser("mem-3", "Member", "020398");
+    setupDummyUser("mem-4", "Member", "070887");
+    setupDummyUser("mem-5", "Member", "020388'");
+    setupDummyUser("mem-6", "Member", "070897");
 
   }
 
