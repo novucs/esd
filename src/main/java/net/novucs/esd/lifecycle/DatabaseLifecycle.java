@@ -180,6 +180,18 @@ public class DatabaseLifecycle {
     setupDummyUser("Member", "Member");
     setupDummyUser("User", "User");
     setupDummyUser("Administrator", "Administrator");
+
+    setupDummyUser("e-simons", "Member");
+    setupDummyUser("m-malcolm", "Member");
+    setupDummyUser("me-aydin", "Member");
+    setupDummyUser("r-french", "Member");
+    setupDummyUser("m-wood", "Member");
+    setupDummyUser("e-aydin", "Member");
+    setupDummyUser("mem-3", "Member");
+    setupDummyUser("mem-4", "Member");
+    setupDummyUser("mem-5", "Member");
+    setupDummyUser("mem-6", "Member");
+
   }
 
   /**
