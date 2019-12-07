@@ -27,7 +27,7 @@ public class NotificationSessionHandler {
 
   public void removeSession(Session session) {
     Optional<NotificationSession> toRemove = sessions.values().stream().filter(
-        s -> s.getUserId() == Integer.parseInt(session.getId())).findFirst();
+        s -> s.getSession().getId() == session.getId()).findFirst();
     sessions.remove(toRemove.get().getUserId());
   }
 
