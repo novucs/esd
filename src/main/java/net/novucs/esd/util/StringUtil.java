@@ -1,6 +1,9 @@
 package net.novucs.esd.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * The type String util.
@@ -31,5 +34,21 @@ public final class StringUtil {
    */
   public static String quoted(String string) {
     return "\"" + string + "\"";
+  }
+
+  /**
+   * Parse a username, input of "John Smith" -> "j-smith".
+   *
+   * @param name the name
+   * @return a parsed name
+   */
+  public static String parseUsername(String name) {
+    ArrayList<String> names = new ArrayList<>(Arrays.asList(name.split(" ")));
+    String lastName = names.get(names.size() - 1);
+    names.remove(names.size() - 1);
+    String initials = names.stream()
+        .map(c -> String.valueOf(c.charAt(0)))
+        .collect(Collectors.joining(""));
+    return (initials + "-" + lastName).toLowerCase(Locale.UK);
   }
 }

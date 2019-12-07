@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The type Date util.
@@ -72,5 +74,25 @@ public class DateUtil {
       return null;
     }
     return parsedDate.toInstant().atZone(ZoneId.systemDefault());
+  }
+
+  /**
+   * Get a password from a date string.
+   *
+   * @param dateTimeStr the date string (2000-06-21)
+   * @return String
+   */
+  public String getPasswordFromDateOfBirth(String dateTimeStr) {
+    String pattern = "ddMMyy";
+    Date formattedDate;
+    String password = "password1"; // Default
+    try {
+      formattedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.UK).parse(dateTimeStr);
+      password = new SimpleDateFormat(pattern, Locale.UK).format(formattedDate);
+    } catch (ParseException e) {
+      Logger.getLogger(this.getClass().getName()).log(Level.WARNING, null, e);
+    }
+
+    return password;
   }
 }
