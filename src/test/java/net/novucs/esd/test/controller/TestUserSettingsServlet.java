@@ -46,6 +46,14 @@ public class TestUserSettingsServlet {
 
   private transient Session userSession;
 
+  private final UserSettingsServlet servlet = new UserSettingsServlet();
+
+  private final HttpServletResponse response = mock(HttpServletResponse.class);
+
+  private final HttpServletRequest request = mock(HttpServletRequest.class);
+
+  private final HttpSession session = mock(HttpSession.class);
+
 
   @Before
   public void initialiseTest() {
@@ -86,10 +94,6 @@ public class TestUserSettingsServlet {
   public void testUpdateInvalidUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // Empty Session
@@ -113,33 +117,18 @@ public class TestUserSettingsServlet {
    *
    * @throws SQLException                 the sql exception
    * @throws ReflectiveOperationException the reflective operation exception
-   * @throws ServletException             the servlet exception
-   * @throws IOException                  the io exception
    */
   @Test
   public void testUpdateUserDetails()
-      throws IOException, ServletException, SQLException, ReflectiveOperationException {
+      throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq("fullname"))).thenReturn("Test User");
-    when(request.getParameter(eq("email"))).thenReturn(
-        "test@esd.net");
-    when(request.getParameter(eq("address"))).thenReturn(
-        "1 ESD Lane");
-    when(request.getParameter(eq("date_of_birth"))).thenReturn(
-        "1970-01-01");
+    esdWhen();
+    userDetails();
     when(request.getParameter(eq("current_password"))).thenReturn("");
     when(request.getParameter(eq("new_password"))).thenReturn("");
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
@@ -158,27 +147,13 @@ public class TestUserSettingsServlet {
   public void testUpdateUserPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq("fullname"))).thenReturn(
-        "Test User");
-    when(request.getParameter(eq("email"))).thenReturn(
-        "test@esd.net");
-    when(request.getParameter(eq("address"))).thenReturn(
-        "1 ESD Lane");
-    when(request.getParameter(eq("date_of_birth"))).thenReturn(
-        "1970-01-01");
+    esdWhen();
+    userDetails();
     when(request.getParameter(eq("current_password"))).thenReturn("bob");
     when(request.getParameter(eq("new_password"))).thenReturn("enterprise");
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
@@ -197,27 +172,13 @@ public class TestUserSettingsServlet {
   public void testUpdateUserIncorrectRepeatedPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq("fullname"))).thenReturn(
-        "Test User");
-    when(request.getParameter(eq("email"))).thenReturn(
-        "test@esd.net");
-    when(request.getParameter(eq("address"))).thenReturn(
-        "1 ESD Lane");
-    when(request.getParameter(eq("date_of_birth"))).thenReturn(
-        "1970-01-01");
+    esdWhen();
+    userDetails();
     when(request.getParameter(eq("current_password"))).thenReturn("enterprise");
     when(request.getParameter(eq("new_password"))).thenReturn("depression");
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
@@ -236,18 +197,11 @@ public class TestUserSettingsServlet {
   public void testGetInvalidEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    esdWhen();
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn("696969");
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doGet(request, response);
 
     // Verify
@@ -266,17 +220,10 @@ public class TestUserSettingsServlet {
   public void testGetEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+    esdWhen();
     servlet.doGet(request, response);
 
     // Verify
@@ -297,5 +244,23 @@ public class TestUserSettingsServlet {
     // Assert
     assertTrue("getServletInfo must match the class name.",
         servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
+  }
+
+  private void esdWhen() {
+    when(request.getSession(anyBoolean())).thenReturn(session);
+    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
+        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+  }
+
+  private void userDetails() {
+    when(request.getParameter(eq("fullname"))).thenReturn(
+        "Test User");
+    when(request.getParameter(eq("email"))).thenReturn(
+        "test@esd.net");
+    when(request.getParameter(eq("address"))).thenReturn(
+        "1 ESD Lane");
+    when(request.getParameter(eq("date_of_birth"))).thenReturn(
+        "1970-01-01");
   }
 }
