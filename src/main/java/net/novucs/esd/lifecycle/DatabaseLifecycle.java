@@ -120,30 +120,39 @@ public class DatabaseLifecycle {
     );
     daoManager.get(User.class).insert(user);
     daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
-
-    if ("NewMember".equalsIgnoreCase(name)) {
+    
+    if ("User".equalsIgnoreCase(name)) {
+      Application application = new Application(user.getId(), BigDecimal.ZERO);
+      daoManager.get(Application.class).insert(application);
+    } else if ("Member".equalsIgnoreCase(name)) {
+      Application application = new Application(user.getId(), BigDecimal.TEN);
+      application.setStatus("APPROVED");
+      daoManager.get(Application.class).insert(application);
+      
+      daoManager.get(Membership.class).insert(new Membership(
+          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(7), true
+      ));
+    } else if ("NewMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
 
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.ZERO, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
+          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
       ));
-    }
-
-    if ("FullMember".equalsIgnoreCase(name)) {
+    } else if ("FullMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId(), BigDecimal.TEN);
       application.setStatus("APPROVED");
       daoManager.get(Application.class).insert(application);
 
       // Past membership
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.ZERO, "EXPIRED", ZonedDateTime.now().minusMonths(15), true
+          user.getId(), BigDecimal.TEN, "EXPIRED", ZonedDateTime.now().minusMonths(15), true
       ));
 
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.ZERO, "ACTIVE", ZonedDateTime.now().minusMonths(3), false
+          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(3), false
       ));
     }
   }

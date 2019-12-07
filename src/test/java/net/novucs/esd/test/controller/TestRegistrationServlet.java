@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.RegistrationServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
+import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserLog;
@@ -88,6 +89,7 @@ public class TestRegistrationServlet {
     ReflectUtil.setFieldValue(servlet, "userLogDao", userLogDao);
     ReflectUtil.setFieldValue(servlet, "userRoleDao", dm.get(UserRole.class));
     ReflectUtil.setFieldValue(servlet, "roleDao", dm.get(Role.class));
+    ReflectUtil.setFieldValue(servlet, "applicationDao", dm.get(Application.class));
 
     String passwordPlaintext = "password";
     Password password = Password.fromPlaintext(passwordPlaintext);
