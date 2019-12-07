@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
@@ -30,6 +29,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.test.util.TestDummyDataUtil;
+import net.novucs.esd.util.MembershipUtils;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
@@ -57,6 +57,7 @@ public class TestMemberMakeClaimServlet {
   private static final String MEMBER_STATUS_FULL_USED = "FULL_USED";
   private static final String MEMBER_STATUS_SUSPENDED = "SUSPENDED";
   private static final String MEMBER_STATUS_EXPIRED = "EXPIRED";
+  private static final MembershipUtils membershipUtils = new MembershipUtils();
   private transient Session userSession;
 
   /**
@@ -87,7 +88,6 @@ public class TestMemberMakeClaimServlet {
     if (withOldMembership) {
       Membership oldMembership = new Membership(
           user.getId(),
-          BigDecimal.valueOf(0),
           "EXPIRED",
           ZonedDateTime.now().minusMonths(15),
           false
@@ -97,7 +97,6 @@ public class TestMemberMakeClaimServlet {
     if (withCurrentMembership) {
       Membership newMembership = new Membership(
           user.getId(),
-          BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
           membershipSuspended ? "SUSPENDED" : ACTIVE_MEMBERSHIP,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership

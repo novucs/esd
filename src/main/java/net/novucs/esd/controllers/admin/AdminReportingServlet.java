@@ -14,13 +14,13 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.orm.Dao;
+import net.novucs.esd.util.MembershipUtils;
 
 public class AdminReportingServlet extends BaseServlet {
 
@@ -86,12 +86,12 @@ public class AdminReportingServlet extends BaseServlet {
           .map(Claim::getAmount)
           .map(BigDecimal::intValue)
           .mapToInt(Integer::intValue).sum();
-
+      MembershipUtils membershipUtils = new MembershipUtils();
       long membershipSum = membershipDao.select().all().stream().filter(
           r -> r.getStartDate().toLocalDate().isAfter(from.minusDays(1))
-              && r.getStatus().equals(MembershipUtils.STATUS_ACTIVE)
+              && r.getStatus().equals(membershipUtils.STATUS_ACTIVE)
               && r.getStartDate().toLocalDate().isBefore(to.plusDays(1))
-          ).count() * MembershipUtils.ANNUAL_FEE;
+      ).count() * membershipUtils.ANNUAL_FEE;
 
       Session session = Session.fromRequest(request);
       session.setFilter("showReport", true);

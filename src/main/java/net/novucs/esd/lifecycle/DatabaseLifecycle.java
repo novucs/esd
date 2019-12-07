@@ -2,7 +2,6 @@ package net.novucs.esd.lifecycle;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -15,6 +14,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import net.novucs.esd.constants.ApplicationUtils;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
@@ -30,6 +30,7 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
+import net.novucs.esd.util.MembershipUtils;
 import net.novucs.esd.util.Password;
 
 /**
@@ -108,6 +109,7 @@ public class DatabaseLifecycle {
 
   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   private void setupDummyUser(String name, String roleName) throws SQLException {
+    MembershipUtils membershipUtils = new MembershipUtils();
     Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
     User user = new User(
         name,
@@ -120,39 +122,56 @@ public class DatabaseLifecycle {
     );
     daoManager.get(User.class).insert(user);
     daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
-    
+
     if ("User".equalsIgnoreCase(name)) {
-      Application application = new Application(user.getId(), BigDecimal.ZERO);
+      Application application = new Application(user.getId());
+      daoManager.get(Application.class).insert(application);
+    } else if ("ApprovedUser".equalsIgnoreCase(name)) {
+      Application application = new Application(user.getId());
+      application.setStatus(ApplicationUtils.STATUS_APPROVED);
       daoManager.get(Application.class).insert(application);
     } else if ("Member".equalsIgnoreCase(name)) {
-      Application application = new Application(user.getId(), BigDecimal.TEN);
-      application.setStatus("APPROVED");
+      Application application = new Application(user.getId());
+      application.setStatus(ApplicationUtils.STATUS_PAID);
       daoManager.get(Application.class).insert(application);
-      
+
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(7), true
+          user.getId(),
+          membershipUtils.STATUS_ACTIVE,
+          ZonedDateTime.now().minusMonths(7),
+          true
       ));
     } else if ("NewMember".equalsIgnoreCase(name)) {
-      Application application = new Application(user.getId(), BigDecimal.TEN);
-      application.setStatus("APPROVED");
+      Application application = new Application(user.getId());
+      application.setStatus(ApplicationUtils.STATUS_PAID);
       daoManager.get(Application.class).insert(application);
-
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(1), true
+          user.getId(),
+          membershipUtils.STATUS_ACTIVE,
+          ZonedDateTime.now().minusMonths(1),
+          true
       ));
     } else if ("FullMember".equalsIgnoreCase(name)) {
-      Application application = new Application(user.getId(), BigDecimal.TEN);
-      application.setStatus("APPROVED");
+      Application application = new Application(user.getId());
+      application.setStatus(ApplicationUtils.STATUS_PAID);
       daoManager.get(Application.class).insert(application);
-
-      // Past membership
-      daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.TEN, "EXPIRED", ZonedDateTime.now().minusMonths(15), true
-      ));
-
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
-          user.getId(), BigDecimal.TEN, "ACTIVE", ZonedDateTime.now().minusMonths(3), false
+          user.getId(),
+          membershipUtils.STATUS_ACTIVE,
+          ZonedDateTime.now().minusMonths(3),
+          false
+      ));
+    } else if ("ExpiredMember".equalsIgnoreCase(name)) {
+      Application application = new Application(user.getId());
+      application.setStatus(ApplicationUtils.STATUS_PAID);
+      daoManager.get(Application.class).insert(application);
+      // Current membership
+      daoManager.get(Membership.class).insert(new Membership(
+          user.getId(),
+          membershipUtils.STATUS_ACTIVE, // Purposefully active to ensure dates are picked up
+          ZonedDateTime.now().minusMonths(13),
+          false
       ));
     }
   }
@@ -177,8 +196,10 @@ public class DatabaseLifecycle {
 
     setupDummyUser("NewMember", "Member");
     setupDummyUser("FullMember", "Member");
+    setupDummyUser("ExpiredMember", "Member");
     setupDummyUser("Member", "Member");
     setupDummyUser("User", "User");
+    setupDummyUser("ApprovedUser", "User");
     setupDummyUser("Administrator", "Administrator");
   }
 

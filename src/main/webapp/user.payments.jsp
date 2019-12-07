@@ -40,7 +40,6 @@
                           <c:choose>
                               <c:when test="${payContext eq 'PAY_APPLICATION'}">
                                   <t:makepayment
-                                  noPaymentMessage="Your account is in credit and your application is being processed."
                                   paymentTitle="Make a payment for your new membership"
                                   paymentMessage="Please enter your details below. You will be charged"
                                   />

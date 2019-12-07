@@ -6,7 +6,6 @@ import com.stripe.model.Charge;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.constants.ApplicationUtils;
-import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.constants.StripeUtils;
 import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.Session;
@@ -27,7 +25,7 @@ import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
-import net.novucs.esd.orm.Where;
+import net.novucs.esd.util.MembershipUtils;
 
 /**
  * The type Make payment servlet.
@@ -42,7 +40,7 @@ public class MakePaymentServlet extends BaseServlet {
   public static final String PAY_FAIL = "PAY_FAIL";
   public static final String PAY_APPLICATION = "PAY_APPLICATION";
   public static final String PAY_MEMBERSHIP = "PAY_MEMBERSHIP";
-
+  public static final MembershipUtils membershipUtils = new MembershipUtils();
   @Inject
   private Dao<Membership> membershipDao;
 
@@ -58,43 +56,53 @@ public class MakePaymentServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-
-    DecimalFormat df = new DecimalFormat("#.##");
     Session session = Session.fromRequest(request);
     Application application;
 
     try {
-      application = applicationDao.select().where(new Where().eq(USER_ID,
-          session.getUser().getId())).first();
+      application = membershipUtils.getApplication(session, applicationDao);
 
       // Check user's application first
       if (application != null
-          && ApplicationUtils.STATUS_OPEN.equalsIgnoreCase(application.getStatus())) {
+          && ApplicationUtils.STATUS_APPROVED.equalsIgnoreCase(application.getStatus())) {
 
         // If application is OPEN, then user is not yet a member.
         request.setAttribute(PAY_CONTEXT, PAY_APPLICATION);
-
         // The amount they owe is the membership fee minus what they've paid so far.
-        request.setAttribute("amountOwed",
-            df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)
-                .subtract(application.getBalance())));
-
+        request.setAttribute("amountOwed", membershipUtils.getAnnualFee());
         super.forward(request, response, "Application Payment", PAGE);
+
+
       } else {
-        // User application is closed so they are a member
-        Membership currentMembership = getCurrentMembership(session);
 
-        // Set context to membership repayment
-        request.setAttribute(PAY_CONTEXT, PAY_MEMBERSHIP);
+        // Get last membership checks membership status and creates a new expired membership
+        List<Membership> allUserMemberships = membershipUtils
+            .getAllMemberships(session, membershipDao);
+        Membership lastMembership = membershipUtils
+            .getLastMembership(session, membershipDao, allUserMemberships);
+        if (lastMembership == null) {
+          // If application is OPEN, then user is not yet a member.
+          request.setAttribute(PAY_CONTEXT, PAY_MEMBERSHIP);
+          request.setAttribute("amountOwed", membershipUtils.df.format(0));
+          super.forward(request, response, "Application Payment", PAGE);
+        } else {
+          // Get currentMembership, this will correct however may need payment if previous had expired
+          Membership currentMembership = membershipUtils
+              .getCurrentMembership(session, membershipDao);
 
-        // The amount they owe is the membership fee minus what they've paid so far.
-        assert currentMembership != null;
-        request.setAttribute("amountOwed",
-            df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)
-                .subtract(currentMembership.getBalance())));
-        super.forward(request, response, "Membership Payments", PAGE);
+          if (membershipUtils.STATUS_EXPIRED.equalsIgnoreCase(currentMembership.getStatus())) {
+            // Set context to membership repayment
+            request.setAttribute(PAY_CONTEXT, PAY_MEMBERSHIP);
+
+            // The amount they owe is the membership fee minus what they've paid so far.
+            request.setAttribute("amountOwed", membershipUtils.getAnnualFee());
+            super.forward(request, response, "Membership Payment", PAGE);
+          } else {
+            request.setAttribute("amountOwed", 0);
+            super.forward(request, response, "Membership Payment", PAGE);
+          }
+        }
       }
-
     } catch (SQLException e) {
       Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, e.getMessage(), e);
     }
@@ -111,7 +119,6 @@ public class MakePaymentServlet extends BaseServlet {
     Session session = Session.fromRequest(request);
     String reference = request.getParameter("reference");
     float balance = Float.parseFloat(amount) / 100f;
-    Application application;
 
     Stripe.apiKey = StripeUtils.TEST_SECRET_KEY;
     // Build params for Stripe charge request
@@ -132,54 +139,32 @@ public class MakePaymentServlet extends BaseServlet {
 
     try {
       // Store a record of the transaction as a new Payment.
-      assert charge != null;
+      Application application = membershipUtils.getApplication(session, applicationDao);
+
       Payment payment = new Payment(session.getUser().getId(),
           BigDecimal.valueOf(balance),
-          charge.getId(), reference);
+          charge != null ? charge.getId() : null, reference);
       paymentDao.insert(payment);
+      application.setStatus(ApplicationUtils.STATUS_PAID);
+      applicationDao.update(application);
 
-      if (PAY_APPLICATION.equalsIgnoreCase(reference)) {
-        // Payment was for an application
-
-        // Get the application and update the balance to reflect the payment.
-        application = applicationDao.select()
-            .where(new Where().eq(USER_ID,
-                session.getUser().getId())).first();
-
-        application.setBalance(BigDecimal.valueOf(balance));
-        applicationDao.update(application);
-
-        // Return confirmation that the payment was successful
-        request.setAttribute("charge", Long.parseLong(amount) / 100);
-        request.setAttribute(PAY_CONTEXT, PAY_SUCCESS);
-        super.forward(request, response, "Payment successfully received", PAGE);
-      } else if (PAY_MEMBERSHIP.equalsIgnoreCase(reference)) {
-        // Payment was for a/multiple membership(s)
-
-        Membership currentMembership = getCurrentMembership(session);
-        currentMembership.setBalance(BigDecimal.valueOf(balance));
-        membershipDao.update(currentMembership);
-
-        // Finally return confirmation of the payment along with the amount charged.
-        request.setAttribute("charge", Long.parseLong(amount) / 100);
-        request.setAttribute(PAY_CONTEXT, PAY_SUCCESS);
-        super.forward(request, response, "Payment successfully received", PAGE);
+      Membership membership = membershipUtils.getCurrentMembership(session, membershipDao);
+      if (membership == null) {
+        membership = new Membership(session.getUser().getId(),
+            membershipUtils.STATUS_ACTIVE,
+            ZonedDateTime.now(),
+            true);
+        membershipDao.insert(membership);
       }
+      // Return confirmation that the payment was successful
+      request.setAttribute("charge", Long.parseLong(amount) / 100);
+      request.setAttribute(PAY_CONTEXT, PAY_SUCCESS);
+      super.forward(request, response, "Payment successfully received", PAGE);
 
     } catch (SQLException e) {
       Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, e.getMessage(), e);
     }
 
-  }
-
-  private Membership getCurrentMembership(Session session)
-      throws SQLException {
-    ZonedDateTime now = ZonedDateTime.now();
-    List<Membership> memberships = membershipDao.select()
-        .where(new Where().eq("user_id", session.getUser().getId())).all();
-    return memberships.stream()
-        .filter(m -> m.getStartDate().isBefore(now) && m.getEndDate().isAfter(now))
-        .findFirst().orElse(null);
   }
 
   @Override

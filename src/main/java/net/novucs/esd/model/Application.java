@@ -1,6 +1,5 @@
 package net.novucs.esd.model;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
@@ -17,16 +16,6 @@ public final class Application {
   @Column(foreign = User.class, unique = "user_id_uq")
   private Integer userId;
 
-
-  // Pounds and pence integers make up balance, we do not want to store
-  // monetary values as floating point numbers to prevent the possibility
-  // of rounding errors.
-  @Column
-  private Integer pounds;
-
-  @Column
-  private Integer pence;
-
   @Column
   private String status;
 
@@ -42,13 +31,9 @@ public final class Application {
    *
    * @param userId the user id
    */
-  public Application(Integer userId, BigDecimal balance) {
+  public Application(Integer userId) {
     this.userId = userId;
-    double doubleBalance = balance.doubleValue();
-    this.pounds = (int) doubleBalance;
-    this.pence = (int) ((doubleBalance - pounds) * 100);
     this.status = "OPEN";
-    setBalance(balance);
   }
 
   /**
@@ -85,27 +70,6 @@ public final class Application {
    */
   public void setUserId(Integer userId) {
     this.userId = userId;
-  }
-
-  /**
-   * Gets balance.
-   *
-   * @return the balance
-   */
-  public BigDecimal getBalance() {
-    return BigDecimal.valueOf(pounds + (pence / 100f));
-  }
-
-
-  /**
-   * Sets balance.
-   *
-   * @param balance the balance
-   */
-  public void setBalance(BigDecimal balance) {
-    double doubleBalance = balance.doubleValue();
-    this.pounds = (int) doubleBalance;
-    this.pence = (int) ((doubleBalance - pounds) * 100);
   }
 
   /**

@@ -1,6 +1,5 @@
 package net.novucs.esd.model;
 
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
@@ -17,15 +16,6 @@ public final class Membership {
 
   @Column(foreign = User.class)
   private Integer userId;
-
-  // Pounds and pence integers make up balance, we do not want to store
-  // monetary values as floating point numbers to prevent the possibility
-  // of rounding errors.
-  @Column
-  private Integer pounds;
-
-  @Column
-  private Integer pence;
 
   @Column
   private ZonedDateTime startDate;
@@ -47,23 +37,16 @@ public final class Membership {
    * Instantiates a new Membership.
    *
    * @param userId      the user id
-   * @param balance     the balance
    * @param status      the status
    * @param startDate   the start date
    * @param isNewMember the is new member
    */
-  public Membership(Integer userId, BigDecimal balance, String status, ZonedDateTime startDate,
+  public Membership(Integer userId, String status, ZonedDateTime startDate,
       Boolean isNewMember) {
     this.userId = userId;
     this.status = status;
-    double doubleBalance = balance.doubleValue();
-    this.pounds = (int) doubleBalance;
-    this.pence = (int) ((doubleBalance - pounds) * 100);
     this.startDate = startDate;
-
     this.claimFromDate = isNewMember ? startDate.plusMonths(6) : startDate;
-
-    setBalance(balance);
   }
 
   /**
@@ -100,26 +83,6 @@ public final class Membership {
    */
   public void setUserId(Integer userId) {
     this.userId = userId;
-  }
-
-  /**
-   * Gets balance.
-   *
-   * @return the balance
-   */
-  public BigDecimal getBalance() {
-    return BigDecimal.valueOf(pounds + (pence / 100f));
-  }
-
-  /**
-   * Sets balance.
-   *
-   * @param balance the balance
-   */
-  public void setBalance(BigDecimal balance) {
-    double doubleBalance = balance.doubleValue();
-    this.pounds = (int) doubleBalance;
-    this.pence = (int) ((doubleBalance - pounds) * 100);
   }
 
   /**

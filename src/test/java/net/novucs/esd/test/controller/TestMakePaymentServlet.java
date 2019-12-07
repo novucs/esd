@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.MakePaymentServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
@@ -26,6 +25,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.test.util.TestDummyDataUtil;
+import net.novucs.esd.util.MembershipUtils;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +41,7 @@ public class TestMakePaymentServlet {
   private static final String AMOUNT_OWED = "amountOwed";
   private static final String DECIMAL_FORMAT = "#.##";
   private transient Session userSession;
+  private static final MembershipUtils membershipUtils = new MembershipUtils();
 
   /**
    * Initialise test.
@@ -53,10 +54,7 @@ public class TestMakePaymentServlet {
   private void setServletDaos(MakePaymentServlet servlet,
       User user,
       boolean withOldMembership,
-      boolean withCurrentMembership,
-      BigDecimal applicationBalance,
-      BigDecimal oldMembershipBalance,
-      BigDecimal currentMembershipBalance)
+      boolean withCurrentMembership)
       throws SQLException, ReflectiveOperationException {
 
     DaoManager dm = createTestDaoManager(true);
@@ -65,14 +63,12 @@ public class TestMakePaymentServlet {
     Dao<Membership> membershipDao = dm.get(Membership.class);
     Dao<Application> applicationDao = dm.get(Application.class);
     Application application = new Application(
-        user.getId(),
-        applicationBalance
+        user.getId()
     );
     //Integer userId, BigDecimal balance, String status, ZonedDateTime startDate
     if (withOldMembership) {
       Membership oldMembership = new Membership(
           user.getId(),
-          oldMembershipBalance,
           "EXPIRED",
           ZonedDateTime.now().minusMonths(15),
           false
@@ -83,8 +79,7 @@ public class TestMakePaymentServlet {
       application.setStatus("CLOSED");
       Membership newMembership = new Membership(
           user.getId(),
-          currentMembershipBalance,
-          MembershipUtils.STATUS_ACTIVE,
+          membershipUtils.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership
       );
@@ -117,10 +112,7 @@ public class TestMakePaymentServlet {
     setServletDaos(servlet,
         user,
         false,
-        false,
-        BigDecimal.ZERO,
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
+        false);
 
     userSession.setUser(user);
 
@@ -136,7 +128,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(membershipUtils.ANNUAL_FEE)));
   }
 
   /**
@@ -159,10 +151,7 @@ public class TestMakePaymentServlet {
     setServletDaos(servlet,
         user,
         false,
-        false,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
+        false);
 
     userSession.setUser(user);
 
@@ -200,10 +189,7 @@ public class TestMakePaymentServlet {
     setServletDaos(servlet,
         user,
         false,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
+        true);
 
     userSession.setUser(user);
 
@@ -219,7 +205,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(membershipUtils.ANNUAL_FEE)));
   }
 
   /**
@@ -242,10 +228,7 @@ public class TestMakePaymentServlet {
     setServletDaos(servlet,
         user,
         true,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO);
+        true);
 
     userSession.setUser(user);
 
@@ -261,7 +244,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(membershipUtils.ANNUAL_FEE)));
   }
 
   /**
@@ -284,10 +267,7 @@ public class TestMakePaymentServlet {
     setServletDaos(servlet,
         user,
         true,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE));
+        true);
 
     userSession.setUser(user);
 

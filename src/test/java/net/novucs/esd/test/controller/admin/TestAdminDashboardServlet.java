@@ -116,8 +116,8 @@ public class TestAdminDashboardServlet {
     Role member = new Role("Member");
     roleDao.insert(member);
     userRoleDao.insert(new UserRole(bob.getId(), member.getId()));
-    applicationDao.insert(new Application(bob.getId(), BigDecimal.ZERO));
-    Membership m = new Membership(bob.getId(), BigDecimal.ZERO, "active", ZonedDateTime.now(),
+    applicationDao.insert(new Application(bob.getId()));
+    Membership m = new Membership(bob.getId(), "active", ZonedDateTime.now(),
         true);
     membershipDao.insert(m);
     claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now(),

@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%@attribute name="amountOwed" type="java.lang.String"%>
-<%@ attribute name="noPaymentMessage"required="true" %>
+<%@ attribute name="noPaymentMessage"%>
 <%@ attribute name="paymentTitle" required="true" %>
 <%@ attribute name="paymentMessage" required="true" %>
 
