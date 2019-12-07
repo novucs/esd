@@ -42,21 +42,34 @@ public class TestAdminDashboardServlet {
 
   private static final String LAYOUT = "/layout.jsp";
 
+  /**
+   * Initiated the user and session for the servlet.
+   */
   @Before
   public void initialiseTest() {
     userSession = new Session();
     userSession.setUser(TestDummyDataUtil.getDummyUser());
   }
 
+  /**
+   * Test the request has the session.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testRequestHasSession()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
+
     // Given
     AdminDashboardServlet servlet = new AdminDashboardServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     setServletDaos(servlet);
+
     // When
     when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
@@ -68,6 +81,12 @@ public class TestAdminDashboardServlet {
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
 
+  /**
+   * Set the required databases for servlet.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   */
   private void setServletDaos(AdminDashboardServlet servlet)
       throws SQLException, ReflectiveOperationException {
     DaoManager daoManager = createTestDaoManager(true);
@@ -78,9 +97,19 @@ public class TestAdminDashboardServlet {
     ReflectUtil.setFieldValue(servlet, "claimDao", daoManager.get(Claim.class));
   }
 
+  /**
+   * Test the attributes required for servlet.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void requiredAttributesSet()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
+
+    // Given
     AdminDashboardServlet servlet = new AdminDashboardServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpSession httpSession = mock(HttpSession.class);
@@ -88,20 +117,27 @@ public class TestAdminDashboardServlet {
     setServletDaos(servlet);
     createRequiredAttributeData();
 
+    // When
     when(httpSession.getAttribute(eq("session"))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     servlet.doGet(request, response);
+
+    // Assert
+    verify(request).getRequestDispatcher(eq(LAYOUT));
     verify(request).setAttribute(eq("outstandingMemberApplications"), anyInt());
     verify(request).setAttribute(eq("currentMembers"), anyInt());
     verify(request).setAttribute(eq("outstandingBalances"), anyInt());
-    // Assert
-    verify(request).getRequestDispatcher(eq(LAYOUT));
   }
 
-  private void createRequiredAttributeData()
-      throws SQLException, ReflectiveOperationException {
+  /**
+   * Set the attribute data.
+   *
+   * @throws SQLException  the sql exception
+   */
+
+  private void createRequiredAttributeData() throws SQLException {
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -124,6 +160,9 @@ public class TestAdminDashboardServlet {
         ClaimStatus.PENDING));
   }
 
+  /**
+   * Test the servlet information.
+   */
   @Test
   public void testServletInfo() {
     // Given
