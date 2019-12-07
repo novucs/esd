@@ -26,13 +26,30 @@
                     <div class="row">
                         <div class="col s12 center-align">
                             <div class="row">
-                                <h6/>${paymentTitle}</h6>
                                 <br/>
-                                <div>
-                                 ${paymentMessage} &pound;${amountOwed}
+                                <div class="tab">
+                                  <button class="tablinks" onclick="choosePaymentMethod(event, 'card')">Card Payment</button>
+                                  <button class="tablinks" onclick="choosePaymentMethod(event, 'offline')">Offline Payment</button>
                                 </div>
                                 <br/>
-                                <t:form />
+                                <div id="card" class="tabcontent">
+                                    <h6/>${paymentTitle}</h6>
+                                    <div>
+                                        ${paymentMessage} &pound;${amountOwed}
+                                    </div>
+                                    <br/>
+                                    <t:form />
+                                </div>
+                                <div id="offline" class="tabcontent">
+                                    <h6/>Make a payment by bank transfer</h6>
+                                    <p>
+                                        Annual membership fee is &pound;${amountOwed}
+                                    </p>
+                                    <p>
+                                        Please make a bank transfer and provide the reference.
+                                    </p>
+                                    <t:offline />
+                                </div>
                             </div>
                         </div>
                     </div>

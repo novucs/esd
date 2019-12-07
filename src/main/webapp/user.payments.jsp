@@ -33,6 +33,9 @@
                     <c:when test="${payContext eq 'PAY_SUCCESS'}">
                       <t:success />
                     </c:when>
+                    <c:when test="${payContext eq 'PAY_RECEIVED'}">
+                      <t:received />
+                    </c:when>
                     <c:when test="${payContext eq 'PAY_FAIL'}">
                       <t:fail />
                     </c:when>
