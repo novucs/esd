@@ -54,8 +54,14 @@ public class Select<M> {
     return this;
   }
 
-  public long count(String count) throws SQLException {
-    this.count = count;
+  /**
+   * How far the selection should offset all matched results by.
+   *
+   * @param columnName name of the column to use when doing a count. * for all
+   * @return number of rows for the specified column.
+   */
+  public long count(String columnName) throws SQLException {
+    this.count = columnName;
     SQLBuilder builder = this.sql();
 
     try (Connection connection = this.dao.getConnectionSource().getConnection();
