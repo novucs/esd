@@ -28,7 +28,6 @@ import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
 public class TestAdminManageUsersServlet {
@@ -48,6 +47,11 @@ public class TestAdminManageUsersServlet {
   private static final String LAYOUT = "/layout.jsp";
 
   private static final String USER_DAO = "userDao";
+
+  private final AdminManageUsersServlet servlet = new AdminManageUsersServlet();
+  private final HttpServletResponse response = mock(HttpServletResponse.class);
+  private final HttpSession httpSession = mock(HttpSession.class);
+  private final HttpServletRequest request = mock(HttpServletRequest.class);
 
 
   /**
@@ -71,12 +75,7 @@ public class TestAdminManageUsersServlet {
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
-
     // Given
-    AdminManageUsersServlet servlet = new AdminManageUsersServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -85,8 +84,7 @@ public class TestAdminManageUsersServlet {
     // When
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+    esdWhen();
     servlet.doGet(request, response);
 
     // Assert
@@ -105,18 +103,13 @@ public class TestAdminManageUsersServlet {
   public void testPagination()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    AdminManageUsersServlet servlet = new AdminManageUsersServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpServletResponse response = mock(HttpServletResponse.class);
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
     userDao.insert(TestDummyDataUtil.getDummyUser());
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+    esdWhen();
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
     int pageSize = 15;
     when(userSession.getFilter(PAGE_SIZE_FILTER)).thenReturn(pageSize);
@@ -144,13 +137,8 @@ public class TestAdminManageUsersServlet {
   @Test
   public void testSearchQuery()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
-
     // Given
     int pageSize = 15;
-    AdminManageUsersServlet servlet = new AdminManageUsersServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpServletResponse response = mock(HttpServletResponse.class);
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -158,8 +146,7 @@ public class TestAdminManageUsersServlet {
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
 
     //When
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+    esdWhen();
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(userSession.getFilter(PAGE_SIZE_FILTER)).thenReturn(pageSize);
@@ -186,13 +173,7 @@ public class TestAdminManageUsersServlet {
   @Test
   public void testSetSearchQuery()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
-
     // Given
-    AdminManageUsersServlet servlet = new AdminManageUsersServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpSession httpSession = mock(HttpSession.class, Mockito.RETURNS_DEFAULTS);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -201,8 +182,7 @@ public class TestAdminManageUsersServlet {
 
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+    esdWhen();
     when(request.getParameter("search-users-query")).thenReturn(queryTest);
     servlet.doPost(request, response);
 
@@ -221,12 +201,7 @@ public class TestAdminManageUsersServlet {
   @Test
   public void testSetPageFilter()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
-
     // Given
-    AdminManageUsersServlet servlet = new AdminManageUsersServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -234,11 +209,10 @@ public class TestAdminManageUsersServlet {
     String pageSize = "30";
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+    esdWhen();
     when(request.getParameter("page-size")).thenReturn(pageSize);
-    servlet.doPost(request, response);
     when(request.getParameter(PAGE_SIZE_FILTER)).thenReturn(pageSize);
+    servlet.doPost(request, response);
 
     // Assert
     verify(userSession).setFilter(PAGE_SIZE_FILTER, Integer.parseInt(pageSize));
@@ -269,5 +243,11 @@ public class TestAdminManageUsersServlet {
   private void addUserData(Dao<User> userDao) throws SQLException {
     userDao.insert(TestDummyDataUtil.getDummyBobUser());
     userDao.insert(TestDummyDataUtil.getDummyAdminUser());
+  }
+
+  private void esdWhen() {
+    when(request.getSession(anyBoolean())).thenReturn(httpSession);
+    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+
   }
 }

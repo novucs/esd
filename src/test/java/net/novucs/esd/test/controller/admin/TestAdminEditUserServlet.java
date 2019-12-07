@@ -49,6 +49,11 @@ public class TestAdminEditUserServlet {
   private Role userRole;
   private Role adminRole;
 
+  private final AdminEditUserServlet servlet = new AdminEditUserServlet();
+  private final HttpServletResponse response = mock(HttpServletResponse.class);
+  private final HttpServletRequest request = mock(HttpServletRequest.class);
+  private final HttpSession session = mock(HttpSession.class);
+
   /**
    * Setup the roles, sessions and users for servlet.
    */
@@ -100,18 +105,10 @@ public class TestAdminEditUserServlet {
   public void testUpdateInvalidUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    AdminEditUserServlet servlet = new AdminEditUserServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn("696969");
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
@@ -131,16 +128,11 @@ public class TestAdminEditUserServlet {
   public void testUpdateUserDetails()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    AdminEditUserServlet servlet = new AdminEditUserServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
     String[] roles = {userRole.getId().toString(), adminRole.getId().toString()};
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    esdWhen();
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
         dummyUser.getId().toString());
     when(request.getParameter(eq("name"))).thenReturn(
@@ -152,16 +144,11 @@ public class TestAdminEditUserServlet {
     when(request.getParameter(eq("password1"))).thenReturn("");
     when(request.getParameter(eq("password2"))).thenReturn("");
     when(request.getParameterValues(eq("roles"))).thenReturn(roles);
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
+    esdAssert();
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
-    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   /**
@@ -176,16 +163,11 @@ public class TestAdminEditUserServlet {
   public void testUpdateUserPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    AdminEditUserServlet servlet = new AdminEditUserServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
     String[] roles = {userRole.getId().toString(), adminRole.getId().toString()};
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    esdWhen();
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
         dummyUser.getId().toString());
     when(request.getParameter(eq("name"))).thenReturn(
@@ -197,17 +179,12 @@ public class TestAdminEditUserServlet {
     when(request.getParameter(eq("password1"))).thenReturn("enterprise");
     when(request.getParameter(eq("password2"))).thenReturn("enterprise");
     when(request.getParameterValues(eq("roles"))).thenReturn(roles);
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
+    esdAssert();
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
-    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
     verify(request).setAttribute(eq("notice"), anyString());
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   /**
@@ -222,16 +199,11 @@ public class TestAdminEditUserServlet {
   public void testUpdateUserIncorrectRepeatedPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    AdminEditUserServlet servlet = new AdminEditUserServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
     String[] roles = {userRole.getId().toString(), adminRole.getId().toString()};
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    esdWhen();
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
         dummyUser.getId().toString());
     when(request.getParameter(eq("name"))).thenReturn(
@@ -243,16 +215,11 @@ public class TestAdminEditUserServlet {
     when(request.getParameter(eq("password1"))).thenReturn("enterprise");
     when(request.getParameter(eq("password2"))).thenReturn("depression");
     when(request.getParameterValues(eq("roles"))).thenReturn(roles);
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
+    esdAssert();
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
-    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   /**
@@ -267,18 +234,11 @@ public class TestAdminEditUserServlet {
   public void testGetInvalidEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    AdminEditUserServlet servlet = new AdminEditUserServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    esdWhen();
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn("696969");
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doGet(request, response);
 
     // Verify
@@ -298,26 +258,16 @@ public class TestAdminEditUserServlet {
   public void testGetEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    AdminEditUserServlet servlet = new AdminEditUserServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
 
     // When
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
-    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
-        dummyUser.getId().toString());
-    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+    esdWhen();
+    when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(dummyUser.getId().toString());
     servlet.doGet(request, response);
 
     // Verify
     verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
-    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
-    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
+    esdAssert();
   }
 
   /**
@@ -334,5 +284,19 @@ public class TestAdminEditUserServlet {
     // Assert
     assertTrue("getServletInfo must match the class name.",
         servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
+  }
+
+  private void esdWhen() {
+    when(request.getSession(anyBoolean())).thenReturn(session);
+    when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
+    when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
+        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+  }
+
+  private void esdAssert() {
+    verify(request).setAttribute(eq(EDIT_USER_LABEL), notNull());
+    verify(request).setAttribute(eq(AVAILABLE_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(EDIT_USER_ROLES_LABEL), any());
+    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 }
