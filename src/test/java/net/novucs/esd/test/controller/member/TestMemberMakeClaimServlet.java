@@ -132,6 +132,7 @@ public class TestMemberMakeClaimServlet {
 
     User user = new User(
         USER_NAME,
+        "test-user7",
         USER_EMAIL,
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
@@ -179,6 +180,7 @@ public class TestMemberMakeClaimServlet {
 
     User user = new User(
         USER_NAME,
+        "test-user8",
         USER_EMAIL,
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
@@ -230,6 +232,7 @@ public class TestMemberMakeClaimServlet {
 
     User user = new User(
         USER_NAME,
+        "test-user9",
         USER_EMAIL,
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
@@ -280,6 +283,7 @@ public class TestMemberMakeClaimServlet {
 
     User user = new User(
         USER_NAME,
+        "test-user10",
         USER_EMAIL,
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
@@ -333,6 +337,7 @@ public class TestMemberMakeClaimServlet {
 
     User user = new User(
         USER_NAME,
+        "test-user11",
         USER_EMAIL,
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
@@ -385,6 +390,7 @@ public class TestMemberMakeClaimServlet {
 
     User user = new User(
         USER_NAME,
+        "test-user12",
         USER_EMAIL,
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
@@ -436,6 +442,7 @@ public class TestMemberMakeClaimServlet {
 
     User user = new User(
         USER_NAME,
+        "test-user13",
         USER_EMAIL,
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
