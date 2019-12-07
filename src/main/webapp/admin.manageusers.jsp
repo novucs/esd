@@ -23,6 +23,7 @@
             <div id="users-table">
                 <table class="highlight">
                     <tr>
+                        <th>Username</th>
                         <th>Email</th>
                         <th>Name</th>
                         <th>Status</th>
@@ -31,6 +32,7 @@
                     </tr>
                     <c:forEach var="user" items="${users}">
                         <tr>
+                            <td>${user.username}</td>
                             <td>${user.email}</td>
                             <td>${user.name}</td>
                             <td>${user.status}</td>
