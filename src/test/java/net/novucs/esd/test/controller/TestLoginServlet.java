@@ -42,6 +42,13 @@ public class TestLoginServlet {
 
   private static final String SESSION = "session";
 
+  private HttpServletRequest request = mock(HttpServletRequest.class);
+  private LoginServlet loginServlet = new LoginServlet();
+  private HttpServletResponse response = mock(HttpServletResponse.class);
+  private HttpSession session = mock(HttpSession.class);
+  private Session esdSession = mock(Session.class);
+
+
   /**
    * Test request gets login page.
    *
@@ -50,14 +57,13 @@ public class TestLoginServlet {
    */
   @Test
   public void testRequestGetsLoginPage() throws ServletException, IOException {
-    HttpServletRequest request = mock(HttpServletRequest.class);
+
     when(request.getRequestDispatcher(LAYOUT_PAGE)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(mock(HttpSession.class));
 
-    LoginServlet servlet = new LoginServlet();
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    servlet.doGet(request, response);
+    loginServlet.doGet(request, response);
+
     verify(request).setAttribute("page", "/login.jsp");
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
   }
@@ -73,26 +79,26 @@ public class TestLoginServlet {
   @Test
   public void testLoginSuccess()
       throws SQLException, ReflectiveOperationException, ServletException, IOException {
+
+    // Given
     DaoManager dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
-
-    LoginServlet loginServlet = new LoginServlet();
     ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
     ReflectUtil.setFieldValue(loginServlet, "userRoleDao", dm.get(UserRole.class));
     ReflectUtil.setFieldValue(loginServlet, "roleDao", dm.get(Role.class));
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
     User userToLogin = userDao.select().where(new Where().eq("name", "Member")).first();
+
+    // When
     when(request.getParameter("username")).thenReturn(userToLogin.getEmail());
     when(request.getParameter("password")).thenReturn("password1");
-    HttpSession session = mock(HttpSession.class);
+
     when(request.getSession(anyBoolean())).thenReturn(session);
     when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
     when(session.getAttribute(eq(SESSION))).thenReturn(null);
 
-    HttpServletResponse response = mock(HttpServletResponse.class);
     loginServlet.doPost(request, response);
 
+    // Assert
     ArgumentCaptor<Session> argument = ArgumentCaptor.forClass(Session.class);
     verify(session, times(1)).setAttribute(eq(SESSION), argument.capture());
 
@@ -111,6 +117,8 @@ public class TestLoginServlet {
   @Test
   public void testPasswordIncorrect()
       throws SQLException, ReflectiveOperationException, ServletException, IOException {
+
+    // Given
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
@@ -127,26 +135,16 @@ public class TestLoginServlet {
     );
     userDao.insert(userToCreate);
 
-    LoginServlet loginServlet = new LoginServlet();
+    // When
     ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-
     User userToLogin = userDao.select().where(new Where().eq("name", "LoginTestUser2")).first();
     String incorrectPassword = "incorrectPassword";
-
     when(request.getParameter("username")).thenReturn(userToLogin.getEmail());
     when(request.getParameter("password")).thenReturn(incorrectPassword);
-
-    HttpSession session = mock(HttpSession.class);
-    Session esdSession = mock(Session.class);
-
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
-    when(session.getAttribute(SESSION)).thenReturn(esdSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    esdWhen(request);
     loginServlet.doPost(request, response);
 
+    //Assert
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
     verify(esdSession).pushError("Incorrect username or password");
   }
@@ -162,10 +160,12 @@ public class TestLoginServlet {
   @Test
   public void testUsernameIncorrect()
       throws SQLException, ReflectiveOperationException, ServletException, IOException {
+
+    // Given
+    String password = "correctPassword";
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
-
     User userToCreate = new User(
         "LoginTestUser3",
         "test-user3",
@@ -177,26 +177,22 @@ public class TestLoginServlet {
         1
     );
     userDao.insert(userToCreate);
-
-    LoginServlet loginServlet = new LoginServlet();
     ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
-    HttpServletRequest request = mock(HttpServletRequest.class);
 
-    String password = "correctPassword";
-
+    //When
     when(request.getParameter("username")).thenReturn("InvalidEmail@thisshouldnotwork.com");
     when(request.getParameter("password")).thenReturn(password);
-
-    HttpSession session = mock(HttpSession.class);
-    Session esdSession = mock(Session.class);
-
-    when(request.getSession(anyBoolean())).thenReturn(session);
-    when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    when(session.getAttribute(eq(SESSION))).thenReturn(esdSession);
-
+    esdWhen(request);
     loginServlet.doPost(request, response);
+
+    // Assert
     verify(request).getRequestDispatcher(LAYOUT_PAGE);
     verify(esdSession).pushError("Incorrect username or password");
+  }
+
+  private void esdWhen(HttpServletRequest request) {
+    when(request.getSession(anyBoolean())).thenReturn(session);
+    when(request.getRequestDispatcher(any())).thenReturn(mock(RequestDispatcher.class));
+    when(session.getAttribute(eq(SESSION))).thenReturn(esdSession);
   }
 }
