@@ -37,6 +37,7 @@
             <!-- Modal Trigger -->
             <button data-target="modal1" class="btn modal-trigger">Edit account details</button>
 
+
             <!-- Modal Structure -->
             <form method="post" action="">
                 <div id="modal1" class="modal">
@@ -94,12 +95,26 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </card>
                 </div>
+
             </form>
         </td>
     </tr>
     </tbody>
+    <% Boolean hasUpdated = (Boolean) request.getAttribute("updated"); %>
+    <% if (hasUpdated != null) { %>
+    <div class="row">
+        <div class="col s12">
+            <div class="card green">
+                <div class="card-content">
+                    You've successfully updated your account settings.
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
 </table>
 

@@ -65,12 +65,13 @@ public class UserSettingsServlet extends BaseServlet {
         && password.authenticate(request.getParameter("current_password"))) {
       user.setNeedsPasswordChange(0);
       user.setPassword(Password.fromPlaintext(newPassword));
-      request.setAttribute("updated", true);
     }
 
     // Save User
     try {
       userDao.update(user);
+      request.setAttribute("updated", true);
+      response.sendRedirect("settings");
     } catch (SQLException e) {
       Logger.getLogger(UserSettingsServlet.class.getName())
           .log(Level.SEVERE, "Unable to update account settings.", e);
@@ -78,9 +79,6 @@ public class UserSettingsServlet extends BaseServlet {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
-
-    // Feedback
-    super.forward(request, response, "Success", "User.Settings.Success");
   }
 
   @Override
