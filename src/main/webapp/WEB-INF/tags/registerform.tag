@@ -22,7 +22,7 @@
                         <div class="input-field">
                             <input name="username" id="username"
                                    type="text" readonly/>
-                            <label for="username">Generated Username</label>
+                            <label for="username">Potential Username</label>
                         </div>
                     </div>
                 </div>
