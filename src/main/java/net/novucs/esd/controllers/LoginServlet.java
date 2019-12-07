@@ -50,7 +50,12 @@ public class LoginServlet extends BaseServlet {
 
     User user;
     try {
-      user = userDao.select().where(new Where().eq("email", username)).first();
+      user = userDao.select().where(
+          new Where()
+            .eq("email", username)
+            .or()
+            .eq("username", username))
+          .first();
     } catch (SQLException e) {
       throw new IOException("Failed to communicate with database", e);
     }

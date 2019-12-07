@@ -10,7 +10,7 @@
         </div>
         <div class="row">
             <div class="col s12 center-align">
-                An account already exists for <strong>${username}</strong> try
+                An account already exists for <strong>${username}</strong>, try
                 logging in with it <a href="login">here</a>.
             </div>
         </div>
