@@ -49,17 +49,28 @@ public class TestAdminManageUsersServlet {
 
   private static final String USER_DAO = "userDao";
 
+  /**
+   * Initialise test user
+   */
   @Before
   public void initialiseTest() {
     userSession = mock(Session.class);
     userSession.setUser(TestDummyDataUtil.getDummyUser());
   }
 
+  /**
+   * Test edited user.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
-    // Given
 
+    // Given
     AdminManageUsersServlet servlet = new AdminManageUsersServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpSession httpSession = mock(HttpSession.class);
@@ -68,37 +79,51 @@ public class TestAdminManageUsersServlet {
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
+
     // When
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     servlet.doGet(request, response);
+
     // Assert
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
 
+  /**
+   * Test the pagination.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testPagination()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
+    // Given
     AdminManageUsersServlet servlet = new AdminManageUsersServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
     userDao.insert(TestDummyDataUtil.getDummyUser());
+
+    // When
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
     int pageSize = 15;
     when(userSession.getFilter(PAGE_SIZE_FILTER)).thenReturn(pageSize);
     when(userSession.getFilter(USER_SEARCH_QUERY)).thenReturn(null);
-    // When
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
+
+    // Assert
     verify(request).setAttribute(eq("users"), anyListOf(User.class));
     verify(request).setAttribute(eq("maxPages"), anyInt());
     verify(request).setAttribute(eq("pn"), anyDouble());
@@ -106,27 +131,40 @@ public class TestAdminManageUsersServlet {
     verify(request).getRequestDispatcher(eq("/layout.jsp"));
   }
 
+  /**
+   * Test the search query.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testSearchQuery()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
 
+    // Given
+    int pageSize = 15;
     AdminManageUsersServlet servlet = new AdminManageUsersServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
     this.addUserData(userDao);
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
+
+    //When
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    int pageSize = 15;
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(userSession.getFilter(PAGE_SIZE_FILTER)).thenReturn(pageSize);
     when(userSession.getFilter(USER_SEARCH_QUERY)).thenReturn("admin");
-    HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
+
+    // Assert
     verify(request).setAttribute(eq("users"), anyListOf(User.class));
     verify(request).setAttribute(eq("maxPages"), anyInt());
     verify(request).setAttribute(eq("pn"), anyDouble());
@@ -134,50 +172,79 @@ public class TestAdminManageUsersServlet {
     verify(request).getRequestDispatcher(eq(LAYOUT));
   }
 
+
+  /**
+   * Test the set search query.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testSetSearchQuery()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
 
+    // Given
     AdminManageUsersServlet servlet = new AdminManageUsersServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpSession httpSession = mock(HttpSession.class, Mockito.RETURNS_DEFAULTS);
     HttpServletRequest request = mock(HttpServletRequest.class);
+
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
     String queryTest = "queryTest";
+
+
+    // When
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getParameter("search-users-query")).thenReturn(queryTest);
     servlet.doPost(request, response);
+
+    // Assert
     verify(userSession).setFilter(USER_SEARCH_QUERY, queryTest);
   }
 
+  /**
+   * Test the set search query.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testSetPageFilter()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
 
+    // Given
     AdminManageUsersServlet servlet = new AdminManageUsersServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
-
     Dao<User> userDao = dm.get(User.class);
     ReflectUtil.setFieldValue(servlet, USER_DAO, userDao);
     String pageSize = "30";
+
+    // When
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getParameter("page-size")).thenReturn(pageSize);
     servlet.doPost(request, response);
     when(request.getParameter(PAGE_SIZE_FILTER)).thenReturn(pageSize);
+
+    // Assert
     verify(userSession).setFilter(PAGE_SIZE_FILTER, Integer.parseInt(pageSize));
   }
 
-
+  /**
+   * Test the servlets information.
+   */
   @Test
   public void testServletInfo() {
     // Given
@@ -190,6 +257,12 @@ public class TestAdminManageUsersServlet {
     assertTrue("getServletInfo must match the class name.",
         servletInfo.equalsIgnoreCase(servlet.getClass().getSimpleName()));
   }
+
+  /**
+   * Getting test dummy users from the databases.
+   *
+   * @throws SQLException      the sql exception
+   */
 
   private void addUserData(Dao<User> userDao) throws SQLException {
     userDao.insert(TestDummyDataUtil.getDummyBobUser());

@@ -49,6 +49,10 @@ public class TestAdminEditUserServlet {
   private Role userRole;
   private Role adminRole;
 
+  /**
+   * Setup the roles, sessions and users for servlet.
+   */
+
   @Before
   public void initialiseTest() {
     userSession = new Session();
@@ -57,6 +61,10 @@ public class TestAdminEditUserServlet {
     userRole = new Role("User");
     adminRole = new Role("Administrator");
   }
+
+  /**
+   * Setup the databases and dummy users for servlet.
+   */
 
   private void setServletDaos(AdminEditUserServlet servlet)
       throws ReflectiveOperationException, SQLException {
@@ -80,6 +88,14 @@ public class TestAdminEditUserServlet {
     ReflectUtil.setFieldValue(servlet, "roleDao", roleDao);
   }
 
+  /**
+   * Test updating an invalid user.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateInvalidUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -103,6 +119,14 @@ public class TestAdminEditUserServlet {
     verify(response).sendError(anyInt());
   }
 
+  /**
+   * Test updating user's details.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateUserDetails()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -140,6 +164,14 @@ public class TestAdminEditUserServlet {
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
+  /**
+   * Test updating the user's password.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateUserPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
@@ -178,6 +210,14 @@ public class TestAdminEditUserServlet {
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
+  /**
+   * Test inputting an incorrect password.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateUserIncorrectRepeatedPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
@@ -215,6 +255,14 @@ public class TestAdminEditUserServlet {
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
+  /**
+   * Test getting an updated invalid user.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testGetInvalidEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -238,6 +286,14 @@ public class TestAdminEditUserServlet {
     verify(response).sendError(anyInt());
   }
 
+  /**
+   * Test edited user.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testGetEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -264,6 +320,9 @@ public class TestAdminEditUserServlet {
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
+  /**
+   * Test servlet information.
+   */
   @Test
   public void testServletInfo() {
     // Given
