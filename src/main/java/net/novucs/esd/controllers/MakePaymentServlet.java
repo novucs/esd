@@ -177,13 +177,9 @@ public class MakePaymentServlet extends BaseServlet {
     ZonedDateTime now = ZonedDateTime.now();
     List<Membership> memberships = membershipDao.select()
         .where(new Where().eq("user_id", session.getUser().getId())).all();
-    for (Membership currentMembership : memberships) {
-      if (currentMembership.getStartDate().isBefore(now) && currentMembership.getEndDate()
-          .isAfter(now)) {
-        return currentMembership;
-      }
-    }
-    return null;
+    return memberships.stream()
+        .filter(m -> m.getStartDate().isBefore(now) && m.getEndDate().isAfter(now))
+        .findFirst().orElse(null);
   }
 
   @Override
