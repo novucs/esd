@@ -23,6 +23,7 @@
             <div id="users-table">
                 <table class="highlight">
                     <tr>
+                        <th>Username</th>
                         <th>Email</th>
                         <th>Name</th>
                         <th>Status</th>
@@ -31,6 +32,7 @@
                     </tr>
                     <c:forEach var="user" items="${users}">
                         <tr>
+                            <td>${user.username}</td>
                             <td>${user.email}</td>
                             <td>${user.name}</td>
                             <td>${user.status}</td>
@@ -75,4 +77,4 @@
         </div>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/js/admin.manageusers.js"></script>
+<script src="${pageContext.request.contextPath}/js/pagination.js" type="text/javascript"></script>

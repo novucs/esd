@@ -40,7 +40,7 @@ public class AdminManageUsersServlet extends BaseServlet {
       if (searchQuery == null) {
         users = PaginationUtil.paginate(userDao, pageSize, pageNumber);
       } else {
-        String[] columns = {"name", "email"};
+        String[] columns = {"name", "username", "email"};
         users = PaginationUtil.paginateWithSearch(userDao, pageSize, pageNumber,
             searchQuery, columns);
       }

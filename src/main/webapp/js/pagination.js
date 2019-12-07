@@ -1,6 +1,5 @@
-(function(){
-
-  init = () => {
+(function() {
+  let init = (() => {
     document.addEventListener('DOMContentLoaded', function() {
       const select = document.querySelectorAll('select');
       const instance = M.FormSelect.init(select, {});
@@ -10,7 +9,7 @@
       const options = Array.from(document.querySelectorAll("option"));
       options.map(o => {
         o.textContent = o.textContent.trim();
-      })
+      });
 
       const dd = instance[0].dropdown;
       const selectableOptions = Array.from(dd.el.nextSibling.children);
@@ -18,10 +17,7 @@
       selectableOptions[selectedIndex === 0 ? 1 : 0].click();
       selectableOptions[selectedIndex].click();
     });
-  }
+  });
 
-  return {
-    init
-  };
-
+  return { init };
 })().init();

@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="path" type="java.lang.String"%>
+<link rel="stylesheet" href="${baseUrl}/css/pagination.css" />
 <ul class="pagination">
     <c:choose>
         <c:when test="${pn == 1 || maxPages == 1}">

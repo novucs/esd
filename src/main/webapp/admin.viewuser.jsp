@@ -15,10 +15,15 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s6">
+                <div class="input-field col s3">
                     <input name="name" id="name" type="text" class="validate"
                            value="${user.name}" required disabled>
                     <label for="name">Name</label>
+                </div>
+                <div class="input-field col s3">
+                    <input name="username" id="username" type="text" class="validate"
+                           value="${user.username}" required disabled>
+                    <label for="username">Username</label>
                 </div>
                 <div class="input-field col s6">
                     <input name="date_of_birth" id="date_of_birth" type="date" class="validate"
