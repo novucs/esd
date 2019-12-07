@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.member.MemberMakeClaimServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
@@ -28,6 +29,7 @@ import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
+import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
@@ -95,7 +97,7 @@ public class TestMemberMakeClaimServlet {
     if (withCurrentMembership) {
       Membership newMembership = new Membership(
           user.getId(),
-          BigDecimal.valueOf(0),
+          BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
           membershipSuspended ? "SUSPENDED" : ACTIVE_MEMBERSHIP,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership
@@ -382,16 +384,7 @@ public class TestMemberMakeClaimServlet {
     MemberMakeClaimServlet servlet = new MemberMakeClaimServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
-
-    User user = new User(
-        USER_NAME,
-        USER_EMAIL,
-        Password.fromPlaintext(USER_PASSWORD),
-        USER_ADDRESS,
-        ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
-        0
-    );
+    User user = TestDummyDataUtil.getDummyUser();
 
     try {
       setServletDaos(servlet,

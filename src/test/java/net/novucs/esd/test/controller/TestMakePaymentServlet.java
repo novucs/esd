@@ -223,7 +223,7 @@ public class TestMakePaymentServlet {
   }
 
   /**
-   * Test request gets make payment membership to pay multiple.
+   * Test request gets make payment membership.
    *
    * @throws ServletException             the servlet exception
    * @throws IOException                  the io exception
@@ -231,51 +231,7 @@ public class TestMakePaymentServlet {
    * @throws ReflectiveOperationException the reflective operation exception
    */
   @Test
-  public void testRequestGetsMakePaymentMembershipToPayMultiple()
-      throws ServletException, IOException, SQLException, ReflectiveOperationException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
-    setServletDaos(servlet,
-        user,
-        true,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
-
-    userSession.setUser(user);
-
-    // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    servlet.doGet(request, response);
-
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
-    // Assert
-    verify(request).setAttribute(AMOUNT_OWED,
-        df.format(
-            BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE).multiply(BigDecimal.valueOf(2))));
-
-  }
-
-  /**
-   * Test request gets make payment membership to pay single.
-   *
-   * @throws ServletException             the servlet exception
-   * @throws IOException                  the io exception
-   * @throws SQLException                 the sql exception
-   * @throws ReflectiveOperationException the reflective operation exception
-   */
-  @Test
-  public void testRequestGetsMakePaymentMembershipToPaySingle()
+  public void testRequestGetsMakePaymentMembership()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
 
     MakePaymentServlet servlet = new MakePaymentServlet();

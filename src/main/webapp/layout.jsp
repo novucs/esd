@@ -15,7 +15,7 @@
   <head>
     <title>${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="icon" type="image/gif" href="${baseUrl}/assets/favicon.png" />
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">

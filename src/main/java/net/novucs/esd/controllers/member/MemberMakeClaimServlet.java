@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,18 +69,22 @@ public class MemberMakeClaimServlet extends BaseServlet {
         // User has never had a membership
         request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_NONE);
         super.forward(request, response, "Make A Claim", PAGE);
-
       } else {
         // User has or has had a membership at some point.
+        Membership lastMembership = getLastMembership(session, allUserMemberships,
+            getCurrentMembership(allUserMemberships));
+        allUserMemberships = membershipDao.select()
+            .where(new Where().eq("user_id", session.getUser().getId())).all();
         Membership currentMembership = getCurrentMembership(allUserMemberships);
-        if (currentMembership == null) {
+
+        assert currentMembership != null;
+        if (currentMembership.getBalance().compareTo(BigDecimal.ZERO) == 0) {
           // User has membership but not active
-          Membership lastMembership = getLastMembership(allUserMemberships);
-          request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_EXPIRED);
+          assert lastMembership != null;
           request.setAttribute("expiredDate", dateUtil
               .getFormattedDate(lastMembership.getEndDate()));
+          request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_EXPIRED);
           super.forward(request, response, "Membership Expired", PAGE);
-
         } else {
           // Membership is suspended
           if (currentMembership.getStatus().equalsIgnoreCase(MEMBER_STATUS_SUSPENDED)) {
@@ -116,7 +119,6 @@ public class MemberMakeClaimServlet extends BaseServlet {
                 super.forward(request, response, "New Claim", PAGE);
               } else {
                 // User is eligible to make a claim and max claim value needs to be calculated.
-
                 // Calculate how much is left from year quota.
                 BigDecimal remainingBalance = BigDecimal.valueOf(MAX_CLAIM_YEAR);
                 remainingBalance = remainingBalance
@@ -171,14 +173,31 @@ public class MemberMakeClaimServlet extends BaseServlet {
     return null;
   }
 
-  private Membership getLastMembership(List<Membership> memberships) {
-    Membership membership = memberships.get(0);
-    for (Iterator<Membership> m = memberships.iterator(); m.hasNext(); ) {
-      if (m.next().getEndDate().isAfter(membership.getEndDate())) {
-        membership = m.next();
+  private Membership getLastMembership(Session session, List<Membership> memberships,
+      Membership currentMembership)
+      throws SQLException {
+    Membership lastMembership = memberships.get(0);
+    if (currentMembership == null) {
+      for (Membership membership : memberships) {
+        if (membership.getStartDate().isAfter(lastMembership.getEndDate())) {
+          lastMembership = membership;
+        }
+      }
+      Membership renewMembership = new Membership(session.getUser().getId(),
+          BigDecimal.ZERO,
+          "EXPIRED",
+          lastMembership.getEndDate().plusDays(1),
+          false
+      );
+      membershipDao.insert(renewMembership);
+      return lastMembership;
+    }
+    for (Membership membership : memberships) {
+      if (membership.getStartDate().isAfter(currentMembership.getStartDate().minusMonths(13))) {
+        return membership;
       }
     }
-    return membership;
+    return null;
   }
 
   @Override
