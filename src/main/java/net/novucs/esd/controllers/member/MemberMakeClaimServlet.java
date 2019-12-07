@@ -42,7 +42,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
   private static final String MEMBER_STATUS_FULL_USED = "FULL_USED";
   private static final String MEMBER_STATUS_SUSPENDED = "SUSPENDED";
   private static final String MEMBER_STATUS_EXPIRED = "EXPIRED";
-
+  private static final DecimalFormat df = new DecimalFormat("#.##");
   @Inject
   private Dao<Membership> membershipDao;
 
@@ -55,88 +55,19 @@ public class MemberMakeClaimServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    DecimalFormat df = new DecimalFormat("#.##");
-    DateUtil dateUtil = new DateUtil();
     Session session = Session.fromRequest(request);
     List<Membership> allUserMemberships;
 
     request.setAttribute("claimStatus", STATUS_CREATE);
     try {
-      allUserMemberships = membershipDao.select()
-          .where(new Where().eq("user_id", session.getUser().getId())).all();
-
+      allUserMemberships = getAllMemberships(session);
       if (allUserMemberships.isEmpty()) {
         // User has never had a membership
         request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_NONE);
         super.forward(request, response, "Make A Claim", PAGE);
       } else {
-        // User has or has had a membership at some point.
-        Membership lastMembership = getLastMembership(session, allUserMemberships,
-            getCurrentMembership(allUserMemberships));
-        allUserMemberships = membershipDao.select()
-            .where(new Where().eq("user_id", session.getUser().getId())).all();
-        Membership currentMembership = getCurrentMembership(allUserMemberships);
-
-        assert currentMembership != null;
-        if (currentMembership.getBalance().compareTo(BigDecimal.ZERO) == 0) {
-          // User has membership but not active
-          assert lastMembership != null;
-          request.setAttribute("expiredDate", dateUtil
-              .getFormattedDate(lastMembership.getEndDate()));
-          request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_EXPIRED);
-          super.forward(request, response, "Membership Expired", PAGE);
-        } else {
-          // Membership is suspended
-          if (currentMembership.getStatus().equalsIgnoreCase(MEMBER_STATUS_SUSPENDED)) {
-            request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_SUSPENDED);
-            super.forward(request, response, "Membership Suspended", PAGE);
-
-          } else if (currentMembership.getClaimFromDate().isAfter(ZonedDateTime.now())) {
-            // Membership not eligible to claim yet.
-            request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_FULL_WAIT);
-            request.setAttribute("claimFrom", dateUtil
-                .getFormattedDate(currentMembership.getClaimFromDate()));
-            super.forward(request, response, "Ineligible for new claims", PAGE);
-
-          } else {
-            // Member is a full member and will be eligible depending on quota
-            List<Claim> allMembershipClaims = claimDao.select()
-                .where(new Where().eq("membership_id", currentMembership.getId())).all();
-
-            if (allMembershipClaims.size() == CLAIM_LIMIT) {
-              // User has no claims remaining.
-              request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_FULL_USED);
-              super.forward(request, response, "Claim quota reached", PAGE);
-
-            } else {
-              // User is eligible to make a claim and has the full remaining quota.
-              int memberId = currentMembership.getId();
-              request.getSession().setAttribute("membershipId", memberId);
-              if (allMembershipClaims.isEmpty()) {
-                request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_FULL_CLAIM);
-                request.setAttribute("remainingClaims", 2);
-                request.setAttribute("maxClaimValue", df.format(MAX_CLAIM_SINGLE));
-                super.forward(request, response, "New Claim", PAGE);
-              } else {
-                // User is eligible to make a claim and max claim value needs to be calculated.
-                // Calculate how much is left from year quota.
-                BigDecimal remainingBalance = BigDecimal.valueOf(MAX_CLAIM_YEAR);
-                remainingBalance = remainingBalance
-                    .subtract(allMembershipClaims.get(0).getAmount());
-
-                // If remaining quota is more than maximum single claim value, use max value.
-                remainingBalance =
-                    remainingBalance.compareTo(BigDecimal.valueOf(MAX_CLAIM_SINGLE)) > 0
-                        ? BigDecimal.valueOf(MAX_CLAIM_SINGLE) : remainingBalance;
-
-                request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_FULL_CLAIM);
-                request.setAttribute("remainingClaims", 1);
-                request.setAttribute("maxClaimValue", df.format(remainingBalance));
-                super.forward(request, response, "New Claim", PAGE);
-              }
-            }
-          }
-        }
+        // User has had a membership and may be eligible
+        evaluateEligibility(session, request, response, allUserMemberships);
       }
     } catch (SQLException e) {
       Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
@@ -148,13 +79,14 @@ public class MemberMakeClaimServlet extends BaseServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     try {
-      Claim claim = new Claim((int) request.getSession().getAttribute("membershipId"),
+      Claim claim = new Claim(
+          (int) request.getSession().getAttribute("membershipId"),
           new BigDecimal(request.getParameter("claim-value")),
-          ZonedDateTime.now(), ClaimStatus.PENDING);
+          ZonedDateTime.now(),
+          ClaimStatus.PENDING);
       claimDao.insert(claim);
     } catch (SQLException e) {
-      Logger.getLogger(MemberMakeClaimServlet.class.getName())
-          .log(Level.SEVERE, null, e);
+      Logger.getLogger(MemberMakeClaimServlet.class.getName()).log(Level.SEVERE, null, e);
       request.setAttribute("claimStatus", STATUS_FAIL);
       super.forward(request, response, "Database error", PAGE);
     }
@@ -162,21 +94,27 @@ public class MemberMakeClaimServlet extends BaseServlet {
     super.forward(request, response, "Claim successfully submitted", PAGE);
   }
 
-  private Membership getCurrentMembership(List<Membership> memberships) {
-    ZonedDateTime now = ZonedDateTime.now();
-    for (Membership currentMembership : memberships) {
-      if (currentMembership.getStartDate().isBefore(now) && currentMembership.getEndDate()
-          .isAfter(now)) {
-        return currentMembership;
-      }
-    }
-    return null;
+  private List<Membership> getAllMemberships(Session session) throws SQLException {
+    return membershipDao.select()
+        .where(new Where().eq("user_id", session.getUser().getId())).all();
   }
 
-  private Membership getLastMembership(Session session, List<Membership> memberships,
-      Membership currentMembership)
+  private List<Claim> getAllClaims(Membership currentMembership) throws SQLException {
+    return claimDao.select()
+        .where(new Where().eq("membership_id", currentMembership.getId())).all();
+  }
+
+  private Membership getCurrentMembership(List<Membership> memberships) {
+    ZonedDateTime now = ZonedDateTime.now();
+    return memberships.stream()
+        .filter(m -> m.getStartDate().isBefore(now) && m.getEndDate().isAfter(now))
+        .findFirst().orElse(null);
+  }
+
+  private Membership getLastMembership(Session session, List<Membership> memberships)
       throws SQLException {
     Membership lastMembership = memberships.get(0);
+    Membership currentMembership = getCurrentMembership(memberships);
     if (currentMembership == null) {
       for (Membership membership : memberships) {
         if (membership.getStartDate().isAfter(lastMembership.getEndDate())) {
@@ -191,13 +129,106 @@ public class MemberMakeClaimServlet extends BaseServlet {
       );
       membershipDao.insert(renewMembership);
       return lastMembership;
+    } else {
+      return memberships.stream()
+          .filter(m -> m.getStartDate().isAfter(currentMembership.getStartDate().minusMonths(13)))
+          .findFirst().orElse(null);
     }
-    for (Membership membership : memberships) {
-      if (membership.getStartDate().isAfter(currentMembership.getStartDate().minusMonths(13))) {
-        return membership;
+  }
+
+  private String evaluateRemainingClaimBalance(List<Claim> claims) {
+    BigDecimal maxSingleClaim = BigDecimal.valueOf(MAX_CLAIM_SINGLE);
+    BigDecimal balance = BigDecimal.valueOf(MAX_CLAIM_YEAR);
+    balance = balance.subtract(claims.get(0).getAmount());
+    balance = balance.compareTo(maxSingleClaim) > 0 ? maxSingleClaim : balance;
+    return df.format(balance);
+  }
+
+  private void membershipExpired(HttpServletRequest request,
+      HttpServletResponse response, String expiredDate) throws IOException, ServletException {
+    // User has membership but not active
+    request.setAttribute("expiredDate", expiredDate);
+    request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_EXPIRED);
+    super.forward(request, response, "Membership Expired", PAGE);
+  }
+
+  private void membershipSuspended(HttpServletRequest request,
+      HttpServletResponse response) throws IOException, ServletException {
+    request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_SUSPENDED);
+    super.forward(request, response, "Membership Suspended", PAGE);
+  }
+
+  private void membershipNotYetEligible(HttpServletRequest request,
+      HttpServletResponse response, String claimFromDate) throws IOException, ServletException {
+    request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_FULL_WAIT);
+    request.setAttribute("claimFrom", claimFromDate);
+    super.forward(request, response, "Ineligible for new claims", PAGE);
+  }
+
+  private void membershipEligibleToMakeClaims(HttpServletRequest request,
+      HttpServletResponse response, Membership currentMembership)
+      throws IOException, ServletException, SQLException {
+
+    List<Claim> allMembershipClaims = getAllClaims(currentMembership);
+
+    if (allMembershipClaims.size() == CLAIM_LIMIT) {
+      // User has no claims remaining.
+      request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_FULL_USED);
+      super.forward(request, response, "Claim quota reached", PAGE);
+
+    } else {
+      request.getSession().setAttribute("membershipId", currentMembership.getId());
+      if (allMembershipClaims.isEmpty()) {
+        // User is eligible to make a claim and has the full remaining quota.
+        request.setAttribute("remainingClaims", 2);
+        request.setAttribute("maxClaimValue", df.format(MAX_CLAIM_SINGLE));
+      } else {
+        // Member has made a claim previously and balance needs to be evaluated
+        request.setAttribute("remainingClaims", 1);
+        request.setAttribute("maxClaimValue",
+            evaluateRemainingClaimBalance(allMembershipClaims));
+      }
+      request.setAttribute(MEMBERSHIP_STATUS, MEMBER_STATUS_FULL_CLAIM);
+      super.forward(request, response, "New Claim", PAGE);
+    }
+  }
+
+  private void evaluateEligibility(Session session,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      List<Membership> allUserMemberships
+  ) throws SQLException, IOException, ServletException {
+    DateUtil dateUtil = new DateUtil();
+
+    // Get last membership first. If no current membership exists a new current membership is
+    // created and the expired membership returned as last membership.
+    Membership lastMembership = getLastMembership(session, allUserMemberships);
+
+    // Fetch all memberships again as this may have been updated.
+    allUserMemberships = getAllMemberships(session);
+
+    // Get currentMembership, this will correct however may need payment if previous had expired
+    Membership currentMembership = getCurrentMembership(allUserMemberships);
+
+    if (currentMembership.getBalance().compareTo(BigDecimal.ZERO) == 0) {
+
+      // currentMembership had expired so return expired membership page
+      String expiredDate = dateUtil.getFormattedDate(lastMembership.getEndDate());
+      membershipExpired(request, response, expiredDate);
+    } else {
+      if (currentMembership.getStatus().equalsIgnoreCase(MEMBER_STATUS_SUSPENDED)) {
+        // Membership is suspended
+        membershipSuspended(request, response);
+      } else if (currentMembership.getClaimFromDate().isAfter(ZonedDateTime.now())) {
+        // Membership is not yet 6 months old so is not eligible to make a claim yet
+        String claimFromDate = dateUtil.getFormattedDate(currentMembership.getClaimFromDate());
+        membershipNotYetEligible(request, response, claimFromDate);
+      } else {
+
+        // Member is eligible to make a claim dependant on how many claims they have already made.
+        membershipEligibleToMakeClaims(request, response, currentMembership);
       }
     }
-    return null;
   }
 
   @Override
