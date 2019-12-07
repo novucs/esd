@@ -70,7 +70,7 @@
     <div class="row" class="pagination-control">
         <div class="col s12 center-align">
             <ul class="pagination">
-                <p:pagination />
+                <p:pagination path="${pageContext.request.contextPath}/admin/users" />
             </ul>
         </div>
     </div>
