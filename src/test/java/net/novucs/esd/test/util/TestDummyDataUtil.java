@@ -15,6 +15,7 @@ public final class TestDummyDataUtil {
   public static User getDummyUser() {
     return new User(
         "testuser",
+        "dummy-testuser",
         "testuser@example.com",
         Password.fromPlaintext("test_pass"),
         "Line 1,Line 2,City,County,Postcode",
@@ -30,6 +31,7 @@ public final class TestDummyDataUtil {
 
     return new User(
         "bob",
+        "bob-testuser",
         "bob@bob.net",
         Password.fromPlaintext("bob"),
         "bob lane",
@@ -44,6 +46,7 @@ public final class TestDummyDataUtil {
     ZonedDateTime dateOfBirth = dateUtil.getDateFromString("1990-01-01");
     return new User(
         "admin",
+        "admin-testuser",
         "admin@admin.net",
         Password.fromPlaintext("bob"),
         "admin lane",
