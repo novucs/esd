@@ -132,7 +132,7 @@ public class AdminEditUserServlet extends BaseServlet {
     request.setAttribute("availableRoles", roleDao.select().all());
     request.setAttribute("editUserRoles", userRoleDao.select()
         .where(new Where().eq("user_id", user.getId())).all()
-        .stream().map(UserRole::getId)
+        .stream().map(UserRole::getRoleId)
         .collect(Collectors.toList()));
     request.setAttribute("editUser", user);
   }
