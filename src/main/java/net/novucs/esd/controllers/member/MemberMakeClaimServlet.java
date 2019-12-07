@@ -32,7 +32,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
   private static final int MAX_CLAIM_YEAR = 100;
   private static final float MAX_CLAIM_SINGLE = 75;
   private static final float CLAIM_LIMIT = 2;
-  private static final String PAGE = "member.claims";
+  private static final String PAGE = "member.makeclaim";
   private static final String MEMBERSHIP_STATUS = "membershipStatus";
   private static final String STATUS_CREATE = "CREATE";
   private static final String STATUS_SUCCESS = "SUCCESS";

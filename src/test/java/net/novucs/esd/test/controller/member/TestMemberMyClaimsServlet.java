@@ -13,7 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.controllers.member.MemberMyClaimsServlet;
+import net.novucs.esd.controllers.member.MemberManageClaimsServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.test.util.TestDummyDataUtil;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class TestMemberMyClaimsServlet {
   public void testRequestGetsMapAttribute()
       throws ServletException, IOException {
     // Given
-    MemberMyClaimsServlet servlet = new MemberMyClaimsServlet();
+    MemberManageClaimsServlet servlet = new MemberManageClaimsServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -57,7 +57,7 @@ public class TestMemberMyClaimsServlet {
   @Test
   public void testServletInfo() {
     // Given
-    MemberMyClaimsServlet servlet = new MemberMyClaimsServlet();
+    MemberManageClaimsServlet servlet = new MemberManageClaimsServlet();
 
     // When
     String servletInfo = servlet.getServletInfo();

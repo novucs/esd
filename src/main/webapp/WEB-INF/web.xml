@@ -44,12 +44,12 @@
     <url-pattern>/dashboard</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>MemberMyClaimsServlet</servlet-name>
-    <servlet-class>net.novucs.esd.controllers.member.MemberMyClaimsServlet</servlet-class>
+    <servlet-name>MemberManageClaimsServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.member.MemberManageClaimsServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>MemberMyClaimsServlet</servlet-name>
-    <url-pattern>/claims</url-pattern>
+    <servlet-name>MemberManageClaimsServlet</servlet-name>
+    <url-pattern>/member/claims</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>MemberMyPaymentsServlet</servlet-name>
