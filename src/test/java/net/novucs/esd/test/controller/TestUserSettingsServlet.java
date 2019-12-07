@@ -21,9 +21,7 @@ import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.UserSettingsServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
-import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.test.util.TestDummyDataUtil;
@@ -32,42 +30,58 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
+/**
+ * The type Test User Settings servlet.
+ */
+
 public class TestUserSettingsServlet {
 
   private static final String SESSION_LABEL = "session";
+
   private static final String USER_ID_LABEL = "userId";
+
   private static final String ERRORS_LABEL = "errors";
+
   private static final String LAYOUT_JSP_LABEL = "/layout.jsp";
 
   private transient Session userSession;
-  private transient Role userRole;
+
 
   @Before
   public void initialiseTest() {
     userSession = new Session();
     userSession.setUser(TestDummyDataUtil.getDummyAdminUser());
-    userRole = new Role("User");
   }
+  /**
+   * sets the Database servlet.
+   *
+   * @throws ReflectiveOperationException the reflective operator exception
+   * @throws SQLException the sql exception
+   */
 
   private void setServletDaos(UserSettingsServlet servlet)
       throws ReflectiveOperationException, SQLException {
+
+    // make sure that getting users is possible
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
     Dao<User> userDao = dm.get(User.class);
-    Dao<UserRole> userRoleDao = dm.get(UserRole.class);
-    Dao<Role> roleDao = dm.get(Role.class);
 
     // Insert our Dummy User with Roles
-    roleDao.insert(userRole);
     userDao.insert(userSession.getUser());
-    userRoleDao.insert(
-        new UserRole(userSession.getUser().getId(), userRole.getId())
-    );
 
     // Reflect DAO
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
   }
 
+  /**
+   * Test updating invalid users.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateInvalidUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -94,6 +108,14 @@ public class TestUserSettingsServlet {
     verify(response).sendError(anyInt());
   }
 
+  /**
+   * Test Updating the user's details.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateUserDetails()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -121,9 +143,17 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
+    verify(request).setAttribute(eq("updated"), eq(true));
   }
 
+  /**
+   * Test updating the user's password.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateUserPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
@@ -133,7 +163,6 @@ public class TestUserSettingsServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
     setServletDaos(servlet);
-    String[] roles = {userRole.getId().toString()};
 
     // When
     when(request.getSession(anyBoolean())).thenReturn(session);
@@ -148,16 +177,22 @@ public class TestUserSettingsServlet {
         "1970-01-01");
     when(request.getParameter(eq("current_password"))).thenReturn("bob");
     when(request.getParameter(eq("new_password"))).thenReturn("enterprise");
-    when(request.getParameterValues(eq("roles"))).thenReturn(roles);
     when(request.getRequestDispatcher(LAYOUT_JSP_LABEL)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     servlet.doPost(request, response);
 
     // Verify
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
+  /**
+   * Test an incorrect password update.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testUpdateUserIncorrectRepeatedPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
@@ -186,9 +221,17 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
+    verify(request).setAttribute(eq("updated"), eq(true));
   }
 
+  /**
+   * Test getting an invalid edited user.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testGetInvalidEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -211,6 +254,14 @@ public class TestUserSettingsServlet {
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
+  /**
+   * Test getting an edited user.
+   *
+   * @throws SQLException                 the sql exception
+   * @throws ReflectiveOperationException the reflective operation exception
+   * @throws ServletException             the servlet exception
+   * @throws IOException                  the io exception
+   */
   @Test
   public void testGetEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
@@ -232,6 +283,9 @@ public class TestUserSettingsServlet {
     verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
+  /**
+   * Test the servlet information.
+   */
   @Test
   public void testServletInfo() {
     // Given
