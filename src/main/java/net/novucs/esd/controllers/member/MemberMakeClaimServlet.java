@@ -19,6 +19,7 @@ import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
+import net.novucs.esd.util.ClaimUtil;
 
 /**
  * The type Member make claim servlet.
@@ -72,10 +73,8 @@ public class MemberMakeClaimServlet extends BaseServlet {
       }
 
       List<Claim> claims = getClaims(membership, claimDao);
-      claims.removeIf(claim -> claim.getStatus().equals(ClaimStatus.CANCELLED));
-      claims.removeIf(claim -> claim.getStatus().equals(ClaimStatus.REJECTED));
 
-      double total = getTotal(claims);
+      double total = ClaimUtil.getTotal(claims);
       request.setAttribute("membershipClaimValueToDate", String.format("%.2f", total));
       request.setAttribute("maxClaimValue", String.format("%.2f", MAX_CLAIM_VALUE_POUNDS - total));
       request.setAttribute("remainingClaims", Math.max(0, MAX_CLAIM_COUNT - claims.size()));
@@ -96,22 +95,10 @@ public class MemberMakeClaimServlet extends BaseServlet {
    */
   private List<Claim> getClaims(Membership membership, Dao<Claim> claimDao) throws SQLException {
     return claimDao.select()
-        .where(new Where().eq("membership_id", membership.getId()))
+        .where(new Where().eq("membership_id", membership.getId())
+            .and().eq("status", ClaimStatus.PENDING.name())
+            .or().eq("status", ClaimStatus.APPROVED.name()))
         .all();
-  }
-
-  /**
-   * Gets total.
-   *
-   * @param claims the claims
-   * @return the total
-   */
-  private double getTotal(List<Claim> claims) {
-    double total = 0;
-    for (Claim claim : claims) {
-      total += claim.getAmount().doubleValue();
-    }
-    return total;
   }
 
   @Override
@@ -135,7 +122,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
       }
 
       BigDecimal claimAmount = new BigDecimal(request.getParameter("claim-value"));
-      double total = getTotal(getClaims(membership, claimDao));
+      double total = ClaimUtil.getTotal(getClaims(membership, claimDao));
 
       if ((MAX_CLAIM_VALUE_POUNDS - total) < claimAmount.doubleValue()) {
         request.setAttribute("error", "You cannot make a claim of this amount");

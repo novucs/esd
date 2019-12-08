@@ -1,1 +1,3 @@
-function submitForm() {   document.cancelClaim.submit(); }
+function submitForm() {
+  document.cancelClaim.submit();
+}

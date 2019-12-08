@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags/member/makeclaim" %>
 <script src="${pageContext.request.contextPath}/js/makeclaim.js"></script>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="container">
     <div class="row">
@@ -12,7 +13,7 @@
                     Enter the new value of your claim.
                 </h6>
                 <p>
-                    The maximum amount for this claim is &pound;${maxClaimValue}.
+                    The maximum amount for this claim is &pound;<fmt:formatNumber type="number" maxFractionDigits="2" value="${maxClaimValue}"/>.
                 </p>
                 <form method="post" action="editclaim">
                     <div class="row">
@@ -45,26 +46,25 @@
                                     <div class="col s5 right"></div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col s12 center-align">
-                                    <div class="col s6 left"></div>
-                                    <div class="col s4 center">
-                                        <button id="submit-claim-button"
-                                                class="waves-effect btn secondary-content right-align"
-                                                type="submit" name="editclaim">
-                                            Submit
-                                        </button>
-                                    </div>
-                                    <div class="col s2 right"></div>
+                        <div class="row">
+                            <div class="col s12 center-align">
+                                <div class="col s6 left"></div>
+                                <div class="col s4 center">
+                                    <button id="submit-claim-button"
+                                            class="waves-effect btn secondary-content right-align"
+                                            type="submit" name="editclaim">
+                                        Submit
+                                    </button>
                                 </div>
-                            </div>
-                            <div class="col s8 left">Go back to your
-                                <a href="${pageContext.request.contextPath}/dashboard">
-                                    dashboard.</a>
+                                <div class="col s2 right"></div>
                             </div>
                         </div>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+</div>
+<div class="card-action">
+  <a href="${pageContext.request.contextPath}/dashboard">Back to dashboard</a>
 </div>

@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +39,6 @@ public class TestMemberEditClaimServlet {
   private static final String SESSION = "session";
   private static final String CLAIM_ID = "claimId";
   private transient Session userSession;
-  private Dao<Claim> claimDao;
 
   /**
    * Initialise test.
@@ -55,15 +51,12 @@ public class TestMemberEditClaimServlet {
   private void setServletDaos(MemberEditClaimServlet servlet,
       User user,
       boolean approvedClaim,
-      boolean falseClaim,
-      boolean pendingClaim,
-      boolean cancelledClaim,
-      double claimValue)
+      boolean cancelledClaim)
       throws SQLException, ReflectiveOperationException {
     DaoManager dm = createTestDaoManager(true);
     dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
-    claimDao = dm.get(Claim.class);
+    Dao<Claim> claimDao = dm.get(Claim.class);
     Dao<Membership> membershipDao = dm.get(Membership.class);
 
     userDao.insert(user);
@@ -72,22 +65,12 @@ public class TestMemberEditClaimServlet {
     membershipDao.insert(membership);
 
     if (approvedClaim) {
-      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
+      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(50.00),
           ZonedDateTime.now().minusDays(1), ClaimStatus.APPROVED);
       claimDao.insert(claim);
     }
-    if (falseClaim) {
-      Claim claim = new Claim(2, BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.PENDING);
-      claimDao.insert(claim);
-    }
-    if (pendingClaim) {
-      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.PENDING);
-      claimDao.insert(claim);
-    }
     if (cancelledClaim) {
-      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
+      Claim claim = new Claim(2, BigDecimal.valueOf(50.00),
           ZonedDateTime.now().minusDays(1), ClaimStatus.CANCELLED);
       claimDao.insert(claim);
     }
@@ -115,23 +98,15 @@ public class TestMemberEditClaimServlet {
     setServletDaos(servlet,
         user,
         true,
-        true,
-        false,
-        false,
-        50.0);
+        false);
 
     userSession.setUser(user);
-    String[] claimId = {claimDao.select().first().getId().toString()};
-    List<String> paramNames = new ArrayList<>();
-    paramNames.add(CLAIM_ID);
-
     // When
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(request.getParameterNames()).thenReturn(Collections.enumeration(paramNames));
-    when(request.getParameterValues(CLAIM_ID)).thenReturn(claimId);
+    when(request.getParameter(CLAIM_ID)).thenReturn("1");
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
@@ -160,23 +135,15 @@ public class TestMemberEditClaimServlet {
     setServletDaos(servlet,
         user,
         false,
-        true,
-        false,
-        false,
-        50.0);
+        true);
 
     userSession.setUser(user);
-    String[] claimId = {"1"};
-    List<String> paramNames = new ArrayList<>();
-    paramNames.add(CLAIM_ID);
-
     // When
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
     when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
-    when(request.getParameterNames()).thenReturn(Collections.enumeration(paramNames));
-    when(request.getParameterValues(CLAIM_ID)).thenReturn(claimId);
+    when(request.getParameter(CLAIM_ID)).thenReturn("1");
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
