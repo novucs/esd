@@ -126,11 +126,13 @@ public class MemberMakeClaimServlet extends BaseServlet {
         return;
       }
 
+      System.out.println("rationale: " + request.getParameter("claim-rationale"));
       claimDao.insert(new Claim(
           membership.getId(),
           claimAmount,
           ZonedDateTime.now(),
-          ClaimStatus.PENDING
+          ClaimStatus.PENDING,
+          request.getParameter("claim-rationale")
       ));
       super.forward(
           request, response, "Claim successfully submitted", "member.claim.success");
