@@ -15,8 +15,8 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import net.novucs.esd.constants.ApplicationUtils;
 import net.novucs.esd.model.Application;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Notification;
@@ -130,11 +130,11 @@ public class DatabaseLifecycle {
       daoManager.get(Application.class).insert(application);
     } else if ("ApprovedUser".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationUtils.STATUS_APPROVED);
+      application.setStatus(ApplicationStatus.APPROVED);
       daoManager.get(Application.class).insert(application);
     } else if ("Member".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationUtils.STATUS_PAID);
+      application.setStatus(ApplicationStatus.PAID);
       daoManager.get(Application.class).insert(application);
 
       daoManager.get(Membership.class).insert(new Membership(
@@ -145,7 +145,7 @@ public class DatabaseLifecycle {
       ));
     } else if ("NewMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationUtils.STATUS_PAID);
+      application.setStatus(ApplicationStatus.PAID);
       daoManager.get(Application.class).insert(application);
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(),
@@ -155,7 +155,7 @@ public class DatabaseLifecycle {
       ));
     } else if ("FullMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationUtils.STATUS_PAID);
+      application.setStatus(ApplicationStatus.PAID);
       daoManager.get(Application.class).insert(application);
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
@@ -166,7 +166,7 @@ public class DatabaseLifecycle {
       ));
     } else if ("ExpiredMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationUtils.STATUS_PAID);
+      application.setStatus(ApplicationStatus.PAID);
       daoManager.get(Application.class).insert(application);
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(

@@ -33,7 +33,7 @@ public final class Application {
    */
   public Application(Integer userId) {
     this.userId = userId;
-    this.status = "OPEN";
+    this.status = ApplicationStatus.OPEN.name();
   }
 
   /**
@@ -77,8 +77,8 @@ public final class Application {
    *
    * @return the status
    */
-  public String getStatus() {
-    return status;
+  public ApplicationStatus getStatus() {
+    return ApplicationStatus.valueOf(status);
   }
 
   /**
@@ -86,8 +86,8 @@ public final class Application {
    *
    * @param status the status
    */
-  public void setStatus(String status) {
-    this.status = status;
+  public void setStatus(ApplicationStatus status) {
+    this.status = status.name();
   }
 
   @Override

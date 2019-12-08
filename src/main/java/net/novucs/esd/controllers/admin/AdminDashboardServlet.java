@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.constants.ApplicationUtils;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.model.Application;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Role;
@@ -48,7 +48,7 @@ public class AdminDashboardServlet extends BaseServlet {
       List<User> numberOfUsers = userDao.select().all();
       List<UserRole> userRoles = userRoleDao.select().all();
       int outstandingApplications = applicationDao.select().where(new Where()
-          .eq("status", ApplicationUtils.STATUS_OPEN)).all().size();
+          .eq("status", ApplicationStatus.OPEN)).all().size();
       List<Claim> claims = claimDao.select().all();
       int numberOfClaims = claims.size();
       int members = 0;

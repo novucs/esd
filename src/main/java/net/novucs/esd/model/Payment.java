@@ -26,7 +26,7 @@ public final class Payment {
   @Column
   private Integer pence;
 
-  @Column
+  @Column(nullable = true)
   private String stripeId;
 
   @Column
@@ -146,6 +146,15 @@ public final class Payment {
    */
   public void setReference(String reference) {
     this.reference = reference;
+  }
+
+  /**
+   * Gets whether the payment was paid offline.
+   *
+   * @return <code>true</code> if the payment was paid offline.
+   */
+  public boolean wasPaidOffline() {
+    return stripeId == null;
   }
 
   @Override

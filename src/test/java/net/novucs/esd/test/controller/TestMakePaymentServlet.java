@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.MakePaymentServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
@@ -76,7 +77,7 @@ public class TestMakePaymentServlet {
       membershipDao.insert(oldMembership);
     }
     if (withCurrentMembership) {
-      application.setStatus("CLOSED");
+      application.setStatus(ApplicationStatus.APPROVED);
       Membership newMembership = new Membership(
           user.getId(),
           membershipUtils.STATUS_ACTIVE,
@@ -87,7 +88,6 @@ public class TestMakePaymentServlet {
     }
     applicationDao.insert(application);
 
-    ReflectUtil.setFieldValue(servlet, "userDao", userDao);
     ReflectUtil.setFieldValue(servlet, "membershipDao", membershipDao);
     ReflectUtil.setFieldValue(servlet, "applicationDao", applicationDao);
   }

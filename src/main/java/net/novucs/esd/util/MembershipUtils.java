@@ -27,12 +27,6 @@ public final class MembershipUtils {
     return df.format(ANNUAL_FEE);
   }
 
-  public Application getApplication(Session session, Dao<Application> applicationDao)
-      throws SQLException {
-    return applicationDao.select().where(new Where().eq("user_id",
-        session.getUser().getId())).first();
-  }
-
   public List<Claim> getAllClaims(Dao<Claim> claimDao, Membership currentMembership)
       throws SQLException {
     return claimDao.select()

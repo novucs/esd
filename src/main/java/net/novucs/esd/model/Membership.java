@@ -11,6 +11,8 @@ import net.novucs.esd.orm.Table;
 @Table
 public final class Membership {
 
+  public static final int LENGTH_IN_MONTHS = 12;
+
   @Column(primary = true)
   private Integer id;
 
@@ -24,7 +26,7 @@ public final class Membership {
   private ZonedDateTime claimFromDate;
 
   @Column
-  private String status;
+  private Integer suspended;
 
   /**
    * Instantiates a new Membership.
@@ -41,12 +43,11 @@ public final class Membership {
    * @param startDate   the start date
    * @param isNewMember the is new member
    */
-  public Membership(Integer userId, String status, ZonedDateTime startDate,
-      Boolean isNewMember) {
+  public Membership(Integer userId, Boolean isNewMember) {
     this.userId = userId;
-    this.status = status;
-    this.startDate = startDate;
+    this.startDate = ZonedDateTime.now();
     this.claimFromDate = isNewMember ? startDate.plusMonths(6) : startDate;
+    this.suspended = 0;
   }
 
   /**
@@ -86,25 +87,6 @@ public final class Membership {
   }
 
   /**
-   * Gets status.
-   *
-   * @return the status
-   */
-  public String getStatus() {
-    return status;
-  }
-
-  /**
-   * Sets status.
-   *
-   * @param status the status
-   */
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-
-  /**
    * Gets start date.
    *
    * @return the start date
@@ -120,6 +102,11 @@ public final class Membership {
    */
   public void setStartDate(ZonedDateTime startDate) {
     this.startDate = startDate;
+  }
+
+  public boolean isExpired() {
+    ZonedDateTime now = ZonedDateTime.now();
+    return now.toEpochSecond() < startDate.plusMonths(LENGTH_IN_MONTHS).toEpochSecond();
   }
 
   /**
@@ -147,6 +134,33 @@ public final class Membership {
    */
   public void setClaimFromDate(ZonedDateTime claimFromDate) {
     this.claimFromDate = claimFromDate;
+  }
+
+  /**
+   * Gets whether the membership is suspended.
+   *
+   * @return <code>true</code> if the membership is suspended.
+   */
+  public boolean isSuspended() {
+    return suspended != 0;
+  }
+
+  /**
+   * Update suspended status.
+   *
+   * @param suspended whether the user is suspended.
+   */
+  public void setSuspended(boolean suspended) {
+    this.suspended = suspended ? 1 : 0;
+  }
+
+  /**
+   * Gets whether the membership is active.
+   *
+   * @return <code>true</code> if the membership is active.
+   */
+  public boolean isActive() {
+    return !isSuspended() && !isExpired();
   }
 
   @Override
