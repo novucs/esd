@@ -88,7 +88,9 @@ public class MemberMakeClaimServlet extends BaseServlet {
             .where(new Where()
                 .eq("membership_id", membership.getId())
                 .and()
-                .neq("status", ClaimStatus.REJECTED.name()))
+                .neq("status", ClaimStatus.REJECTED.name())
+                .and()
+                .neq("status", ClaimStatus.CANCELLED.name()))
             .all();
   }
 
