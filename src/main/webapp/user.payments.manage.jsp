@@ -9,7 +9,7 @@
     <div class="row no-bottom-margin">
         <div class="col s3 input-field">
             <label for="search-users-query">Filter</label>
-            <input type="text" id="search-users-query" placeholder="Search your claims..."
+            <input type="text" id="search-users-query" placeholder="Search your payments..."
                    name="search-users-query" form="search-form"/>
         </div>
         <div class="col s2 input-field">
