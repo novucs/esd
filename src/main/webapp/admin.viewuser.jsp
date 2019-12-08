@@ -8,17 +8,22 @@
 
 <div>
     <form class="row" method="post" action="" role="form">
-        <div class="col s12 rounded-container info-section">
+        <div class="col s12 info-section">
             <div class="row">
                 <div class="col s12">
                     <h4>User Info</h4>
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s6">
+                <div class="input-field col s3">
                     <input name="name" id="name" type="text" class="validate"
                            value="${user.name}" required disabled>
                     <label for="name">Name</label>
+                </div>
+                <div class="input-field col s3">
+                    <input name="username" id="username" type="text" class="validate"
+                           value="${user.username}" required disabled>
+                    <label for="username">Username</label>
                 </div>
                 <div class="input-field col s6">
                     <input name="date_of_birth" id="date_of_birth" type="date" class="validate"
@@ -41,7 +46,7 @@
             </div>
         </div>
         <hr/>
-        <div class="col s12 rounded-container">
+        <div class="col s12">
             <div class="row">
                 <div class="col s12 center-align">
                     <ul class="tabs">

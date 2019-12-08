@@ -119,6 +119,8 @@ public class TestAdminEditUserServlet {
     when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
         dummyUser.getId().toString());
+    when(request.getParameter(eq("username"))).thenReturn(
+        "t-user");
     when(request.getParameter(eq("name"))).thenReturn(
         "Test User");
     when(request.getParameter(eq("email"))).thenReturn(
@@ -156,6 +158,8 @@ public class TestAdminEditUserServlet {
     when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
         dummyUser.getId().toString());
+    when(request.getParameter(eq("username"))).thenReturn(
+        "t-user");
     when(request.getParameter(eq("name"))).thenReturn(
         "Test User");
     when(request.getParameter(eq("email"))).thenReturn(
@@ -194,6 +198,8 @@ public class TestAdminEditUserServlet {
     when(session.getAttribute(eq(SESSION_LABEL))).thenReturn(userSession);
     when(request.getParameter(eq(USER_ID_LABEL))).thenReturn(
         dummyUser.getId().toString());
+    when(request.getParameter(eq("username"))).thenReturn(
+        "t-user");
     when(request.getParameter(eq("name"))).thenReturn(
         "Test User");
     when(request.getParameter(eq("email"))).thenReturn(
