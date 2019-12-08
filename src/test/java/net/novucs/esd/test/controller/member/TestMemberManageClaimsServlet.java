@@ -38,7 +38,6 @@ public class TestMemberManageClaimsServlet {
 
   private static final String LAYOUT = "/layout.jsp";
   private static final String SESSION = "session";
-  private static final String FEE = "fee";
   private transient Session userSession;
   private Dao<Claim> claimDao;
   private Dao<Membership> membershipDao;

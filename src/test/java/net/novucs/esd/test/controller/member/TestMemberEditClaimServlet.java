@@ -40,10 +40,9 @@ public class TestMemberEditClaimServlet {
 
   private static final String LAYOUT = "/layout.jsp";
   private static final String SESSION = "session";
-  private static final String FEE = "fee";
+  private static final String CLAIM_ID = "claimId";
   private transient Session userSession;
   private Dao<Claim> claimDao;
-  private Dao<Membership> membershipDao;
 
   /**
    * Initialise test.
@@ -65,7 +64,7 @@ public class TestMemberEditClaimServlet {
     dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
     claimDao = dm.get(Claim.class);
-    membershipDao = dm.get(Membership.class);
+    Dao<Membership> membershipDao = dm.get(Membership.class);
 
     userDao.insert(user);
     Membership membership =
@@ -122,9 +121,9 @@ public class TestMemberEditClaimServlet {
         50.0);
 
     userSession.setUser(user);
-    String[] claimId = new String[]{claimDao.select().first().getId().toString()};
-    List<String> paramNames = new ArrayList<String>();
-    paramNames.add("claimId");
+    String[] claimId = {claimDao.select().first().getId().toString()};
+    List<String> paramNames = new ArrayList<>();
+    paramNames.add(CLAIM_ID);
 
     // When
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
@@ -132,7 +131,7 @@ public class TestMemberEditClaimServlet {
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(request.getParameterNames()).thenReturn(Collections.enumeration(paramNames));
-    when(request.getParameterValues("claimId")).thenReturn(claimId);
+    when(request.getParameterValues(CLAIM_ID)).thenReturn(claimId);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
@@ -167,9 +166,9 @@ public class TestMemberEditClaimServlet {
         50.0);
 
     userSession.setUser(user);
-    String[] claimId = new String[]{"1"};
-    List<String> paramNames = new ArrayList<String>();
-    paramNames.add("claimId");
+    String[] claimId = {"1"};
+    List<String> paramNames = new ArrayList<>();
+    paramNames.add(CLAIM_ID);
 
     // When
     when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
@@ -177,7 +176,7 @@ public class TestMemberEditClaimServlet {
         (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
     when(request.getSession(anyBoolean())).thenReturn(httpSession);
     when(request.getParameterNames()).thenReturn(Collections.enumeration(paramNames));
-    when(request.getParameterValues("claimId")).thenReturn(claimId);
+    when(request.getParameterValues(CLAIM_ID)).thenReturn(claimId);
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 

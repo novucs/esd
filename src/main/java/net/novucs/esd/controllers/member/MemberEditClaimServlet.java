@@ -62,13 +62,13 @@ public class MemberEditClaimServlet extends BaseServlet {
       } else {
         // Valid edit request
 
-        List<Claim> claims = MemberMakeClaimServlet.getClaims(membership, claimDao);
+        List<Claim> claims = getClaims(membership);
         // Only interested in value of claims which have been approved or are still pending
         claims.removeIf(claim1 -> claim1.getStatus().equals(ClaimStatus.CANCELLED));
         claims.removeIf(claim1 -> claim1.getStatus().equals(ClaimStatus.REJECTED));
 
         // Calculate balance
-        double total = MemberMakeClaimServlet.getTotal(claims);
+        double total = getTotal(claims);
         Double claimValue = claim.getAmount().doubleValue();
         total -= claimValue;
 
@@ -140,6 +140,33 @@ public class MemberEditClaimServlet extends BaseServlet {
     return Collections.list(request.getParameterNames())
         .stream()
         .collect(Collectors.toMap(parameterName -> parameterName, request::getParameterValues));
+  }
+
+  /**
+   * Gets claims.
+   *
+   * @param membership the membership
+   * @return the claims
+   * @throws SQLException the sql exception
+   */
+  private List<Claim> getClaims(Membership membership) throws SQLException {
+    return claimDao.select()
+        .where(new Where().eq("membership_id", membership.getId()))
+        .all();
+  }
+
+  /**
+   * Gets total.
+   *
+   * @param claims the claims
+   * @return the total
+   */
+  private double getTotal(List<Claim> claims) {
+    double total = 0;
+    for (Claim claim : claims) {
+      total += claim.getAmount().doubleValue();
+    }
+    return total;
   }
 
   @Override

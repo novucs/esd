@@ -94,7 +94,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
    * @return the claims
    * @throws SQLException the sql exception
    */
-  static List<Claim> getClaims(Membership membership, Dao<Claim> claimDao) throws SQLException {
+  private List<Claim> getClaims(Membership membership, Dao<Claim> claimDao) throws SQLException {
     return claimDao.select()
         .where(new Where().eq("membership_id", membership.getId()))
         .all();
@@ -106,7 +106,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
    * @param claims the claims
    * @return the total
    */
-  static double getTotal(List<Claim> claims) {
+  private double getTotal(List<Claim> claims) {
     double total = 0;
     for (Claim claim : claims) {
       total += claim.getAmount().doubleValue();
