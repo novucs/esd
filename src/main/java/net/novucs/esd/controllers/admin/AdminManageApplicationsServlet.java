@@ -1,12 +1,7 @@
 package net.novucs.esd.controllers.admin;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +23,8 @@ import net.novucs.esd.util.PaginationUtil;
 public class AdminManageApplicationsServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
-
+  private static final Where WHERE_APPLICATION_IS_PAID = new Where()
+      .eq("status", ApplicationStatus.PAID.name());
   private static final String PAGE_SIZE_FILTER = "applicationPageSizeFilter";
 
   @Inject
@@ -36,57 +32,6 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   @Inject
   private Dao<User> userDao;
-
-  @SuppressWarnings("SqlResolve")
-  private List<ManageApplicationResult> manageApplicationResults(int offset, int limit)
-      throws SQLException {
-    try (PreparedStatement statement = userDao.getConnectionSource()
-        .getConnection().prepareStatement(
-            "SELECT "
-                + "    app.\"id\" AS \"app_id\", "
-                + "    \"user\".\"id\", "
-                + "    \"user\".\"name\", "
-                + "    \"user\".\"username\", "
-                + "    \"user\".\"email\", "
-                + "    \"user\".\"address\", "
-                + "    \"user\".\"date_of_birth\" "
-                + "FROM \"user\" "
-                + "LEFT JOIN \"application\" app on \"user\".\"id\" = app.\"user_id\" "
-                + "WHERE app.\"status\" = ? "
-                + "OFFSET ? ROWS "
-                + "FETCH NEXT ? ROWS ONLY ")) {
-      statement.setString(1, ApplicationStatus.PAID.name());
-      statement.setInt(2, offset);
-      statement.setInt(3, limit);
-
-      try (ResultSet resultSet = statement.executeQuery()) {
-        List<ManageApplicationResult> results = new ArrayList<>();
-
-        while (resultSet.next()) {
-          int applicationId = resultSet.getInt(1);
-          int userId = resultSet.getInt(2);
-          String name = resultSet.getString(3);
-          String username = resultSet.getString(4);
-          String email = resultSet.getString(5);
-          String address = resultSet.getString(6);
-          ZonedDateTime dateOfBirth = ZonedDateTime
-              .ofInstant(resultSet.getTimestamp(7).toInstant(), ZoneOffset.UTC);
-
-          results.add(new ManageApplicationResult(
-              applicationId,
-              userId,
-              name,
-              username,
-              email,
-              address,
-              dateOfBirth
-          ));
-        }
-
-        return results;
-      }
-    }
-  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -96,9 +41,19 @@ public class AdminManageApplicationsServlet extends BaseServlet {
       int pageSize = PaginationUtil.getPageSize(request, PAGE_SIZE_FILTER);
       int pageNumber = (int) PaginationUtil.getPageNumber(request);
       int offset = PaginationUtil.getOffset(pageSize, pageNumber);
-      List<ManageApplicationResult> results = manageApplicationResults(offset, pageSize);
+      long count = applicationDao.select().where(WHERE_APPLICATION_IS_PAID).count("*");
+      int maxPages = (int) Math.max(1, Math.ceil(count / (double) pageSize));
 
-      int maxPages = PaginationUtil.getMaxPages(userDao, pageSize);
+      List<Application> applications = applicationDao.select().where(WHERE_APPLICATION_IS_PAID)
+          .offset(offset).limit(pageSize).all();
+      List<User> users = userDao.join(applications, Application::getUserId);
+
+      List<ManageApplicationResult> results = applications.stream()
+          .flatMap(application -> users.stream()
+              .filter(user -> application.getUserId().equals(user.getId()))
+              .map(user -> new ManageApplicationResult(application, user)))
+          .collect(Collectors.toList());
+
       PaginationUtil.setRequestAttributes(request, maxPages, pageNumber, pageSize);
       request.setAttribute("results", results);
       request.setAttribute("toasts", getSession(request).getToasts());
@@ -113,7 +68,13 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    PaginationUtil.postPagination(request, PAGE_SIZE_FILTER);
     String method = request.getParameter("method");
+    if (method == null || method.isEmpty()) {
+      response.sendRedirect("applications");
+      return;
+    }
+
     List<Integer> applicationIds = Arrays
         .stream(request.getParameterMap().getOrDefault("application-id", new String[]{}))
         .map(Integer::parseInt)
@@ -147,8 +108,7 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   public void updateAllStatuses(HttpServletRequest request, ApplicationStatus status)
       throws SQLException {
-    List<Application> applications = applicationDao.select()
-        .where(new Where().eq("status", ApplicationStatus.PAID.name())).all();
+    List<Application> applications = applicationDao.select().where(WHERE_APPLICATION_IS_PAID).all();
     for (Application application : applications) {
       application.setStatus(status);
       applicationDao.update(application);

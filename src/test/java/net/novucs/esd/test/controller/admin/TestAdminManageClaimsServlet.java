@@ -1,6 +1,7 @@
 package net.novucs.esd.test.controller.admin;
 
 import static junit.framework.TestCase.assertTrue;
+import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.admin.AdminManageClaimsServlet;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.User;
+import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.test.util.TestDummyDataUtil;
+import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
@@ -36,9 +43,13 @@ public class TestAdminManageClaimsServlet {
 
   @Test
   public void testRequestGetsMapAttribute()
-      throws ServletException, IOException {
+      throws ServletException, IOException, SQLException, ReflectiveOperationException {
     // Given
     AdminManageClaimsServlet servlet = new AdminManageClaimsServlet();
+    DaoManager dm = createTestDaoManager(true);
+    ReflectUtil.setFieldValue(servlet, "claimDao", dm.get(Claim.class));
+    ReflectUtil.setFieldValue(servlet, "membershipDao", dm.get(Membership.class));
+    ReflectUtil.setFieldValue(servlet, "userDao", dm.get(User.class));
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);

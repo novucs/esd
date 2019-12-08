@@ -17,7 +17,6 @@ import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
-import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ClaimUtil;
 
 /**
@@ -26,8 +25,6 @@ import net.novucs.esd.util.ClaimUtil;
 public class MemberEditClaimServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
-
-  private static final Integer MAX_CLAIM_VALUE_POUNDS = 100;
 
   @Inject
   private Dao<Claim> claimDao;
@@ -44,13 +41,8 @@ public class MemberEditClaimServlet extends BaseServlet {
     int claimId = Integer.parseInt(request.getParameter("claimId"));
 
     try {
-      Claim claim = claimDao.select()
-          .where(new Where().eq("id", claimId))
-          .first();
-
-      Membership membership = membershipDao.select()
-          .where(new Where().eq("id", claim.getMembershipId()))
-          .first();
+      Claim claim = claimDao.selectById(claimId);
+      Membership membership = membershipDao.selectById(claim.getMembershipId());
 
       if (membership == null || !membership.getUserId().equals(user.getId())) {
         // Ensures the membership the claim is attached to belongs to the session user.
@@ -60,8 +52,7 @@ public class MemberEditClaimServlet extends BaseServlet {
       }
 
       // Valid edit request
-
-      List<Claim> claims = getClaims(membership);
+      List<Claim> claims = ClaimUtil.getNonRejectedClaims(claimDao, membership);
 
       // Calculate balance
       double total = ClaimUtil.getTotal(claims);
@@ -69,7 +60,7 @@ public class MemberEditClaimServlet extends BaseServlet {
       total -= claimValue;
 
       request.setAttribute("membershipClaimValueToDate", total);
-      request.setAttribute("maxClaimValue", MAX_CLAIM_VALUE_POUNDS - total);
+      request.setAttribute("maxClaimValue", Claim.MAX_VALUE_POUNDS - total);
       request.setAttribute("rationale", claim.getRationale());
 
       request.setAttribute("claimValue", String.format("%.2f", claimValue));
@@ -90,13 +81,8 @@ public class MemberEditClaimServlet extends BaseServlet {
     User user = session.getUser();
     int claimId = Integer.parseInt(request.getParameter("claimId"));
     try {
-      Claim claim = claimDao.select()
-          .where(new Where().eq("id", claimId))
-          .first();
-
-      Membership membership = membershipDao.select()
-          .where(new Where().eq("id", claim.getMembershipId()))
-          .first();
+      Claim claim = claimDao.selectById(claimId);
+      Membership membership = membershipDao.selectById(claim.getMembershipId());
 
       if (membership == null || !membership.getUserId().equals(user.getId())) {
         // Ensures the membership the claim is attached to belongs to the session user.
@@ -104,8 +90,9 @@ public class MemberEditClaimServlet extends BaseServlet {
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
       }
-      boolean deleteClaim = Boolean.parseBoolean(request.getParameter("cancel-claim"));
-      if (deleteClaim) {
+
+      boolean cancelClaim = Boolean.parseBoolean(request.getParameter("cancel-claim"));
+      if (cancelClaim) {
         // Claim requested for cancellation
         claim.setStatus(ClaimStatus.CANCELLED);
         claimDao.update(claim);
@@ -122,27 +109,10 @@ public class MemberEditClaimServlet extends BaseServlet {
       // Return to success page
       request.setAttribute("message", "You have successfully updated your claim");
       super.forward(request, response, "Manage Claims", "member.claim.success");
-
-
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
-  }
-
-  /**
-   * Gets claims.
-   *
-   * @param membership the membership
-   * @return the claims
-   * @throws SQLException the sql exception
-   */
-  private List<Claim> getClaims(Membership membership) throws SQLException {
-    return claimDao.select()
-        .where(new Where().eq("membership_id", membership.getId())
-            .and().eq("status", ClaimStatus.PENDING.name())
-            .or().eq("status", ClaimStatus.APPROVED.name()))
-        .all();
   }
 
   @Override

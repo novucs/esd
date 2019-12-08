@@ -28,8 +28,6 @@ public class MemberMakeClaimServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
   private static final String TITLE = "Make A Claim";
-  private static final Integer MAX_CLAIM_COUNT = 2;
-  private static final Integer MAX_CLAIM_VALUE_POUNDS = 100;
 
   @Inject
   private Dao<Membership> membershipDao;
@@ -72,33 +70,16 @@ public class MemberMakeClaimServlet extends BaseServlet {
         return;
       }
 
-      List<Claim> claims = getClaims(membership, claimDao);
-
+      List<Claim> claims = ClaimUtil.getNonRejectedClaims(claimDao, membership);
       double total = ClaimUtil.getTotal(claims);
-      request.setAttribute("membershipClaimValueToDate", String.format("%.2f", total));
-      request.setAttribute("maxClaimValue", String.format("%.2f", MAX_CLAIM_VALUE_POUNDS - total));
-      request.setAttribute("remainingClaims", Math.max(0, MAX_CLAIM_COUNT - claims.size()));
+      request.setAttribute("membershipClaimValueToDate", total);
+      request.setAttribute("maxClaimValue", Claim.MAX_VALUE_POUNDS - total);
+      request.setAttribute("remainingClaims", Math.max(0, Claim.CONCURRENT_LIMIT - claims.size()));
       super.forward(request, response, TITLE, "member.claim.create");
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
-  }
-
-  /**
-   * Gets claims.
-   *
-   * @param membership the membership
-   * @param claimDao   the claim dao
-   * @return the claims
-   * @throws SQLException the sql exception
-   */
-  private List<Claim> getClaims(Membership membership, Dao<Claim> claimDao) throws SQLException {
-    return claimDao.select()
-        .where(new Where().eq("membership_id", membership.getId())
-            .and().eq("status", ClaimStatus.PENDING.name())
-            .or().eq("status", ClaimStatus.APPROVED.name()))
-        .all();
   }
 
   @Override
@@ -122,9 +103,9 @@ public class MemberMakeClaimServlet extends BaseServlet {
       }
 
       BigDecimal claimAmount = new BigDecimal(request.getParameter("claim-value"));
-      double total = ClaimUtil.getTotal(getClaims(membership, claimDao));
+      double total = ClaimUtil.getTotal(ClaimUtil.getNonRejectedClaims(claimDao, membership));
 
-      if ((MAX_CLAIM_VALUE_POUNDS - total) < claimAmount.doubleValue()) {
+      if ((Claim.MAX_VALUE_POUNDS - total) < claimAmount.doubleValue()) {
         request.setAttribute("error", "You cannot make a claim of this amount");
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
