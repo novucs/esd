@@ -80,7 +80,7 @@ public class TestLoginServlet {
     ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
     ReflectUtil.setFieldValue(loginServlet, "userRoleDao", dm.get(UserRole.class));
     ReflectUtil.setFieldValue(loginServlet, "roleDao", dm.get(Role.class));
-    ReflectUtil.setFieldValue(loginServlet, "membershipDao", dm.get(Role.class));
+    //ReflectUtil.setFieldValue(loginServlet, "membershipDao", dm.get(Role.class));
     HttpServletRequest request = mock(HttpServletRequest.class);
 
     User userToLogin = userDao.select().where(new Where().eq("name", "Member")).first();

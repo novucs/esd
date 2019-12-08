@@ -50,7 +50,7 @@ public class MemberDashboardServlet extends BaseServlet {
       // Get total claims
       List<Membership> memberships = membershipDao.select()
           .where(new Where().eq("user_id", user.getId())).all();
-      if (memberships.size() > 0) {
+      if (!memberships.isEmpty()) {
         Where w = new Where();
         for (Membership m : memberships) {
           w = w.eq("membership_id", m.getId()).or();
