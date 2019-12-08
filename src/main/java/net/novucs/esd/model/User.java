@@ -37,9 +37,6 @@ public class User {
   @Column
   private ZonedDateTime dateOfBirth;
 
-  @Column
-  private String status;
-
   /**
    * Instantiates a new User.
    */
@@ -55,18 +52,16 @@ public class User {
    * @param password            the password
    * @param address             the address
    * @param dateOfBirth         the date of birth
-   * @param status              the status
    * @param needsPasswordChange does the User need a password change
    */
   public User(String name, String username, String email, Password password, String address,
-      ZonedDateTime dateOfBirth, String status, Integer needsPasswordChange) {
+      ZonedDateTime dateOfBirth, Integer needsPasswordChange) {
     this.name = name;
     this.username = username;
     this.email = email.toLowerCase(Locale.UK);
     this.password = password;
     this.address = address;
     this.dateOfBirth = dateOfBirth;
-    this.status = status;
     this.needsPasswordChange = needsPasswordChange;
   }
 
@@ -212,24 +207,6 @@ public class User {
    */
   public void setDateOfBirth(ZonedDateTime dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
-  }
-
-  /**
-   * Gets status.
-   *
-   * @return the status
-   */
-  public String getStatus() {
-    return status;
-  }
-
-  /**
-   * Sets status.
-   *
-   * @param status the status
-   */
-  public void setStatus(String status) {
-    this.status = status;
   }
 
   @Override

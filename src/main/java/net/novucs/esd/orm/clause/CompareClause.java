@@ -11,19 +11,22 @@ import net.novucs.esd.orm.SQLParameter;
 /**
  * The type Eq clause.
  */
-public class EqClause implements Clause {
+public class CompareClause implements Clause {
 
   private final String columnName;
+  private final CompareType compareType;
   private final Object value;
 
   /**
    * Instantiates a new Eq clause.
    *
-   * @param columnName the column name
-   * @param value      the value
+   * @param columnName  the column name
+   * @param compareType how the column should be compared to the value
+   * @param value       the value
    */
-  public EqClause(String columnName, Object value) {
+  public CompareClause(String columnName, CompareType compareType, Object value) {
     this.columnName = columnName;
+    this.compareType = compareType;
     this.value = value;
   }
 
@@ -34,6 +37,15 @@ public class EqClause implements Clause {
    */
   public String getColumnName() {
     return columnName;
+  }
+
+  /**
+   * Gets the compare type.
+   *
+   * @return the compare type.
+   */
+  public CompareType getCompareType() {
+    return compareType;
   }
 
   /**
@@ -49,7 +61,23 @@ public class EqClause implements Clause {
   public SQLBuilder sql() {
     StringJoiner clauseJoiner = new StringJoiner(" ");
     clauseJoiner.add(quoted(this.getColumnName()));
-    clauseJoiner.add("= ?");
+
+    switch (this.compareType) {
+      case EQUALS:
+        clauseJoiner.add("= ?");
+        break;
+      case NOT_EQUALS:
+        clauseJoiner.add("!= ?");
+        break;
+      case GREATER_THAN:
+        clauseJoiner.add("> ?");
+        break;
+      case LESS_THAN:
+        clauseJoiner.add("< ?");
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported operation: " + this.compareType.name());
+    }
 
     List<SQLParameter> parameters = new ArrayList<>();
     parameters.add(new SQLParameter(value.getClass(), value));

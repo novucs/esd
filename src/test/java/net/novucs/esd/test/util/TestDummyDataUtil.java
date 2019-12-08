@@ -20,7 +20,6 @@ public final class TestDummyDataUtil {
         Password.fromPlaintext("test_pass"),
         "Line 1,Line 2,City,County,Postcode",
         new DateUtil().getDateFromString("2000-01-01"),
-        "APPLICATION",
         1
     );
   }
@@ -36,7 +35,6 @@ public final class TestDummyDataUtil {
         Password.fromPlaintext("bob"),
         "bob lane",
         dateOfBirth,
-        "great",
         1
     );
   }
@@ -51,7 +49,6 @@ public final class TestDummyDataUtil {
         Password.fromPlaintext("bob"),
         "admin lane",
         dateOfBirth,
-        "depressed",
         1
     );
   }

@@ -2,12 +2,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="p" tagdir="/WEB-INF/tags/pagination" %>
+<script src="${pageContext.request.contextPath}/js/cancelclaim.js"></script>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div>
     <div class="row no-bottom-margin">
         <div class="col s3 input-field">
             <label for="search-users-query">Filter</label>
-            <input type="text" id="search-users-query" placeholder="Search for users.."
+            <input type="text" id="search-users-query" placeholder="Search your claims..."
                    name="search-users-query" form="search-form"/>
         </div>
         <div class="col s2 input-field">
@@ -23,31 +25,19 @@
             <div id="users-table">
                 <table class="highlight">
                     <tr>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Name</th>
-                        <th>View</th>
-                        <th>Edit</th>
+                        <th>Payment ID</th>
+                        <th>User ID</th>
+                        <th>Amount</th>
+                        <th>Reference</th>
+                        <th>Status</th>
                     </tr>
-                    <c:forEach var="user" items="${users}">
+                    <c:forEach var="payment" items="${payments}">
                         <tr>
-                            <td>${user.username}</td>
-                            <td>${user.email}</td>
-                            <td>${user.name}</td>
-                            <td class="managed-icon">
-                                <a href="${pageContext.request.contextPath}/admin/viewuser?userId=${user.id}">
-                                    <i class="material-icons small">
-                                        search
-                                    </i>
-                                </a>
-                            </td>
-                            <td class="managed-icon">
-                                <a href="${pageContext.request.contextPath}/admin/edituser?userId=${user.id}">
-                                    <i class="material-icons small">
-                                        edit
-                                    </i>
-                                </a>
-                            </td>
+                            <td>${payment.id}</td>
+                            <td>${payment.userId}</td>
+                            <td>&pound;&nbsp;<fmt:formatNumber type="number" maxFractionDigits="2" value="${payment.getAmount()}"/></td>
+                            <td>${payment.stripeId != null ? "Card Payment" : payment.reference}</td>
+                            <td><i class="material-icons small">${payment.approvalStatus == 'VERIFIED' ? 'check' : 'av_timer'}</i></td>
                         </tr>
                     </c:forEach>
                 </table>
@@ -70,9 +60,9 @@
     <div class="row" class="pagination-control">
         <div class="col s12 center-align">
             <ul class="pagination">
-                <p:pagination path="${pageContext.request.contextPath}/admin/users" />
+                <p:pagination />
             </ul>
         </div>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/js/pagination.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/js/admin.manageusers.js"></script>

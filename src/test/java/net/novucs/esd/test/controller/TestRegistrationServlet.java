@@ -102,7 +102,6 @@ public class TestRegistrationServlet {
         password,
         "House, A Street, A city, County, AB12 C34",
         dateOfBirth,
-        "APPLICATION",
         1
     );
 
@@ -158,7 +157,6 @@ public class TestRegistrationServlet {
         password,
         "House, A Street, A city, County, AB12 C34",
         dateOfBirth,
-        "APPLICATION",
         1
     );
 
