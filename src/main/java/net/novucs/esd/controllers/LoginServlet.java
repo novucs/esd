@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
@@ -38,6 +39,9 @@ public class LoginServlet extends BaseServlet {
 
   @Inject
   private Dao<Role> roleDao;
+
+  @Inject
+  private Dao<Membership> membershipDao;
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -103,8 +107,10 @@ public class LoginServlet extends BaseServlet {
             .first();
         roles.add(role);
       }
-
       session.setRoles(roles);
+
+      // Validate roles
+      validateMemberships(user);
 
       if (roles.stream().anyMatch(r -> r.getName()
           .toLowerCase(Locale.getDefault()).equals("administrator"))) {
@@ -115,6 +121,25 @@ public class LoginServlet extends BaseServlet {
       response.sendRedirect("dashboard");
     } catch (SQLException ex) {
       Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+    }
+  }
+
+  private void validateMemberships(User user) throws SQLException {
+    List<Membership> memberships = membershipDao.select()
+        .where(new Where().eq("user_id", user.getId()))
+        .all();
+    Membership membership = memberships.stream()
+        .filter(m -> !m.isExpired()).findFirst().orElse(null);
+
+    if (membership != null) {
+      // Delete and Re-add User Roles
+      Integer userRoleId = roleDao.select()
+          .where(new Where().eq("name", "User"))
+          .first().getId();
+      userRoleDao.delete(userRoleDao.select()
+          .where(new Where().eq("user_id", user.getId()))
+          .all());
+      userRoleDao.insert(new UserRole(user.getId(), userRoleId));
     }
   }
 
