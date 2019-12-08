@@ -112,7 +112,7 @@ public class MakePaymentServlet extends BaseServlet {
 
   private void forwardMakePayment(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    request.setAttribute("amountOwed", ANNUAL_FEE_POUNDS);
+    request.setAttribute("fee", ANNUAL_FEE_POUNDS);
     super.forward(request, response, "Membership Payment", "user.makepayment.pay");
   }
 

@@ -18,7 +18,7 @@
                 <br/>
                 <div id="card" class="tabcontent">
                     <h6>Pay your membership fees</h6>
-                    <div>You have an outstanding balance of &pound;${amountOwed}</div>
+                    <div>You have an outstanding balance of &pound;${fee}</div>
                     <br/>
                     <div class="col s3 left"></div>
                     <div class="col s6 center-align">
@@ -53,14 +53,14 @@
                             </div>
                             <br/>
                             <button class="waves-effect btn secondary-content left-align">
-                                Pay &pound;${amountOwed}
+                                Pay &pound;${fee}
                             </button>
                         </form>
                     </div>
                 </div>
                 <div id="offline" class="tabcontent">
                     <h6>Make a payment by bank transfer</h6>
-                    <p>Annual membership fee is &pound;${amountOwed}</p>
+                    <p>Annual membership fee is &pound;${fee}</p>
                     <p>Please make a bank transfer and provide the reference.</p>
 
                     <div class="col s3 left"></div>
@@ -88,7 +88,7 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script src="${pageContext.request.contextPath}/js/user.payments.js"></script>
 <script type="text/javascript">
-  const amountOwed = parseInt('<%=request.getAttribute("amountOwed")%>');
+  const fee = parseInt('<%=request.getAttribute("fee")%>');
   const reference = '<%=request.getAttribute("payContext")%>';
-  initStripe(amountOwed, reference);
+  initStripe(fee, reference);
 </script>
