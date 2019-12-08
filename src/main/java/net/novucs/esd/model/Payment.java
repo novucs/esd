@@ -1,6 +1,7 @@
 package net.novucs.esd.model;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
@@ -33,6 +34,9 @@ public final class Payment {
   private String reference;
 
   @Column
+  private ZonedDateTime date;
+
+  @Column
   private String approvalStatus;
 
   /**
@@ -49,15 +53,17 @@ public final class Payment {
    * @param amount    the amount
    * @param stripeId  the stripe id
    * @param reference the reference
+   * @param date      the payment date
    */
   public Payment(Integer userId, BigDecimal amount, String stripeId, String reference,
-      String approvalStatus) {
+      ZonedDateTime date, String approvalStatus) {
     this.userId = userId;
     double doubleBalance = amount.doubleValue();
     pounds = (int) doubleBalance;
     pence = (int) ((doubleBalance - pounds) * 100);
     this.stripeId = stripeId;
     this.reference = reference;
+    this.date = date;
     this.approvalStatus = approvalStatus;
   }
 
@@ -154,6 +160,24 @@ public final class Payment {
   }
 
   /**
+   * Get payment date.
+   *
+   * @return date
+   */
+  public ZonedDateTime getDate() {
+    return date;
+  }
+
+  /**
+   * Set payment date.
+   *
+   * @param date the date
+   */
+  public void setDate(ZonedDateTime date) {
+    this.date = date;
+  }
+
+  /**
    * Gets approval status.
    *
    * @return the approval status
@@ -172,7 +196,7 @@ public final class Payment {
   }
 
   /**
-   * Was paid offline boolean.
+   * Gets whether the payment was paid offline.
    *
    * @return the boolean
    */
@@ -189,19 +213,11 @@ public final class Payment {
       return false;
     }
     Payment payment = (Payment) o;
-    return Objects.equals(getId(), payment.getId())
-        && Objects.equals(getUserId(), payment.getUserId())
-        && Objects.equals(pounds, payment.pounds)
-        && Objects.equals(pence, payment.pence)
-        && Objects.equals(getStripeId(), payment.getStripeId())
-        && Objects.equals(getReference(), payment.getReference())
-        && Objects.equals(getApprovalStatus(), payment.getApprovalStatus());
+    return Objects.equals(getId(), payment.getId());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getUserId(), pounds, pence, getStripeId(), getReference(),
-        getApprovalStatus());
+    return Objects.hash(getId());
   }
-
 }
