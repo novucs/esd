@@ -8,7 +8,7 @@
 
 <div>
     <form class="row" method="post" action="" role="form">
-        <div class="col s12 rounded-container info-section">
+        <div class="col s12 info-section">
             <div class="row">
                 <div class="col s12">
                     <h4>User Info</h4>
@@ -46,7 +46,7 @@
             </div>
         </div>
         <hr/>
-        <div class="col s12 rounded-container">
+        <div class="col s12">
             <div class="row">
                 <div class="col s12 center-align">
                     <ul class="tabs">
