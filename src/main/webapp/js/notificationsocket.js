@@ -28,7 +28,7 @@ class NotificationSocket {
     M.toast({
       html: notification.message,
       classes:  `${notificationColour} black-text`,
-      displayLength: 9999,
+      displayLength: 5000,
       activationPercent: 0.3
     });
   }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.bean.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -14,7 +15,7 @@ import javax.websocket.Session;
 import net.novucs.esd.model.Notification;
 import net.novucs.esd.orm.Dao;
 
-@ApplicationScoped
+@Singleton
 public class NotificationSessionHandler {
 
   private final Map<String, NotificationSession> sessions = new ConcurrentHashMap<>();
@@ -22,25 +23,31 @@ public class NotificationSessionHandler {
   @Inject
   private Dao<Notification> notificationDao;
 
-  public void addSession(String userId, NotificationSession session) {
-    sessions.put(userId, session);
+  public void addSession(String sessionId, NotificationSession session) {
+    sessions.put(sessionId, session);
   }
 
   public void removeSession(Session session) {
-    Optional<NotificationSession> toRemove = sessions.values().stream().filter(
-        s -> s.getSession().getId() == session.getId()).findFirst();
-    sessions.remove(toRemove.get().getUserId());
+    sessions.remove(session.getId());
   }
 
   public NotificationSession getSession(String sessionId) {
     return sessions.get(sessionId);
   }
 
-  public void sendNotification(Notification notification) throws IOException, SQLException {
+  public synchronized void sendNotification(Notification notification)
+      throws IOException, SQLException {
+    this.sendNotification(notification, false);
+  }
+
+  public synchronized void sendNotification(Notification notification, boolean polling)
+      throws IOException, SQLException {
+
     NotificationSession recipientSession = sessions.values().stream().filter(s ->
         s.getUserId() == notification.getRecipientId()).findFirst().orElse(null);
 
-    if (recipientSession == null) {
+    if (recipientSession == null ||
+        (notification.getRecipientId() == notification.getSenderId()) && !polling) {
       notificationDao.insert(notification);
     } else {
 
