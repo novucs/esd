@@ -17,6 +17,43 @@ body {
       z-index: 0;
     }
   }
+
+  &.xyz-homepage {
+    /* Car background */
+    main {
+      background-color: black;
+
+      #homepage-container {
+        > .card {
+          margin-top: 6em;
+          background-color: transparent;
+
+          > .card-content {
+            background-color: white;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+          }
+
+          > .card-action {
+            background-color: rgb(240, 240, 240);
+          }
+        }
+
+        .brand-logo {
+          font-weight: lighter;
+          padding-left: 15px;
+          text-align: center;
+
+          > span:first-child {
+            font-weight: bolder;
+            border: solid black 3px;
+            padding: 0px 7px 0px 7px;
+            border-radius: 7px;
+          }
+        }
+      }
+    }
+  }
 }
 
 .nav-wrapper {
@@ -66,6 +103,14 @@ main {
   &.container {
     background-color: white;
   }
+
+  > .car-background {
+    background-image: url("../assets/cars.jpg");
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    opacity: 0.15;
+  }
 }
 
 .page-footer {
@@ -113,6 +158,10 @@ nav {
 
 .text-center {
   text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .row {
@@ -173,6 +222,10 @@ body {
   width: 100px;
 }
 
+.w200px {
+  width: 200px;
+}
+
 .bold-text {
   font-weight: bold;
 }
@@ -183,4 +236,12 @@ body {
 
 .f-right {
   float: right;
+}
+
+table {
+  &.no-border-last {
+    tr:last-child {
+      border-bottom: none;
+    }
+  }
 }

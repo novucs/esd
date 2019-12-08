@@ -29,12 +29,13 @@
       <script type="text/javascript">
         const userId = "${user.id}";
       </script>
-    <main class="container">
+      <main class="container">
         <jsp:include page="breadcrumb.jsp" />
         <jsp:include page="${page}" />
       </main>
     <% } else { %>
       <main>
+        ${name == 'homepage' ? '<div class="car-background"></div>' : ''}
         <jsp:include page="${page}" />
       </main>
     <% } %>
