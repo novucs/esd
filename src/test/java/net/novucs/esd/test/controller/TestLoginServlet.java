@@ -123,7 +123,6 @@ public class TestLoginServlet {
         Password.fromPlaintext("pass"),
         "House,A Street,A city,County,AB12 C34",
         ZonedDateTime.now(),
-        "APPLICATION",
         1
     );
     userDao.insert(userToCreate);
@@ -174,7 +173,6 @@ public class TestLoginServlet {
         Password.fromPlaintext("correctPassword"),
         "House,A Street,A city,County,AB12 C34",
         ZonedDateTime.now(),
-        "APPLICATION",
         1
     );
     userDao.insert(userToCreate);

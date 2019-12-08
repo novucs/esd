@@ -26,7 +26,6 @@
                         <th>Username</th>
                         <th>Email</th>
                         <th>Name</th>
-                        <th>Status</th>
                         <th>View</th>
                         <th>Edit</th>
                     </tr>
@@ -35,7 +34,6 @@
                             <td>${user.username}</td>
                             <td>${user.email}</td>
                             <td>${user.name}</td>
-                            <td>${user.status}</td>
                             <td class="managed-icon">
                                 <a href="${pageContext.request.contextPath}/admin/viewuser?userId=${user.id}">
                                     <i class="material-icons small">

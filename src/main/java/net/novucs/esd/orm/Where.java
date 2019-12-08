@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.StringJoiner;
 import net.novucs.esd.orm.clause.AndClause;
 import net.novucs.esd.orm.clause.Clause;
-import net.novucs.esd.orm.clause.EqClause;
+import net.novucs.esd.orm.clause.CompareClause;
+import net.novucs.esd.orm.clause.CompareType;
 import net.novucs.esd.orm.clause.LikeClause;
 import net.novucs.esd.orm.clause.OrClause;
 import net.novucs.esd.orm.clause.WhereClause;
@@ -34,7 +35,43 @@ public class Where {
    * @return the where
    */
   public Where eq(String columnName, Object value) {
-    clauses.add(new EqClause(columnName, value));
+    clauses.add(new CompareClause(columnName, CompareType.EQUALS, value));
+    return this;
+  }
+
+  /**
+   * Where the column is not equal the provided value.
+   *
+   * @param columnName the column name to compare.
+   * @param value      the value to compare with.
+   * @return this.
+   */
+  public Where neq(String columnName, Object value) {
+    clauses.add(new CompareClause(columnName, CompareType.NOT_EQUALS, value));
+    return this;
+  }
+
+  /**
+   * Where the column is greater than the provided value.
+   *
+   * @param columnName the column name to compare.
+   * @param value      the value to compare with.
+   * @return this.
+   */
+  public Where gt(String columnName, Object value) {
+    clauses.add(new CompareClause(columnName, CompareType.GREATER_THAN, value));
+    return this;
+  }
+
+  /**
+   * Where the column is less than the provided value.
+   *
+   * @param columnName the column name to compare.
+   * @param value      the value to compare with.
+   * @return this.
+   */
+  public Where lt(String columnName, Object value) {
+    clauses.add(new CompareClause(columnName, CompareType.LESS_THAN, value));
     return this;
   }
 

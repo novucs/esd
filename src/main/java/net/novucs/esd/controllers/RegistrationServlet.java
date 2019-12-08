@@ -163,7 +163,6 @@ public class RegistrationServlet extends BaseServlet {
         ),
         address,
         dateOfBirth,
-        "APPLICATION",
         1
     );
   }
