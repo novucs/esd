@@ -37,7 +37,7 @@
                     <% if (isMember) { %>
                     <li class="divider" tabindex="-1"></li>
                     <li><a href="${baseUrl}/profile">My Profile</a></li>
-                    <li><a href="${baseUrl}/claims">My Claims</a></li>
+                    <li><a href="${baseUrl}/member/claims">My Claims</a></li>
                     <li><a href="${baseUrl}/payments">My Payments</a></li>
                     <li class="divider" tabindex="-1"></li>
                     <li><a href="${baseUrl}/makeclaim">Make a Claim</a></li>

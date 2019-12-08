@@ -52,6 +52,14 @@
     <url-pattern>/member/claims</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>MemberEditClaimServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.member.MemberEditClaimServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MemberEditClaimServlet</servlet-name>
+    <url-pattern>/member/editclaim</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>MemberMyPaymentsServlet</servlet-name>
     <servlet-class>net.novucs.esd.controllers.member.MemberMyPaymentsServlet</servlet-class>
   </servlet>

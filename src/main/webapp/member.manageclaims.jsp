@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="p" tagdir="/WEB-INF/tags/pagination" %>
+<script src="${pageContext.request.contextPath}/js/cancelclaim.js"></script>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div>
     <div class="row no-bottom-margin">
@@ -27,29 +29,82 @@
                         <th>Membership ID</th>
                         <th>Amount</th>
                         <th>Status</th>
-                        <th>View</th>
                         <th>Edit</th>
+                        <th>Cancel</th>
                     </tr>
                     <c:forEach var="claim" items="${claims}">
                         <tr>
                             <td>${claim.id}</td>
                             <td>${claim.membershipId}</td>
-                            <td>${claim.amount}</td>
+
+                            <td><fmt:formatNumber type="number" maxFractionDigits="2" value="${claim.getAmount()}"/></td>
                             <td>${claim.status}</td>
-                            <td class="managed-icon">
-                                <a href="${pageContext.request.contextPath}/member/viewclaim?claimId=${claim.id}">
-                                    <i class="material-icons small">
-                                        search
-                                    </i>
-                                </a>
-                            </td>
-                            <td class="managed-icon">
-                                <a href="${pageContext.request.contextPath}/member/editclaim?claimId=${claim.id}">
-                                    <i class="material-icons small">
-                                        edit
-                                    </i>
-                                </a>
-                            </td>
+                            <c:choose>
+                                <c:when test="${claim.status == 'PENDING'}">
+                                    <td class="managed-icon">
+                                        <a href="${pageContext.request.contextPath}/member/editclaim?claimId=${claim.id}">
+                                            <i class="material-icons small">
+                                                edit
+                                            </i>
+                                        </a>
+                                    </td>
+                                    <td class="managed-icon">
+                                        <form name="cancelClaim" method="post" action="editclaim">
+                                            <input
+                                                  type="hidden"
+                                                  id="cancel-claim"
+                                                  name="cancel-claim"
+                                                  value="${true}"/>
+                                            <input
+                                                  type="hidden"
+                                                  id="claim-id"
+                                                  name="claimId"
+                                                  value="${claim.id}"/>
+                                            <a href="javascript: submitForm()">
+                                               <i class="material-icons small">
+                                                   delete
+                                               </i>
+                                            </a>
+                                        </form>
+                                    </td>
+                                </c:when>
+                                <c:when test="${claim.status == 'APPROVED'}">
+                                    <td class="managed-icon">
+                                        <i class="material-icons small">
+                                            done
+                                        </i>
+                                    </td>
+                                    <td class="managed-icon">
+                                         <i class="material-icons small">
+                                             delete_outline
+                                         </i>
+                                    </td>
+                                </c:when>
+                                <c:when test="${claim.status == 'REJECTED'}">
+                                    <td class="managed-icon">
+                                        <i class="material-icons small">
+                                            pan_tool
+                                        </i>
+                                    </td>
+                                    <td class="managed-icon">
+                                         <i class="material-icons small">
+                                             delete_outline
+                                         </i>
+                                    </td>
+                                </c:when>
+                                <c:when test="${claim.status == 'CANCELLED'}">
+                                    <td class="managed-icon">
+                                         <i class="material-icons small">
+                                             lock
+                                         </i>
+                                     </td>
+                                    <td class="managed-icon">
+                                         <i class="material-icons small">
+                                             delete_outline
+                                         </i>
+                                    </td>
+                                </c:when>
+                            </c:choose>
                         </tr>
                     </c:forEach>
                 </table>
