@@ -134,7 +134,8 @@ public class MemberMakeClaimServlet extends BaseServlet {
           membership.getId(),
           claimAmount,
           ZonedDateTime.now(),
-          ClaimStatus.PENDING
+          ClaimStatus.PENDING,
+          request.getParameter("claim-rationale")
       ));
       super.forward(
           request, response, "Claim successfully submitted", "member.claim.success");
