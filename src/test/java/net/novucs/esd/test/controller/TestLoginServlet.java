@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.LoginServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
@@ -80,7 +81,7 @@ public class TestLoginServlet {
     ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
     ReflectUtil.setFieldValue(loginServlet, "userRoleDao", dm.get(UserRole.class));
     ReflectUtil.setFieldValue(loginServlet, "roleDao", dm.get(Role.class));
-    //ReflectUtil.setFieldValue(loginServlet, "membershipDao", dm.get(Role.class));
+    ReflectUtil.setFieldValue(loginServlet, "membershipDao", dm.get(Membership.class));
     HttpServletRequest request = mock(HttpServletRequest.class);
 
     User userToLogin = userDao.select().where(new Where().eq("name", "Member")).first();

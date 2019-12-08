@@ -13,11 +13,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
+import net.novucs.esd.util.MembershipUtil;
 
 /**
  * The type Login servlet.
@@ -35,6 +37,9 @@ public class LoginServlet extends BaseServlet {
 
   @Inject
   private Dao<UserRole> userRoleDao;
+
+  @Inject
+  private Dao<Membership> membershipDao;
 
   @Inject
   private Dao<Role> roleDao;
@@ -105,8 +110,9 @@ public class LoginServlet extends BaseServlet {
       }
       session.setRoles(roles);
 
-      // Validate roles
-      // validateMemberships(user);
+      if (!MembershipUtil.hasActiveMembership(user, membershipDao)) {
+        MembershipUtil.removeMembershipRole(user, userRoleDao, roleDao);
+      }
 
       if (roles.stream().anyMatch(r -> r.getName()
           .toLowerCase(Locale.getDefault()).equals("administrator"))) {
@@ -119,25 +125,6 @@ public class LoginServlet extends BaseServlet {
       Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
-
-  //private void validateMemberships(User user) throws SQLException {
-  //  List<Membership> memberships = membershipDao.select()
-  //      .where(new Where().eq("user_id", user.getId()))
-  //      .all();
-  //  Membership membership = memberships.stream()
-  //      .filter(m -> !m.isExpired()).findFirst().orElse(null);
-  //
-  //  if (membership != null) {
-  //    // Delete and Re-add User Roles
-  //    Integer userRoleId = roleDao.select()
-  //        .where(new Where().eq("name", "User"))
-  //        .first().getId();
-  //    userRoleDao.delete(userRoleDao.select()
-  //        .where(new Where().eq("user_id", user.getId()))
-  //        .all());
-  //    userRoleDao.insert(new UserRole(user.getId(), userRoleId));
-  //  }
-  //}
 
   @Override
   public String getServletInfo() {
