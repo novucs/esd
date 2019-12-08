@@ -1,7 +1,6 @@
 package net.novucs.esd.controllers;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -83,7 +82,7 @@ public class RegistrationServlet extends BaseServlet {
 
       // Insert new user to database.
       userDao.insert(user);
-      Application application = new Application(user.getId(), BigDecimal.ZERO);
+      Application application = new Application(user.getId());
       applicationDao.insert(application);
       UserLog userLog = parseUserLog(request, user);
       userLogDao.insert(userLog);

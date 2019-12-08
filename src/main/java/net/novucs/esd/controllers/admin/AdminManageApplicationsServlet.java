@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.model.Application;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
@@ -29,11 +30,6 @@ public class AdminManageApplicationsServlet extends BaseServlet {
   private static final long serialVersionUID = 1426082847044519303L;
 
   private static final String PAGE_SIZE_FILTER = "applicationPageSizeFilter";
-
-  // TODO: update these statuses once complete
-  private static final String PAID_STATUS = "APPROVED";
-  private static final String APPROVED_STATUS = "APPROVED";
-  private static final String DENIED_STATUS = "DENIED";
 
   @Inject
   private Dao<Application> applicationDao;
@@ -59,7 +55,7 @@ public class AdminManageApplicationsServlet extends BaseServlet {
                 + "WHERE app.\"status\" = ? "
                 + "OFFSET ? ROWS "
                 + "FETCH NEXT ? ROWS ONLY ")) {
-      statement.setString(1, PAID_STATUS);
+      statement.setString(1, ApplicationStatus.PAID.name());
       statement.setInt(2, offset);
       statement.setInt(3, limit);
 
@@ -126,16 +122,16 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     try {
       switch (method) {
         case "approve-all":
-          updateAllStatuses(request, APPROVED_STATUS);
+          updateAllStatuses(request, ApplicationStatus.APPROVED);
           break;
         case "approve-selection":
-          updateStatusesById(request, APPROVED_STATUS, applicationIds);
+          updateStatusesById(request, ApplicationStatus.APPROVED, applicationIds);
           break;
         case "deny-selection":
-          updateStatusesById(request, DENIED_STATUS, applicationIds);
+          updateStatusesById(request, ApplicationStatus.DENIED, applicationIds);
           break;
         case "deny-all":
-          updateAllStatuses(request, DENIED_STATUS);
+          updateAllStatuses(request, ApplicationStatus.DENIED);
           break;
         default:
           break;
@@ -149,9 +145,10 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     response.sendRedirect("applications");
   }
 
-  public void updateAllStatuses(HttpServletRequest request, String status) throws SQLException {
+  public void updateAllStatuses(HttpServletRequest request, ApplicationStatus status)
+      throws SQLException {
     List<Application> applications = applicationDao.select()
-        .where(new Where().eq("status", PAID_STATUS)).all();
+        .where(new Where().eq("status", ApplicationStatus.PAID.name())).all();
     for (Application application : applications) {
       application.setStatus(status);
       applicationDao.update(application);
@@ -159,7 +156,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     }
   }
 
-  public void updateStatusesById(HttpServletRequest request, String status, List<Integer> ids)
+  public void updateStatusesById(
+      HttpServletRequest request, ApplicationStatus status, List<Integer> ids)
       throws SQLException {
     for (Integer id : ids) {
       Application application = applicationDao.selectById(id);
@@ -169,10 +167,11 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     }
   }
 
-  public void addUpdateMessage(HttpServletRequest request, String status, Application application)
+  public void addUpdateMessage(
+      HttpServletRequest request, ApplicationStatus status, Application application)
       throws SQLException {
     User user = userDao.selectById(application.getUserId());
-    getSession(request).pushToast((DENIED_STATUS.equals(status) ? "Denied" : "Approved")
+    getSession(request).pushToast((status == ApplicationStatus.DENIED ? "Denied" : "Approved")
         + " " + user.getName() + " - " + user.getEmail());
   }
 

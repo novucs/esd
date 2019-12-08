@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import javax.servlet.RequestDispatcher;
@@ -98,10 +97,10 @@ public class TestAdminViewUserServlet {
     userDao.insert(user);
     Role adminRole = roleDao.select().where(new Where().eq("name", "Administrator")).one();
     userRoleDao.insert(new UserRole(user.getId(), adminRole.getId()));
-    membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,
-        "EXPIRED", ZonedDateTime.now(), true));
-    membershipDao.insert(new Membership(user.getId(), BigDecimal.ZERO,
-        "ACTIVE", ZonedDateTime.now(), false));
+    membershipDao.insert(new Membership(user.getId(),
+        ZonedDateTime.now().minusYears(1), true));
+    membershipDao.insert(new Membership(user.getId(),
+        ZonedDateTime.now(), false));
   }
 
   @Test

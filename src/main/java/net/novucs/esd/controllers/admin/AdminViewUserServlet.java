@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -86,6 +88,7 @@ public class AdminViewUserServlet extends BaseServlet {
       request.setAttribute("memberships", userMemberships);
       super.forward(request, response, "View User", "admin.viewuser");
     } catch (SQLException | ServletException e) {
+      Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
