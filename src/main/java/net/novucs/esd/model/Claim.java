@@ -33,6 +33,9 @@ public final class Claim {
   @Column
   private String status;
 
+  @Column
+  private String rationale;
+
   /**
    * Instantiates a new Claim.
    */
@@ -46,13 +49,14 @@ public final class Claim {
    * @param membershipId the membership id
    */
   public Claim(Integer membershipId, BigDecimal amount, ZonedDateTime claimDate,
-      ClaimStatus status) {
+      ClaimStatus status, String rationale) {
     this.membershipId = membershipId;
     double doubleBalance = amount.doubleValue();
     pounds = (int) doubleBalance;
     pence = (int) ((doubleBalance - pounds) * 100);
     this.claimDate = claimDate;
     this.status = status.name();
+    this.rationale = rationale;
   }
 
   /**
@@ -116,6 +120,14 @@ public final class Claim {
 
   public void setClaimDate(ZonedDateTime claimDate) {
     this.claimDate = claimDate;
+  }
+
+  public String getRationale() {
+    return rationale;
+  }
+
+  public void setRationale(String rationale) {
+    this.rationale = rationale;
   }
 
   @Override
