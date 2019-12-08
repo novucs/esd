@@ -42,9 +42,6 @@ public class AdminManageApplicationsServlet extends BaseServlet {
   private Dao<User> userDao;
 
   @Inject
-  private Dao<Notification> notificationDao;
-
-  @Inject
   private NotificationService notificationService;
 
   @SuppressWarnings("SqlResolve")
@@ -184,10 +181,10 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     int userId = Session.fromRequest(request).getUser().getId();
     notificationService.sendNotification(new Notification((status == ApplicationStatus.DENIED
         ? "Denied" : "Approved")  + " " + user.getName() + " - " + user.getEmail(),
-        userId, userId, NotificationType.Success));
+        userId, userId, NotificationType.SUCCESS));
 
-    notificationService.sendNotification(new Notification(("Your application was approved."),
-        userId, user.getId(), NotificationType.Success));
+    notificationService.sendNotification(new Notification("Your application was approved.",
+        userId, user.getId(), NotificationType.SUCCESS));
   }
 
   @Override

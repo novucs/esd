@@ -3,9 +3,7 @@ package net.novucs.esd.notifications;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.faces.bean.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.json.Json;
@@ -35,28 +33,30 @@ public class NotificationSessionHandler {
     return sessions.get(sessionId);
   }
 
-  public synchronized void sendNotification(Notification notification)
+  public void sendNotification(Notification notification)
       throws IOException, SQLException {
     this.sendNotification(notification, false);
   }
 
-  public synchronized void sendNotification(Notification notification, boolean polling)
+  public void sendNotification(Notification notification, boolean polling)
       throws IOException, SQLException {
 
     NotificationSession recipientSession = sessions.values().stream().filter(s ->
         s.getUserId() == notification.getRecipientId()).findFirst().orElse(null);
 
-    if (recipientSession == null ||
-        (notification.getRecipientId() == notification.getSenderId()) && !polling) {
-      notificationDao.insert(notification);
-    } else {
+    synchronized (this) {
+      if (recipientSession == null
+          || notification.getRecipientId() == notification.getSenderId()
+          && !polling) {
+        notificationDao.insert(notification);
+      } else {
+        JsonObjectBuilder builder = Json.createObjectBuilder()
+            .add("message", notification.getMessage())
+            .add("type", notification.getType().name());
 
-      JsonObjectBuilder builder = Json.createObjectBuilder()
-          .add("message", notification.getMessage())
-          .add("type", notification.getType().name());
-
-      JsonObject notificationJson = builder.build();
-      this.sendNotificationToSession(recipientSession.getSession(), notificationJson);
+        JsonObject notificationJson = builder.build();
+        this.sendNotificationToSession(recipientSession.getSession(), notificationJson);
+      }
     }
   }
 

@@ -18,7 +18,6 @@ import net.novucs.esd.model.User;
 public class Session {
 
   public static final String ATTRIBUTE_NAME = "session";
-  private final Stack<String> toasts = new Stack<>();
   private final Stack<String> errors = new Stack<>();
   private List<Role> roles = new ArrayList<>();
   private final Map<String, Object> filters = new ConcurrentHashMap<>();

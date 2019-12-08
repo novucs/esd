@@ -1,6 +1,5 @@
 package net.novucs.esd.notifications;
 
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -13,12 +12,12 @@ import net.novucs.esd.model.Notification;
 public class NotificationService {
 
   @Inject
-  NotificationSessionHandler handler;
+  private NotificationSessionHandler handler;
 
   public void sendNotification(Notification notification) throws SQLException {
     try {
       handler.sendNotification(notification);
-    } catch(IOException e){
+    } catch (IOException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
           "Notification service unable to send notification." + e.getMessage());
     }

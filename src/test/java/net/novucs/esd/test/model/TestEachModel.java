@@ -13,6 +13,8 @@ import java.util.List;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.ClaimStatus;
+import net.novucs.esd.model.Notification;
+import net.novucs.esd.model.NotificationType;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Test;
@@ -73,6 +75,8 @@ public class TestEachModel<M> {
       return ClaimStatus.APPROVED;
     } else if (type == ApplicationStatus.class) {
       return ApplicationStatus.APPROVED;
+    }  else if (type == NotificationType.class) {
+      return NotificationType.SUCCESS;
     }
     throw new IllegalArgumentException("No test data for type: " + type.getName());
   }

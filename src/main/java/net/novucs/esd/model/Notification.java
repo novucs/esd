@@ -1,9 +1,6 @@
 package net.novucs.esd.model;
 
 import java.util.Objects;
-import javax.inject.Inject;
-import net.novucs.esd.notifications.NotificationSession;
-import net.novucs.esd.notifications.NotificationSessionHandler;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
@@ -79,6 +76,7 @@ public final class Notification {
   public void setType(NotificationType type) {
     this.type = type.name();
   }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
