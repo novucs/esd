@@ -120,7 +120,7 @@ public class TestAdminDashboardServlet {
     Membership m = new Membership(bob.getId(), ZonedDateTime.now(), true);
     membershipDao.insert(m);
     claimDao.insert(new Claim(m.getId(), new BigDecimal(20), ZonedDateTime.now(),
-        ClaimStatus.PENDING));
+        ClaimStatus.PENDING, "dummy claim"));
   }
 
   @Test
