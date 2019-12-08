@@ -103,8 +103,10 @@ public class LoginServlet extends BaseServlet {
             .first();
         roles.add(role);
       }
-
       session.setRoles(roles);
+
+      // Validate roles
+      // validateMemberships(user);
 
       if (roles.stream().anyMatch(r -> r.getName()
           .toLowerCase(Locale.getDefault()).equals("administrator"))) {
@@ -117,6 +119,25 @@ public class LoginServlet extends BaseServlet {
       Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
+
+  //private void validateMemberships(User user) throws SQLException {
+  //  List<Membership> memberships = membershipDao.select()
+  //      .where(new Where().eq("user_id", user.getId()))
+  //      .all();
+  //  Membership membership = memberships.stream()
+  //      .filter(m -> !m.isExpired()).findFirst().orElse(null);
+  //
+  //  if (membership != null) {
+  //    // Delete and Re-add User Roles
+  //    Integer userRoleId = roleDao.select()
+  //        .where(new Where().eq("name", "User"))
+  //        .first().getId();
+  //    userRoleDao.delete(userRoleDao.select()
+  //        .where(new Where().eq("user_id", user.getId()))
+  //        .all());
+  //    userRoleDao.insert(new UserRole(user.getId(), userRoleId));
+  //  }
+  //}
 
   @Override
   public String getServletInfo() {

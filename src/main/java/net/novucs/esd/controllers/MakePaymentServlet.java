@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,7 @@ public class MakePaymentServlet extends BaseServlet {
           BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
           stripeId,
           reference,
+          ZonedDateTime.now(),
           stripeId == null ? "PENDING" : "VERIFIED"
       ));
 
