@@ -92,14 +92,14 @@
                                             ${formatClaimDate}
                                     </div>
                                     <c:set var="statusColor" scope="session"
-                                           value="${membership.status.equals('ACTIVE') ?
-                                            'green-text' : 'red-text'}"/>
+                                           value="${membership.isExpired() ?
+                                            'red-text' : 'green-text'}"/>
                                     <div class="col s3">
                                         <label>
-                                            Status:&nbsp;
+                                            Expired:&nbsp;
                                         </label>
                                         <span class="${statusColor}">
-                                                ${membership.status}
+                                                ${membership.isExpired() ? "Yes" : "No"}
                                         </span>
                                     </div>
                                     <br/>
