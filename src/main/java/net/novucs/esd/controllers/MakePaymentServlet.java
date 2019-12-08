@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.constants.StripeUtils;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.ApplicationStatus;
@@ -31,6 +30,7 @@ import net.novucs.esd.orm.Where;
 public class MakePaymentServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
+  private static final String STRIPE_TEST_SECRET_KEY = "sk_test_kMQ6gPhFRqsyWex4O8FxMU4200Poyj5KwH";
 
   @Inject
   private Dao<Membership> membershipDao;
@@ -174,7 +174,7 @@ public class MakePaymentServlet extends BaseServlet {
   private Charge executeStripePayment(
       HttpServletRequest request, HttpServletResponse response, String token)
       throws IOException, ServletException {
-    Stripe.apiKey = StripeUtils.TEST_SECRET_KEY;
+    Stripe.apiKey = STRIPE_TEST_SECRET_KEY;
     Map<String, Object> params = new HashMap<>();
     params.put("amount", Membership.ANNUAL_FEE_POUNDS);
     params.put("currency", "gbp");
