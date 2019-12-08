@@ -9,9 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -40,7 +38,6 @@ public class TestMakePaymentServlet {
   private static final String LAYOUT = "/layout.jsp";
   private static final String SESSION = "session";
   private static final String FEE = "fee";
-  private static final String DECIMAL_FORMAT = "#.##";
   private transient Session userSession;
 
   /**

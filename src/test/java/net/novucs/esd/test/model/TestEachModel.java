@@ -2,7 +2,6 @@ package net.novucs.esd.test.model;
 
 import static org.junit.Assert.assertEquals;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -56,6 +55,7 @@ public class TestEachModel<M> {
     return data;
   }
 
+  @SuppressWarnings("PMD.CyclomaticComplexity")
   private Object getTestData(Class<?> type) {
     if (type == String.class) {
       return "string";
