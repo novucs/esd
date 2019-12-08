@@ -3,6 +3,7 @@ body {
   min-height: 100vh;
   flex-direction: column;
 
+  background-color: #d5d5d5;
   &.xyz-login, &.xyz-register {
     &:before {
       content: "";
@@ -68,6 +69,10 @@ nav .brand-logo {
 
 main {
   flex: 1 0 auto;
+
+  &.container {
+    background-color: white;
+  }
 }
 
 .page-footer {
@@ -153,7 +158,6 @@ nav {
 
   button[type="submit"],
   button[type="button"] {
-    background-color: #909090;
     float: left;
     border-radius: 5px;
   }

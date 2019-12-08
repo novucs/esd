@@ -4,7 +4,7 @@
     <div class="row no-padding">
         <div class="nice-container col s6 push-s3 card horizontal large">
             <div class="card-image">
-                <img />
+                <img/>
                 <span class="card-title">XYZ Association</span>
             </div>
             <div class="card-stacked">
@@ -20,8 +20,9 @@
                                         <i class="material-icons prefix">person</i>
                                         <input class="validate" name="username" id="username"
                                                type="text" autocomplete="off" placeholder=""
-                                               required />
-                                        <label for="username" data-error="wrong" data-success="right">
+                                               required/>
+                                        <label for="username" data-error="wrong"
+                                               data-success="right">
                                             Username
                                         </label>
                                     </div>
@@ -31,14 +32,14 @@
                                         <i class="material-icons prefix">lock_outline</i>
                                         <input name="password" placeholder=""
                                                id="password" type="password" minlength="3"
-                                               required />
+                                               required/>
                                         <label for="password">Password</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <button type="submit"
-                                                class="btn waves-effect waves-light col s12">
+                                                class="btn waves-effect orange waves-light col s12">
                                             Login
                                         </button>
                                     </div>

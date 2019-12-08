@@ -99,7 +99,7 @@
                         <div class="col s6">
                             <div style="padding-top: 20px;">
                                 <button id="register-button"
-                                        class="waves-effect btn secondary-content left-align"
+                                        class="waves-effect btn orange secondary-content left-align"
                                         type="submit" name="register">
                                     Register
                                 </button>
