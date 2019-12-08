@@ -71,7 +71,13 @@ public class AdminManageClaimsServlet extends BaseServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    PaginationUtil.postPagination(request, PAGE_SIZE_FILTER);
     String method = request.getParameter("method");
+    if (method == null || method.isEmpty()) {
+      response.sendRedirect("claims");
+      return;
+    }
+
     List<Integer> claimIds = Arrays
         .stream(request.getParameterMap().getOrDefault("claim-id", new String[]{}))
         .map(Integer::parseInt)

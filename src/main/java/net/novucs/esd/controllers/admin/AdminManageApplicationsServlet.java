@@ -41,6 +41,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
       int pageSize = PaginationUtil.getPageSize(request, PAGE_SIZE_FILTER);
       int pageNumber = (int) PaginationUtil.getPageNumber(request);
       int offset = PaginationUtil.getOffset(pageSize, pageNumber);
+      long count = applicationDao.select().where(WHERE_APPLICATION_IS_PAID).count("*");
+      int maxPages = (int) Math.max(1, Math.ceil(count / (double) pageSize));
 
       List<Application> applications = applicationDao.select().where(WHERE_APPLICATION_IS_PAID)
           .offset(offset).limit(pageSize).all();
@@ -52,7 +54,6 @@ public class AdminManageApplicationsServlet extends BaseServlet {
               .map(user -> new ManageApplicationResult(application, user)))
           .collect(Collectors.toList());
 
-      int maxPages = PaginationUtil.getMaxPages(userDao, pageSize);
       PaginationUtil.setRequestAttributes(request, maxPages, pageNumber, pageSize);
       request.setAttribute("results", results);
       request.setAttribute("toasts", getSession(request).getToasts());
@@ -67,7 +68,13 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    PaginationUtil.postPagination(request, PAGE_SIZE_FILTER);
     String method = request.getParameter("method");
+    if (method == null || method.isEmpty()) {
+      response.sendRedirect("applications");
+      return;
+    }
+
     List<Integer> applicationIds = Arrays
         .stream(request.getParameterMap().getOrDefault("application-id", new String[]{}))
         .map(Integer::parseInt)
