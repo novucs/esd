@@ -110,7 +110,7 @@ public class LoginServlet extends BaseServlet {
       session.setRoles(roles);
 
       // Validate roles
-      validateMemberships(user);
+      // validateMemberships(user);
 
       if (roles.stream().anyMatch(r -> r.getName()
           .toLowerCase(Locale.getDefault()).equals("administrator"))) {

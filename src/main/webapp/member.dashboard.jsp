@@ -25,7 +25,7 @@
     </div>
     <div class="row">
         <t:tile title="${userTotalClaims}" label="Total Claims" icon="ballot"/>
-        <t:tile title="${membershipValid}" label="Valid Membership" icon="verified_user"/>
+        <t:tile title="${membershipValid}" label="Account Status" icon="verified_user"/>
         <t:tile title="${userTotalPayments}" label="Total Payments" icon="attach_money"/>
     </div>
 </div>

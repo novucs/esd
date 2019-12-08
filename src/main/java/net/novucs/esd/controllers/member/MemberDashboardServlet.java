@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
-import net.novucs.esd.model.Claim;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 
@@ -64,7 +64,7 @@ public class MemberDashboardServlet extends BaseServlet {
 
     request.setAttribute("userTotalClaims", claims);
     request.setAttribute("membershipValid",
-        session.getRoleNames().contains("Member") ? "You're a Member!" : "No Membership");
+        session.getRoleNames().contains("member") ? "You're a Member!" : "No Membership");
     request.setAttribute("userTotalPayments", payments);
     super.forward(request, response, "Dashboard", "member.dashboard");
   }
