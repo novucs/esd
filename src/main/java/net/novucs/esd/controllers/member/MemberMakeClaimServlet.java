@@ -71,15 +71,8 @@ public class MemberMakeClaimServlet extends BaseServlet {
         return;
       }
 
-      List<Claim> claims = claimDao.select()
-          .where(new Where().eq("membership_id", membership.getId()))
-          .all();
-
-      double total = 0;
-      for (Claim claim : claims) {
-        total += claim.getAmount().doubleValue();
-      }
-
+      List<Claim> claims = getClaims(membership);
+      double total = getTotal(claims);
       request.setAttribute("membershipClaimValueToDate", total);
       request.setAttribute("maxClaimValue", MAX_CLAIM_VALUE_POUNDS - total);
       request.setAttribute("remainingClaims", Math.max(0, MAX_CLAIM_COUNT - claims.size()));
@@ -88,6 +81,20 @@ public class MemberMakeClaimServlet extends BaseServlet {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public List<Claim> getClaims(Membership membership) throws SQLException {
+    return claimDao.select()
+            .where(new Where().eq("membership_id", membership.getId()))
+            .all();
+  }
+
+  public double getTotal(List<Claim> claims) {
+    double total = 0;
+    for (Claim claim : claims) {
+      total += claim.getAmount().doubleValue();
+    }
+    return total;
   }
 
   @Override
@@ -106,13 +113,22 @@ public class MemberMakeClaimServlet extends BaseServlet {
 
       if (membership == null) {
         request.setAttribute("error", "Unable to make a claim, no valid membership");
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        return;
+      }
+
+      BigDecimal claimAmount = new BigDecimal(request.getParameter("claim-value"));
+      double total = getTotal(getClaims(membership));
+
+      if ((MAX_CLAIM_VALUE_POUNDS - total) < claimAmount.doubleValue()) {
+        request.setAttribute("error", "You cannot make a claim of this amount");
+        response.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
       }
 
       claimDao.insert(new Claim(
           membership.getId(),
-          new BigDecimal(request.getParameter("claim-value")),
+          claimAmount,
           ZonedDateTime.now(),
           ClaimStatus.PENDING
       ));
