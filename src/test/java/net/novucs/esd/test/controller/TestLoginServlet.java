@@ -80,6 +80,7 @@ public class TestLoginServlet {
     ReflectUtil.setFieldValue(loginServlet, "userDao", userDao);
     ReflectUtil.setFieldValue(loginServlet, "userRoleDao", dm.get(UserRole.class));
     ReflectUtil.setFieldValue(loginServlet, "roleDao", dm.get(Role.class));
+    ReflectUtil.setFieldValue(loginServlet, "membershipDao", dm.get(Role.class));
     HttpServletRequest request = mock(HttpServletRequest.class);
 
     User userToLogin = userDao.select().where(new Where().eq("name", "Member")).first();
@@ -122,7 +123,6 @@ public class TestLoginServlet {
         Password.fromPlaintext("pass"),
         "House,A Street,A city,County,AB12 C34",
         ZonedDateTime.now(),
-        "APPLICATION",
         1
     );
     userDao.insert(userToCreate);
@@ -173,7 +173,6 @@ public class TestLoginServlet {
         Password.fromPlaintext("correctPassword"),
         "House,A Street,A city,County,AB12 C34",
         ZonedDateTime.now(),
-        "APPLICATION",
         1
     );
     userDao.insert(userToCreate);
