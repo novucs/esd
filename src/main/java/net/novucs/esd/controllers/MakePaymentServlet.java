@@ -24,7 +24,6 @@ import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
-import net.novucs.esd.util.MembershipUtils;
 
 /**
  * The type Make payment servlet.
@@ -33,8 +32,6 @@ public class MakePaymentServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
   private static final int ANNUAL_FEE_POUNDS = 10;
-  private static final String PAGE = "user.payments";
-  private static final MembershipUtils membershipUtils = new MembershipUtils();
 
   @Inject
   private Dao<Membership> membershipDao;
@@ -69,7 +66,8 @@ public class MakePaymentServlet extends BaseServlet {
           forwardMakePayment(request, response);
           return;
         case PAID:
-          response.sendRedirect("dashboard");  // todo: redirect to "already paid" page
+          super.forward(
+              request, response, "Membership Payment", "user.makepayment.notnecessary");
           return;
         case APPROVED:
           if (hasActiveMembership(user)) {
@@ -114,8 +112,8 @@ public class MakePaymentServlet extends BaseServlet {
 
   private void forwardMakePayment(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    request.setAttribute("amountOwed", membershipUtils.getAnnualFee());
-    super.forward(request, response, "Membership Payment", PAGE);
+    request.setAttribute("amountOwed", ANNUAL_FEE_POUNDS);
+    super.forward(request, response, "Membership Payment", "user.makepayment.pay");
   }
 
   @Override
@@ -145,7 +143,7 @@ public class MakePaymentServlet extends BaseServlet {
 
       paymentDao.insert(new Payment(
           user.getId(),
-          BigDecimal.valueOf(membershipUtils.ANNUAL_FEE),
+          BigDecimal.valueOf(ANNUAL_FEE_POUNDS),
           stripeId,
           reference
       ));
@@ -157,7 +155,7 @@ public class MakePaymentServlet extends BaseServlet {
           user.getId(),
           hasPreviousMemberships(user)
       ));
-      super.forward(request, response, "Payment successfully recorded", PAGE);
+      super.forward(request, response, "Payment Success", "user.makepayment.success");
 
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
@@ -178,7 +176,7 @@ public class MakePaymentServlet extends BaseServlet {
       return Charge.create(params);
     } catch (StripeException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Failed to process payment", e);
-      super.forward(request, response, "Error processing payment", PAGE);
+      super.forward(request, response, "Payment Error", "user.makepayment.fail");
       return null;
     }
   }
