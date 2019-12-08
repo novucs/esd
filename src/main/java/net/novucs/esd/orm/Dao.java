@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import net.novucs.esd.util.ReflectUtil;
 
 /**
@@ -274,6 +277,25 @@ public class Dao<M> {
 
     tableJoiner.add(contentsJoiner.toString());
     return tableJoiner.toString();
+  }
+
+  /**
+   * Selects all rows referred to from a set of models.
+   *
+   * @param origin the models referring to this dao.
+   * @param mapper how to get the id for this dao from the origin models.
+   * @param <O>    the origin models type.
+   * @return the joined rows.
+   * @throws SQLException when there is an error communicating with the database.
+   */
+  public <O> List<M> join(List<O> origin, Function<O, Integer> mapper) throws SQLException {
+    Set<Integer> ids = origin.stream().map(mapper).collect(Collectors.toSet());
+    Where where = new Where();
+    for (Integer id : ids) {
+      where = where.eq("id", id).or();
+    }
+    where.getClauses().remove(where.getClauses().size() - 1);
+    return select().where(where).all();
   }
 
   /**
