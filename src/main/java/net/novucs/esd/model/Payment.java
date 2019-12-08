@@ -36,6 +36,9 @@ public final class Payment {
   @Column
   private ZonedDateTime date;
 
+  @Column
+  private String approvalStatus;
+
   /**
    * Instantiates a new Payment.
    */
@@ -52,7 +55,8 @@ public final class Payment {
    * @param reference the reference
    * @param date      the payment date
    */
-  public Payment(Integer userId, BigDecimal amount, String stripeId, String reference, ZonedDateTime date) {
+  public Payment(Integer userId, BigDecimal amount, String stripeId, String reference,
+      ZonedDateTime date, String approvalStatus) {
     this.userId = userId;
     double doubleBalance = amount.doubleValue();
     pounds = (int) doubleBalance;
@@ -60,6 +64,7 @@ public final class Payment {
     this.stripeId = stripeId;
     this.reference = reference;
     this.date = date;
+    this.approvalStatus = approvalStatus;
   }
 
   /**
@@ -173,9 +178,27 @@ public final class Payment {
   }
 
   /**
+   * Gets approval status.
+   *
+   * @return the approval status
+   */
+  public String getApprovalStatus() {
+    return approvalStatus;
+  }
+
+  /**
+   * Sets approval status.
+   *
+   * @param approvalStatus the approval status
+   */
+  public void setApprovalStatus(String approvalStatus) {
+    this.approvalStatus = approvalStatus;
+  }
+
+  /**
    * Gets whether the payment was paid offline.
    *
-   * @return <code>true</code> if the payment was paid offline.
+   * @return the boolean
    */
   public boolean wasPaidOffline() {
     return stripeId == null;
@@ -190,17 +213,11 @@ public final class Payment {
       return false;
     }
     Payment payment = (Payment) o;
-    return Objects.equals(getId(), payment.getId())
-        && Objects.equals(getUserId(), payment.getUserId())
-        && Objects.equals(pounds, payment.pounds)
-        && Objects.equals(pence, payment.pence)
-        && Objects.equals(getStripeId(), payment.getStripeId())
-        && Objects.equals(getReference(), payment.getReference());
+    return Objects.equals(getId(), payment.getId());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getUserId(), pounds, pence, getStripeId(), getReference());
+    return Objects.hash(getId());
   }
-
 }
