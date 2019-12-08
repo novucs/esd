@@ -9,6 +9,7 @@ import javax.faces.bean.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.websocket.Session;
 import net.novucs.esd.model.Notification;
 import net.novucs.esd.orm.Dao;
@@ -42,8 +43,12 @@ public class NotificationSessionHandler {
     if (recipientSession == null) {
       notificationDao.insert(notification);
     } else {
-      JsonObject notificationJson = Json.createObjectBuilder().add("message",
-          notification.getMessage()).build();
+
+      JsonObjectBuilder builder = Json.createObjectBuilder()
+          .add("message", notification.getMessage())
+          .add("type", notification.getType().name());
+
+      JsonObject notificationJson = builder.build();
       this.sendNotificationToSession(recipientSession.getSession(), notificationJson);
     }
   }
