@@ -54,7 +54,6 @@ public class TestMemberEditClaimServlet {
       boolean cancelledClaim)
       throws SQLException, ReflectiveOperationException {
     DaoManager dm = createTestDaoManager(true);
-    dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
     Dao<Claim> claimDao = dm.get(Claim.class);
     Dao<Membership> membershipDao = dm.get(Membership.class);
@@ -95,10 +94,7 @@ public class TestMemberEditClaimServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        false);
+    setServletDaos(servlet, user,true,false);
 
     userSession.setUser(user);
     // When
