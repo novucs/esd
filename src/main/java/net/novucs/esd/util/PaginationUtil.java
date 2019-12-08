@@ -45,14 +45,17 @@ public final class PaginationUtil {
 
   public static <M> List<M> paginate(Dao<M> dao, int pageSize, double pageNumber)
       throws SQLException {
-    return dao.select().offset(
-        (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
+    return dao.select().offset(getOffset(pageSize, pageNumber)).limit(pageSize).all();
+  }
+
+  public static int getOffset(int pageSize, double pageNumber) {
+    return (int) (pageSize * (pageNumber - 1));
   }
 
   public static <M> List<M> paginateWithSearch(Dao<M> dao, int pageSize, double pageNumber,
       String searchQuery, String... columnNames) throws SQLException {
     return dao.select().where(new Where().search(searchQuery, columnNames)).offset(
-        (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
+        getOffset(pageSize, pageNumber)).limit(pageSize).all();
   }
 
   public static <M> int getMaxPages(Dao<M> dao, double pageSize) throws SQLException {
