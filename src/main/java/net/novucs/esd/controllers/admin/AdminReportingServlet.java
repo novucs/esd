@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
@@ -86,12 +85,11 @@ public class AdminReportingServlet extends BaseServlet {
           .map(Claim::getAmount)
           .map(BigDecimal::intValue)
           .mapToInt(Integer::intValue).sum();
-
       long membershipSum = membershipDao.select().all().stream().filter(
           r -> r.getStartDate().toLocalDate().isAfter(from.minusDays(1))
-              && r.getStatus().equals(MembershipUtils.STATUS_ACTIVE)
+              && r.isActive()
               && r.getStartDate().toLocalDate().isBefore(to.plusDays(1))
-          ).count() * MembershipUtils.ANNUAL_FEE;
+      ).count() * Membership.ANNUAL_FEE_POUNDS;
 
       Session session = Session.fromRequest(request);
       session.setFilter("showReport", true);
@@ -102,8 +100,7 @@ public class AdminReportingServlet extends BaseServlet {
       session.setFilter("membershipSum", membershipSum);
       session.setFilter("turnover", membershipSum - claimSum);
     } catch (SQLException e) {
-      Logger.getLogger(this.getClass().getName())
-          .log(Level.WARNING, null, e);
+      Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }

@@ -32,7 +32,7 @@
 </form>
 <c:choose>
     <c:when test="${showReport != null}">
-        <div class="row rounded-container">
+        <div class="row">
             <div class="col s12 text-center">
                 <div class="row">
                     <div class="col s12 center-align">

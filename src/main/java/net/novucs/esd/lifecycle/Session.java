@@ -18,10 +18,33 @@ import net.novucs.esd.model.User;
 public class Session {
 
   public static final String ATTRIBUTE_NAME = "session";
+  private final Stack<String> toasts = new Stack<>();
   private final Stack<String> errors = new Stack<>();
   private List<Role> roles = new ArrayList<>();
   private final Map<String, Object> filters = new ConcurrentHashMap<>();
   private User user;
+
+  /**
+   * Push toast.
+   *
+   * @param message the message
+   */
+  public void pushToast(String message) {
+    toasts.push(message);
+  }
+
+  /**
+   * Get toasts.
+   *
+   * @return the toasts.
+   */
+  public List<String> getToasts() {
+    List<String> toasts = new ArrayList<>();
+    while (!this.toasts.isEmpty()) {
+      toasts.add(this.toasts.pop());
+    }
+    return toasts;
+  }
 
   /**
    * Push error.

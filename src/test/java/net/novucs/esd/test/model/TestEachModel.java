@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
@@ -54,6 +55,7 @@ public class TestEachModel<M> {
     return data;
   }
 
+  @SuppressWarnings("PMD.CyclomaticComplexity")
   private Object getTestData(Class<?> type) {
     if (type == String.class) {
       return "string";
@@ -69,6 +71,8 @@ public class TestEachModel<M> {
       return DUMMY_DATE_TIME;
     } else if (type == ClaimStatus.class) {
       return ClaimStatus.APPROVED;
+    } else if (type == ApplicationStatus.class) {
+      return ApplicationStatus.APPROVED;
     }
     throw new IllegalArgumentException("No test data for type: " + type.getName());
   }
