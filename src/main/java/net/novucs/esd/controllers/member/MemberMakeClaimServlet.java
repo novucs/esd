@@ -126,7 +126,6 @@ public class MemberMakeClaimServlet extends BaseServlet {
         return;
       }
 
-      System.out.println("rationale: " + request.getParameter("claim-rationale"));
       claimDao.insert(new Claim(
           membership.getId(),
           claimAmount,
