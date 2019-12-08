@@ -75,7 +75,7 @@ public class TestEachModel<M> {
       return ClaimStatus.APPROVED;
     } else if (type == ApplicationStatus.class) {
       return ApplicationStatus.APPROVED;
-    }  else if (type == NotificationType.class) {
+    } else if (type == NotificationType.class) {
       return NotificationType.SUCCESS;
     }
     throw new IllegalArgumentException("No test data for type: " + type.getName());
