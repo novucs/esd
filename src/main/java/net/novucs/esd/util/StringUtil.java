@@ -49,6 +49,11 @@ public final class StringUtil {
     String initials = names.stream()
         .map(c -> String.valueOf(c.charAt(0)))
         .collect(Collectors.joining(""));
+
+    // If they have no initials, just return their last name as their username
+    if (initials.length() == 0) {
+      return lastName.toLowerCase(Locale.UK);
+    }
     return (initials + "-" + lastName).toLowerCase(Locale.UK);
   }
 }

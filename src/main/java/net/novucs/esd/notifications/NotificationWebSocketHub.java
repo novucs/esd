@@ -86,7 +86,7 @@ public class NotificationWebSocketHub {
       List<Notification> notificationsToDelete = new ArrayList<>();
       try {
         for (Notification notification : notifications) {
-          sessionHandler.sendNotification(notification);
+          sessionHandler.sendNotification(notification, true);
           notificationsToDelete.add(notification);
         }
       } catch (IOException e) {
