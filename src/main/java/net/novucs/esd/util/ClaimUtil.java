@@ -15,9 +15,6 @@ import net.novucs.esd.orm.Where;
 
 public final class ClaimUtil {
 
-  @Inject
-  private static Dao<Claim> claimDao;
-
   private ClaimUtil() {
   }
 
@@ -54,7 +51,7 @@ public final class ClaimUtil {
         .all();
   }
 
-  public static int sumAllClaims(LocalDate from, LocalDate to) throws SQLException {
+  public static int sumAllClaims(Dao<Claim> claimDao, LocalDate from, LocalDate to) throws SQLException {
     return  claimDao.select().all()
         .stream()
         .filter((r) -> r.getClaimDate().toLocalDate().isAfter(from.minusDays(1))

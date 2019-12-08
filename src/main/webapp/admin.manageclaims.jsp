@@ -75,15 +75,3 @@
 </div>
 <script src="${pageContext.request.contextPath}/js/admin.manageclaims.js"></script>
 <script src="${pageContext.request.contextPath}/js/pagination.js"></script>
-<c:forEach var="toast" items="${toasts}">
-    <script>
-      (function () {
-        let init = () => {
-          document.addEventListener('DOMContentLoaded', function () {
-            M.toast({html: '${toast}'});
-          });
-        };
-        return {init};
-      })().init();
-    </script>
-</c:forEach>

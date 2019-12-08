@@ -10,8 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
+import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Role;
-import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
@@ -27,6 +27,9 @@ public class AdminAnnualChargeServlet extends BaseServlet {
   @Inject
   private Dao<Role> roleDao;
 
+  @Inject
+  private Dao<Claim> claimDao;
+
   protected void doGet(HttpServletRequest request,
       HttpServletResponse response)
       throws ServletException, IOException {
@@ -34,7 +37,7 @@ public class AdminAnnualChargeServlet extends BaseServlet {
       LocalDate from = LocalDate.now().minusYears(1);
       LocalDate to = LocalDate.now();
 
-      int claimSum = ClaimUtil.sumAllClaims(from, to);
+      int claimSum = ClaimUtil.sumAllClaims(claimDao, from, to);
       Role memberRole = roleDao.select().where(new Where().eq("name", Role.MEMBER)).one();
 
       long numberOfMembers = userRoleDao.select()
