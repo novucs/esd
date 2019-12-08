@@ -3,15 +3,19 @@ package net.novucs.esd.controllers.admin;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.persistence.Tuple;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
+import net.novucs.esd.model.Action;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Role;
+import net.novucs.esd.model.UserAction;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
@@ -29,6 +33,12 @@ public class AdminAnnualChargeServlet extends BaseServlet {
 
   @Inject
   private Dao<Claim> claimDao;
+
+  @Inject
+  private Dao<Action> actionDao;
+
+  @Inject
+  private Dao<UserAction> userActionDao;
 
   protected void doGet(HttpServletRequest request,
       HttpServletResponse response)
@@ -62,11 +72,28 @@ public class AdminAnnualChargeServlet extends BaseServlet {
   protected void doPost(HttpServletRequest request,
       HttpServletResponse response)
       throws ServletException, IOException {
-      // Here we need to go through all of the members, and charge them based on how many claims
-      // have been made.
 
     int rangeValue = Integer.parseInt(request.getParameter("range"));
     int maxValue = Integer.parseInt(request.getParameter("max-charge"));
-    int charge =  maxValue * rangeValue / 100;;
+    double charge =  maxValue * rangeValue / 100;
+    int[] poundsAndPence = parsePoundsAndPence(charge);
+    Integer pounds = poundsAndPence[0];
+    Integer pence = poundsAndPence[1];
+    ZonedDateTime completeBy = ZonedDateTime.now().plusMonths(1);
+    ZonedDateTime created = ZonedDateTime.now();
+    Action action = new Action(pounds, pence, completeBy, created);
+    try {
+      actionDao.insert(action);
+    } catch (SQLException e) {
+      Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage());
+    }
+  }
+
+  private int[] parsePoundsAndPence(double value){
+    String[] arr=String.valueOf(value).split("\\.");
+    int[] intArr=new int[2];
+    intArr[0]=Integer.parseInt(arr[0]); // 1
+    intArr[1]=Integer.parseInt(arr[1]); // 9
+    return intArr;
   }
 }
