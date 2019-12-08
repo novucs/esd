@@ -1,6 +1,5 @@
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/register.css">
 <div class="container">
     <div class="row">
         <div id="address-component-container" class="col s6 push-s3 rounded-container">
