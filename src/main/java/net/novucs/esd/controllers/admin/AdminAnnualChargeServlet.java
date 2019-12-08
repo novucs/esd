@@ -3,19 +3,13 @@ package net.novucs.esd.controllers.admin;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
-import net.novucs.esd.model.ApplicationStatus;
-import net.novucs.esd.model.Claim;
-import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
@@ -23,11 +17,9 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ClaimUtil;
 
-@WebServlet(name = "AdminAnnualChargeServlet")
 public class AdminAnnualChargeServlet extends BaseServlet {
 
-  @Inject
-  private Dao<User> userDao;
+  private static final long serialVersionUID = 1337133713371338L;
 
   @Inject
   private Dao<UserRole> userRoleDao;
@@ -49,8 +41,15 @@ public class AdminAnnualChargeServlet extends BaseServlet {
           .where(new Where().eq("role_id", memberRole.getId()))
           .count("*");
 
+      long maxCharge = claimSum / numberOfMembers;
+      if(claimSum == 0){
+        maxCharge = 10;
+      }
+
       request.setAttribute("claimSum", claimSum);
       request.setAttribute("numberOfMembers", numberOfMembers);
+      request.setAttribute("maxCharge", maxCharge);
+
       super.forward(request, response, "Annual Sum", "admin.annualcharge");
     } catch(SQLException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage());

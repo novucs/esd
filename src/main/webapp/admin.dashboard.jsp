@@ -40,18 +40,7 @@
                 <t:tile title="<%=String.valueOf(request.getAttribute("monthlyClaimCost"))%>"
                         label="Monthly claim cost"
                         icon="attach_money"/>
-                <a class="reporting" href="${pageContext.request.contextPath}/admin/    LocalDate from = LocalDate.now().minusYears(1);
-    LocalDate to = LocalDate.now();
-
-    int claimSum = ClaimUtil.sumAllClaims(from, to);
-    Role memberRole = roleDao.select().where(new Where().eq("name", Role.MEMBER)).one();
-
-                long numberOfMembers = userRoleDao.select()
-                .where(new Where().eq("role_id", memberRole.getId()))
-                .count("*");
-
-                request.setAttribute("claimSum", claimSum);
-                request.setAttribute("numberOfMembers", numberOfMembers);">
+                <a class="reporting" href="${pageContext.request.contextPath}/admin/annualcharge">
                     <t:tile title=""
                             colour="black reporting"
                             label="Calculate Annual Charge"
