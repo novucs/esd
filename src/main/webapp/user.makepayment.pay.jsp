@@ -8,10 +8,10 @@
                 <div class="card-title"><h4>Make a payment</h4></div>
                 <br/>
                 <div class="tab">
-                    <button class="tablinks" onclick="choosePaymentMethod(event, 'card')">
+                    <button class="tablinks btn orange" id="card-payment">
                         Card Payment
                     </button>
-                    <button class="tablinks" onclick="choosePaymentMethod(event, 'offline')">
+                    <button class="tablinks btn orange" id="offline-payment">
                         Offline Payment
                     </button>
                 </div>
@@ -52,7 +52,7 @@
                                 </div>
                             </div>
                             <br/>
-                            <button class="waves-effect btn secondary-content left-align">
+                            <button class="waves-effect btn orange left-align">
                                 Pay &pound;${fee}
                             </button>
                         </form>
@@ -74,13 +74,11 @@
                                 </div>
                             </div>
                             <br/>
-                            <button class="waves-effect btn secondary-content left-align">Submit
+                            <button class="waves-effect btn orange left-align">Submit
                             </button>
                         </form>
                     </div>
                 </div>
-            </div>
-            <div class="card-action"><a href="javascript:history.back()">Go Back</a>
             </div>
         </div>
     </div>
@@ -92,3 +90,4 @@
   const reference = '<%=request.getAttribute("payContext")%>';
   initStripe(fee, reference);
 </script>
+`
