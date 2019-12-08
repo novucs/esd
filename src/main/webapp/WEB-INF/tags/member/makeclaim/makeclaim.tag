@@ -10,43 +10,13 @@
 <div>
 <c:choose>
     <c:when test="${claimStatus == 'CREATE'}">
-        <c:choose>
-            <c:when test="${membershipStatus == 'NONE'}">
-                <t:makeclaimineligible
-                  messageText="In order to make a claim you need to purchase a membership"
-                  linkText="purchase your membership"
-                  linkUrl="${pageContext.request.contextPath}/makepayment"
-                  />
-            </c:when>
-            <c:when test="${membershipStatus == 'EXPIRED'}">
-                <t:makeclaimineligible
-                    messageText="Your membership expired on ${expiredDate}. To make a claim you must renew your membership"
-                    linkText="renew your membership"
-                    linkUrl="${pageContext.request.contextPath}/makepayment"
-                    />
-            </c:when>
-            <c:when test="${membershipStatus == 'SUSPENDED'}">
-                <t:makeclaimineligible
-                    messageText="Your account is currently suspended, contact the Administrator for more details"
-                    linkText="contact the administrator"
-                    linkUrl="mailto:admin@esd.net"
-                    />
-            </c:when>
-            <c:when test="${membershipStatus == 'FULL_WAIT'}">
-                <t:makeclaimineligible
-                    messageText="New members must wait 6 months before making a claim, you will be eligible to make a claim on ${claimFrom}"
-                    linkText="return to your Dashboard"
-                    linkUrl="${pageContext.request.contextPath}/dashboard"
-                    />
-            </c:when>
-            <c:otherwise>
-                <t:makeclaimcreate />
-            </c:otherwise>
-        </c:choose>
+        <t:makeclaimcreate />
     </c:when>
+
     <c:when test="${claimStatus == 'SUCCESS'}">
         <t:makeclaimsuccess />
     </c:when>
+
     <c:otherwise>
         <t:makeclaimfail />
     </c:otherwise>

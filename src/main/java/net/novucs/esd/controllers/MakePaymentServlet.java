@@ -53,8 +53,7 @@ public class MakePaymentServlet extends BaseServlet {
 
       if (application == null) {
         // All users must have an application associated with their account.
-        request.setAttribute("error", "Your account has no related application");
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        sendError(request, response, "Your account has no related application");
         return;
       }
 
@@ -79,8 +78,8 @@ public class MakePaymentServlet extends BaseServlet {
       }
 
     } catch (SQLException e) {
-      Logger.getLogger(getClass().getName())
-          .log(Level.SEVERE, "Failed to load payment page", e);
+      Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -127,8 +126,13 @@ public class MakePaymentServlet extends BaseServlet {
     try {
       if (hasActiveMembership(user)) {
         // Users with an active membership cannot make a payment.
-        request.setAttribute("error", "You already have a membership");
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        sendError(request, response, "You already have a membership");
+        return;
+      }
+
+      Application application = getApplication(user);
+      if (application == null) {
+        sendError(request, response, "Your account has no related application");
         return;
       }
 
@@ -148,7 +152,6 @@ public class MakePaymentServlet extends BaseServlet {
           reference
       ));
 
-      Application application = getApplication(user);
       application.setStatus(ApplicationStatus.PAID);
       applicationDao.update(application);
       membershipDao.insert(new Membership(
@@ -159,7 +162,14 @@ public class MakePaymentServlet extends BaseServlet {
 
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public void sendError(HttpServletRequest request, HttpServletResponse response, String message)
+      throws IOException {
+    request.setAttribute("error", message);
+    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
   }
 
   private Charge executeStripePayment(

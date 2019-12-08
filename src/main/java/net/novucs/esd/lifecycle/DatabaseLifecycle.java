@@ -31,7 +31,6 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.DateUtil;
-import net.novucs.esd.util.MembershipUtils;
 import net.novucs.esd.util.Password;
 
 /**
@@ -110,7 +109,6 @@ public class DatabaseLifecycle {
 
   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
   private void setupDummyUser(String name, String roleName) throws SQLException {
-    MembershipUtils membershipUtils = new MembershipUtils();
     Role role = daoManager.get(Role.class).select().where(new Where().eq("name", roleName)).first();
     User user = new User(
         name,
@@ -139,7 +137,6 @@ public class DatabaseLifecycle {
 
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(),
-          membershipUtils.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(7),
           true
       ));
@@ -149,7 +146,6 @@ public class DatabaseLifecycle {
       daoManager.get(Application.class).insert(application);
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(),
-          membershipUtils.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(1),
           true
       ));
@@ -160,7 +156,6 @@ public class DatabaseLifecycle {
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(),
-          membershipUtils.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(3),
           false
       ));
@@ -171,7 +166,6 @@ public class DatabaseLifecycle {
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
           user.getId(),
-          membershipUtils.STATUS_ACTIVE, // Purposefully active to ensure dates are picked up
           ZonedDateTime.now().minusMonths(13),
           false
       ));

@@ -39,16 +39,26 @@ public final class Membership {
    * Instantiates a new Membership.
    *
    * @param userId      the user id
-   * @param status      the status
-   * @param startDate   the start date
    * @param isNewMember the is new member
    */
   public Membership(Integer userId, Boolean isNewMember) {
+    this(userId, ZonedDateTime.now(), isNewMember);
+  }
+
+  /**
+   * Instantiates a new Membership.
+   *
+   * @param userId      the user id
+   * @param startDate   the start date
+   * @param isNewMember the is new member
+   */
+  public Membership(Integer userId, ZonedDateTime startDate, Boolean isNewMember) {
     this.userId = userId;
-    this.startDate = ZonedDateTime.now();
+    this.startDate = startDate;
     this.claimFromDate = isNewMember ? startDate.plusMonths(6) : startDate;
     this.suspended = 0;
   }
+
 
   /**
    * Gets id.
@@ -161,6 +171,20 @@ public final class Membership {
    */
   public boolean isActive() {
     return !isSuspended() && !isExpired();
+  }
+
+  /**
+   * Gets whether the membership is able to make a claim.
+   *
+   * @return <code>true</code> if the membership is able to make a claim.
+   */
+  public boolean isAbleToClaim() {
+    if (!isActive()) {
+      return false;
+    }
+
+    ZonedDateTime now = ZonedDateTime.now();
+    return now.toEpochSecond() >= claimFromDate.toEpochSecond();
   }
 
   @Override

@@ -20,7 +20,6 @@ import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.orm.Dao;
-import net.novucs.esd.util.MembershipUtils;
 
 public class AdminReportingServlet extends BaseServlet {
 
