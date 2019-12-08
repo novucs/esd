@@ -38,6 +38,8 @@ public class TestManagePaymentsServlet {
   private static final String VERIFIED = "VERIFIED";
   private static final String PENDING = "PENDING";
   private transient Session userSession;
+
+  @SuppressWarnings("PMD.SingularField")
   private Dao<Payment> paymentDao;
 
   /**
