@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -62,6 +63,7 @@ public class TestManagePaymentsServlet {
         BigDecimal.TEN,
         "mockStripeId",
         "Card Payment",
+        ZonedDateTime.now(),
         VERIFIED
     ));
     paymentDao.insert(new Payment(
@@ -69,6 +71,7 @@ public class TestManagePaymentsServlet {
         BigDecimal.TEN,
         null,
         "Bank Reference",
+        ZonedDateTime.now(),
         PENDING
     ));
     ReflectUtil.setFieldValue(servlet, "paymentDao", paymentDao);
@@ -180,6 +183,7 @@ public class TestManagePaymentsServlet {
           BigDecimal.TEN,
           "mockStripeId",
           "Card Payment",
+          ZonedDateTime.now(),
           VERIFIED
       ));
     }
