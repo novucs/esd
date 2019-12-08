@@ -12,11 +12,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
+import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.ApplicationStatus;
+import net.novucs.esd.model.Notification;
+import net.novucs.esd.model.NotificationType;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserRole;
+import net.novucs.esd.notifications.NotificationService;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ManageApplicationResult;
@@ -34,6 +38,9 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   @Inject
   private Dao<User> userDao;
+
+  @Inject
+  private NotificationService notificationService;
 
   @Inject
   private Dao<Role> roleDao;
@@ -64,7 +71,6 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
       PaginationUtil.setRequestAttributes(request, maxPages, pageNumber, pageSize);
       request.setAttribute("results", results);
-      request.setAttribute("toasts", getSession(request).getToasts());
 
       super.forward(request, response, "Manage Applications", "admin.manageapplications");
     } catch (SQLException e) {
@@ -161,8 +167,15 @@ public class AdminManageApplicationsServlet extends BaseServlet {
       HttpServletRequest request, ApplicationStatus status, Application application)
       throws SQLException {
     User user = userDao.selectById(application.getUserId());
-    getSession(request).pushToast((status == ApplicationStatus.DENIED ? "Denied" : "Approved")
-        + " " + user.getName() + " - " + user.getEmail());
+
+    int userId = Session.fromRequest(request).getUser().getId();
+    String message = status == ApplicationStatus.DENIED ? "Denied" : "Approved";
+    notificationService.sendNotification(
+        new Notification(message + " " + user.getName() + " - " + user.getEmail(),
+            userId, userId, NotificationType.SUCCESS));
+
+    notificationService.sendNotification(new Notification("Your application was " + message,
+        userId, user.getId(), NotificationType.SUCCESS));
   }
 
   @Override

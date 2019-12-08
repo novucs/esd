@@ -12,10 +12,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
+import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.Notification;
+import net.novucs.esd.model.NotificationType;
 import net.novucs.esd.model.User;
+import net.novucs.esd.notifications.NotificationService;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ManageClaimsResult;
@@ -27,6 +31,9 @@ public class AdminManageClaimsServlet extends BaseServlet {
   private static final String PAGE_SIZE_FILTER = "claimPageSizeFilter";
   private static final Where WHERE_CLAIM_IS_PENDING = new Where()
       .eq("status", ClaimStatus.PENDING.name());
+
+  @Inject
+  private NotificationService notificationService;
 
   @Inject
   private Dao<Claim> claimDao;
@@ -61,7 +68,6 @@ public class AdminManageClaimsServlet extends BaseServlet {
 
       PaginationUtil.setRequestAttributes(request, maxPages, pageNumber, pageSize);
       request.setAttribute("results", results);
-      request.setAttribute("toasts", getSession(request).getToasts());
       super.forward(request, response, "Manage Claims", "admin.manageclaims");
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
@@ -129,9 +135,20 @@ public class AdminManageClaimsServlet extends BaseServlet {
     }
   }
 
-  public void addUpdateMessage(HttpServletRequest request, ClaimStatus status, Claim claim) {
-    getSession(request).pushToast((status == ClaimStatus.REJECTED ? "Denied" : "Approved")
-        + " claim #" + claim.getId());
+  public void addUpdateMessage(HttpServletRequest request, ClaimStatus status, Claim claim)
+      throws SQLException {
+    User user = userDao.selectById(
+        membershipDao.selectById(claim.getMembershipId()).getUserId());
+
+    int userId = Session.fromRequest(request).getUser().getId();
+    String message = status == ClaimStatus.REJECTED ? "Denied" : "Approved";
+
+    notificationService.sendNotification(
+        new Notification(message + " " + user.getName() + " - " + user.getEmail(),
+            userId, userId, NotificationType.SUCCESS));
+
+    notificationService.sendNotification(new Notification("Your claim was " + message,
+        userId, user.getId(), NotificationType.SUCCESS));
   }
 
   @Override
