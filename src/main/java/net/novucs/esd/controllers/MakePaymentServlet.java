@@ -6,6 +6,7 @@ import com.stripe.model.Charge;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,6 +158,9 @@ public class MakePaymentServlet extends BaseServlet {
           user.getId(),
           hasPreviousMemberships(user)
       ));
+
+      DecimalFormat df = new DecimalFormat("#.##");
+      request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
       super.forward(request, response, "Payment Success", "user.makepayment.success");
 
     } catch (SQLException e) {
@@ -176,7 +180,7 @@ public class MakePaymentServlet extends BaseServlet {
       throws IOException, ServletException {
     Stripe.apiKey = STRIPE_TEST_SECRET_KEY;
     Map<String, Object> params = new HashMap<>();
-    params.put("amount", Membership.ANNUAL_FEE_POUNDS);
+    params.put("amount", Membership.ANNUAL_FEE_POUNDS * 100);
     params.put("currency", "gbp");
     params.put("description", "Example charge");
     params.put("source", token);
