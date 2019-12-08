@@ -18,7 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.controllers.UserSettingsServlet;
+import net.novucs.esd.controllers.UserProfileServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Role;
@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
-public class TestUserSettingsServlet {
+public class TestUserProfileServlet {
 
   private static final String SESSION_LABEL = "session";
   private static final String USER_ID_LABEL = "userId";
@@ -49,7 +49,7 @@ public class TestUserSettingsServlet {
     userRole = new Role("User");
   }
 
-  private void setServletDaos(UserSettingsServlet servlet)
+  private void setServletDaos(UserProfileServlet servlet)
       throws ReflectiveOperationException, SQLException {
     DaoManager dm = createTestDaoManager();
     dm.init(DatabaseLifecycle.MODEL_CLASSES);
@@ -72,7 +72,7 @@ public class TestUserSettingsServlet {
   public void testUpdateInvalidUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
+    UserProfileServlet servlet = new UserProfileServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
@@ -98,7 +98,7 @@ public class TestUserSettingsServlet {
   public void testUpdateUserDetails()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
+    UserProfileServlet servlet = new UserProfileServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
@@ -128,7 +128,7 @@ public class TestUserSettingsServlet {
   public void testUpdateUserPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
+    UserProfileServlet servlet = new UserProfileServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
@@ -161,7 +161,7 @@ public class TestUserSettingsServlet {
   public void testUpdateUserIncorrectRepeatedPassword()
       throws SQLException, ReflectiveOperationException, IOException, ServletException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
+    UserProfileServlet servlet = new UserProfileServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
@@ -192,7 +192,7 @@ public class TestUserSettingsServlet {
   public void testGetInvalidEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
+    UserProfileServlet servlet = new UserProfileServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
@@ -214,7 +214,7 @@ public class TestUserSettingsServlet {
   public void testGetEditUser()
       throws IOException, ServletException, SQLException, ReflectiveOperationException {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
+    UserProfileServlet servlet = new UserProfileServlet();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpSession session = mock(HttpSession.class);
@@ -234,7 +234,7 @@ public class TestUserSettingsServlet {
   @Test
   public void testServletInfo() {
     // Given
-    UserSettingsServlet servlet = new UserSettingsServlet();
+    UserProfileServlet servlet = new UserProfileServlet();
 
     // When
     String servletInfo = servlet.getServletInfo();

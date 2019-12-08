@@ -14,7 +14,7 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.util.DateUtil;
 import net.novucs.esd.util.Password;
 
-public class UserSettingsServlet extends BaseServlet {
+public class UserProfileServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
@@ -24,7 +24,7 @@ public class UserSettingsServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    super.forward(request, response, "Account Settings", "user.settings");
+    super.forward(request, response, "My Profile", "user.profile");
   }
 
   @Override
@@ -58,6 +58,7 @@ public class UserSettingsServlet extends BaseServlet {
     Password password = user.getPassword();
     String currentPassword = request.getParameter("current_password");
     String newPassword = request.getParameter("new_password");
+    updateUserPassword(request, user, password, currentPassword, newPassword);
 
     if (!currentPassword.isEmpty()
         && !newPassword.isEmpty()
@@ -71,9 +72,9 @@ public class UserSettingsServlet extends BaseServlet {
     try {
       userDao.update(user);
       request.setAttribute("updated", true);
-      response.sendRedirect("settings");
+      super.forward(request, response, "My Profile", "user.profile");
     } catch (SQLException e) {
-      Logger.getLogger(UserSettingsServlet.class.getName())
+      Logger.getLogger(UserProfileServlet.class.getName())
           .log(Level.SEVERE, "Unable to update account settings.", e);
       request.setAttribute("error", "There was an error updating your account settings.");
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -81,8 +82,33 @@ public class UserSettingsServlet extends BaseServlet {
     }
   }
 
+  private void updateUserPassword(HttpServletRequest request, User user, Password password,
+      String currentPassword, String newPassword) {
+    if (!currentPassword.isEmpty()) {
+      if (password.authenticate(currentPassword)) {
+        if (newPassword.isEmpty()) {
+          request.setAttribute(
+              "notice",
+              "You entered your password, but didn't specify a new password. "
+                  + "Your password has not been updated."
+          );
+        } else {
+          user.setNeedsPasswordChange(0);
+          user.setPassword(Password.fromPlaintext(newPassword));
+        }
+      } else {
+        request.setAttribute(
+            "notice",
+            "You entered an incorrect password. Please try again. "
+                + "Your password has not been updated."
+
+        );
+      }
+    }
+  }
+
   @Override
   public String getServletInfo() {
-    return "UserSettingsServlet";
+    return "UserProfileServlet";
   }
 }
