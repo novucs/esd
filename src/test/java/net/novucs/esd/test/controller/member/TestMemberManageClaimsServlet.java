@@ -38,6 +38,7 @@ public class TestMemberManageClaimsServlet {
 
   private static final String LAYOUT = "/layout.jsp";
   private static final String SESSION = "session";
+  private static final String RATIONALE = "RATIONALE";
   private transient Session userSession;
   private Dao<Claim> claimDao;
   private Dao<Membership> membershipDao;
@@ -71,22 +72,22 @@ public class TestMemberManageClaimsServlet {
 
     if (approvedClaim) {
       Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.APPROVED);
+          ZonedDateTime.now().minusDays(1), ClaimStatus.APPROVED, RATIONALE);
       claimDao.insert(claim);
     }
     if (rejectedClaim) {
       Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.REJECTED);
+          ZonedDateTime.now().minusDays(1), ClaimStatus.REJECTED, RATIONALE);
       claimDao.insert(claim);
     }
     if (pendingClaim) {
       Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.PENDING);
+          ZonedDateTime.now().minusDays(1), ClaimStatus.PENDING, RATIONALE);
       claimDao.insert(claim);
     }
     if (cancelledClaim) {
       Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.CANCELLED);
+          ZonedDateTime.now().minusDays(1), ClaimStatus.CANCELLED, RATIONALE);
       claimDao.insert(claim);
     }
     ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);
@@ -216,7 +217,8 @@ public class TestMemberManageClaimsServlet {
           membershipId,
           BigDecimal.TEN,
           ZonedDateTime.now().minusDays(i),
-          ClaimStatus.PENDING
+          ClaimStatus.PENDING,
+          RATIONALE
       ));
     }
     ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);

@@ -66,12 +66,12 @@ public class TestMemberEditClaimServlet {
 
     if (approvedClaim) {
       Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(50.00),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.APPROVED);
+          ZonedDateTime.now().minusDays(1), ClaimStatus.APPROVED, "rationale");
       claimDao.insert(claim);
     }
     if (cancelledClaim) {
       Claim claim = new Claim(2, BigDecimal.valueOf(50.00),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.CANCELLED);
+          ZonedDateTime.now().minusDays(1), ClaimStatus.CANCELLED, "rationale");
       claimDao.insert(claim);
     }
     ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);
