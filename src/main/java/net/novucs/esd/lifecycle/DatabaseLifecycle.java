@@ -185,7 +185,6 @@ public class DatabaseLifecycle {
         Password.fromPlaintext(password),
         address,
         new DateUtil().getDateFromString(dateOfBirth),
-        "ACTIVE",
         1
     );
     daoManager.get(User.class).insert(user);
@@ -231,7 +230,8 @@ public class DatabaseLifecycle {
         BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
         null,
         "FEE",
-        new DateUtil().getDateTimeFromString(paymentDateTime)
+        new DateUtil().getDateTimeFromString(paymentDateTime),
+        "VERIFIED"
     ));
   }
 
@@ -263,17 +263,17 @@ public class DatabaseLifecycle {
     setupDummyUser("Administrator", "Administrator", "password1");
 
     // ESD Users
-    User eSimons = setupUser("Edward Simons", "Member", "221165",
+    User edward = setupUser("Edward Simons", "Member", "221165",
         "123 Kings Street, Aberdeen, AB12 2AB", "1965-11-22");
-    User mMalcolm = setupUser("Michael Malcolm", "Member", "080890",
+    User michael = setupUser("Michael Malcolm", "Member", "080890",
         "3 London Road, Luton, LU1 1QY", "1990-08-08");
-    User meAydin = setupUser("Mehmet Edward Aydin", "Member", "201068",
+    User mehmet = setupUser("Mehmet Edward Aydin", "Member", "201068",
         "29 Station Rd, London, N3 2SG", "1968-10-20");
-    User rFrench = setupUser("Rob French", "Member", "211268",
+    User rob = setupUser("Rob French", "Member", "211268",
         "13 Stafford Street, Aberdeen, AB12 1AQ", "1968-12-21");
-    User mWood = setupUser("Mike Wood", "Member", "180882",
+    User mike = setupUser("Mike Wood", "Member", "180882",
         "10 London Avenue, Luton, LU12 3SB", "1982-08-18");
-    User eAydin = setupUser("Emin Aydin", "Member", "101068",
+    User emin = setupUser("Emin Aydin", "Member", "101068",
         "148 Station Rd, London, N3 2SG", "1968-10-10");
     User member3 = setupUser("Member 3", "Member", "020398",
         "Address Three", "1998-03-02");
@@ -285,26 +285,26 @@ public class DatabaseLifecycle {
         "Address Six", "1997-07-08");
 
     // Add Payments
-    pushPayment(eSimons.getId(), "2015-01-07 10:08:21");
-    pushPayment(mMalcolm.getId(), "2015-01-24 11:28:25");
-    pushPayment(meAydin.getId(), "2015-01-26 18:00:00");
-    pushPayment(rFrench.getId(), "2015-01-28 09:12:00");
-    pushPayment(mWood.getId(), "2015-10-25 08:44:13");
-    pushPayment(eAydin.getId(), "2015-10-26 10:08:21");
-    pushPayment(eSimons.getId(), "2016-01-25 11:00:00");
-    pushPayment(mMalcolm.getId(), "2016-01-25 11:18:21");
-    pushPayment(meAydin.getId(), "2016-02-05 16:38:13");
-    pushPayment(mWood.getId(), "2016-10-12 09:44:18");
-    pushPayment(eAydin.getId(), "2016-10-20 14:42:45");
+    pushPayment(edward.getId(), "2015-01-07 10:08:21");
+    pushPayment(michael.getId(), "2015-01-24 11:28:25");
+    pushPayment(mehmet.getId(), "2015-01-26 18:00:00");
+    pushPayment(rob.getId(), "2015-01-28 09:12:00");
+    pushPayment(mike.getId(), "2015-10-25 08:44:13");
+    pushPayment(emin.getId(), "2015-10-26 10:08:21");
+    pushPayment(edward.getId(), "2016-01-25 11:00:00");
+    pushPayment(michael.getId(), "2016-01-25 11:18:21");
+    pushPayment(mehmet.getId(), "2016-02-05 16:38:13");
+    pushPayment(mike.getId(), "2016-10-12 09:44:18");
+    pushPayment(emin.getId(), "2016-10-20 14:42:45");
     pushPayment(member3.getId(), "2016-01-23 01:01:01");
     pushPayment(member4.getId(), "2016-05-16 11:13:11");
     pushPayment(member5.getId(), "2016-06-13 00:30:13");
     pushPayment(member6.getId(), "2016-11-06 07:13:00");
 
     // Add Claims
-    pushClaim(meAydin.getId(), "2016-04-16", "change mirror", 120);
-    pushClaim(meAydin.getId(), "2016-09-08", "repair scratch", 90);
-    pushClaim(eSimons.getId(), "2016-10-10", "polishing tyres", 75);
+    pushClaim(mehmet.getId(), "2016-04-16", "change mirror", 120);
+    pushClaim(mehmet.getId(), "2016-09-08", "repair scratch", 90);
+    pushClaim(edward.getId(), "2016-10-10", "polishing tyres", 75);
   }
 
   /**

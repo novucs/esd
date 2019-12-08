@@ -42,7 +42,6 @@ public class TestMemberMakeClaimServlet {
   private static final String LAYOUT = "/layout.jsp";
   private static final String PAGE = "page";
   private static final String JSP_EXT = "%s.jsp";
-  private static final String ACTIVE_MEMBERSHIP = "ACTIVE";
   private static final String USER_NAME = "User Name";
   private static final String USER_EMAIL = "user@email.com";
   private static final String USER_PASSWORD = "password1";
@@ -95,9 +94,13 @@ public class TestMemberMakeClaimServlet {
       }
       membershipDao.insert(newMembership);
       for (int i = 0; i < claimCount; i++) {
-        Claim claim = new Claim(newMembership.getId(),
-            i == 0 ? firstClaimAmount : new BigDecimal(20), ZonedDateTime.now(),
-            ClaimStatus.PENDING);
+        Claim claim = new Claim(
+            newMembership.getId(),
+            i == 0 ? firstClaimAmount : new BigDecimal(20),
+            ZonedDateTime.now(),
+            ClaimStatus.PENDING,
+            "dummy claim"
+        );
         claimDao.insert(claim);
       }
     }
@@ -129,7 +132,6 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        "APPLICATION",
         0
     );
 
@@ -177,7 +179,6 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        "APPLICATION",
         0
     );
 
@@ -229,7 +230,6 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        "APPLICATION",
         0
     );
 
@@ -280,7 +280,6 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
         0
     );
 
@@ -334,7 +333,6 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
         0
     );
 
@@ -429,7 +427,6 @@ public class TestMemberMakeClaimServlet {
         Password.fromPlaintext(USER_PASSWORD),
         USER_ADDRESS,
         ZonedDateTime.now().minusYears(20),
-        ACTIVE_MEMBERSHIP,
         0
     );
 
