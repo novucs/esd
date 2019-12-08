@@ -32,6 +32,9 @@ public final class Payment {
   @Column
   private String reference;
 
+  @Column
+  private String approvalStatus;
+
   /**
    * Instantiates a new Payment.
    */
@@ -47,13 +50,15 @@ public final class Payment {
    * @param stripeId  the stripe id
    * @param reference the reference
    */
-  public Payment(Integer userId, BigDecimal amount, String stripeId, String reference) {
+  public Payment(Integer userId, BigDecimal amount, String stripeId, String reference,
+      String approvalStatus) {
     this.userId = userId;
     double doubleBalance = amount.doubleValue();
     pounds = (int) doubleBalance;
     pence = (int) ((doubleBalance - pounds) * 100);
     this.stripeId = stripeId;
     this.reference = reference;
+    this.approvalStatus = approvalStatus;
   }
 
   /**
@@ -149,9 +154,27 @@ public final class Payment {
   }
 
   /**
-   * Gets whether the payment was paid offline.
+   * Gets approval status.
    *
-   * @return <code>true</code> if the payment was paid offline.
+   * @return the approval status
+   */
+  public String getApprovalStatus() {
+    return approvalStatus;
+  }
+
+  /**
+   * Sets approval status.
+   *
+   * @param approvalStatus the approval status
+   */
+  public void setApprovalStatus(String approvalStatus) {
+    this.approvalStatus = approvalStatus;
+  }
+
+  /**
+   * Was paid offline boolean.
+   *
+   * @return the boolean
    */
   public boolean wasPaidOffline() {
     return stripeId == null;
@@ -171,12 +194,14 @@ public final class Payment {
         && Objects.equals(pounds, payment.pounds)
         && Objects.equals(pence, payment.pence)
         && Objects.equals(getStripeId(), payment.getStripeId())
-        && Objects.equals(getReference(), payment.getReference());
+        && Objects.equals(getReference(), payment.getReference())
+        && Objects.equals(getApprovalStatus(), payment.getApprovalStatus());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getUserId(), pounds, pence, getStripeId(), getReference());
+    return Objects.hash(getId(), getUserId(), pounds, pence, getStripeId(), getReference(),
+        getApprovalStatus());
   }
 
 }
