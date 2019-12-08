@@ -19,7 +19,6 @@ import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
-import net.novucs.esd.util.ClaimUtil;
 
 /**
  * The type Member make claim servlet.
