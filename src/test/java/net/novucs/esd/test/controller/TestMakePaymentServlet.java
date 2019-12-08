@@ -41,7 +41,6 @@ public class TestMakePaymentServlet {
   private static final String AMOUNT_OWED = "amountOwed";
   private static final String DECIMAL_FORMAT = "#.##";
   private transient Session userSession;
-  private static final MembershipUtils membershipUtils = new MembershipUtils();
 
   /**
    * Initialise test.
@@ -69,7 +68,6 @@ public class TestMakePaymentServlet {
     if (withOldMembership) {
       Membership oldMembership = new Membership(
           user.getId(),
-          "EXPIRED",
           ZonedDateTime.now().minusMonths(15),
           false
       );
@@ -79,7 +77,6 @@ public class TestMakePaymentServlet {
       application.setStatus(ApplicationStatus.APPROVED);
       Membership newMembership = new Membership(
           user.getId(),
-          membershipUtils.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership
       );
@@ -127,7 +124,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(membershipUtils.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS)));
   }
 
   /**
@@ -204,7 +201,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(membershipUtils.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS)));
   }
 
   /**
@@ -243,7 +240,7 @@ public class TestMakePaymentServlet {
     DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
     verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(membershipUtils.ANNUAL_FEE)));
+        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS)));
   }
 
   /**

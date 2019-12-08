@@ -98,9 +98,9 @@ public class TestAdminViewUserServlet {
     Role adminRole = roleDao.select().where(new Where().eq("name", "Administrator")).one();
     userRoleDao.insert(new UserRole(user.getId(), adminRole.getId()));
     membershipDao.insert(new Membership(user.getId(),
-        "EXPIRED", ZonedDateTime.now(), true));
+        ZonedDateTime.now().minusYears(1), true));
     membershipDao.insert(new Membership(user.getId(),
-        "ACTIVE", ZonedDateTime.now(), false));
+        ZonedDateTime.now(), false));
   }
 
   @Test
