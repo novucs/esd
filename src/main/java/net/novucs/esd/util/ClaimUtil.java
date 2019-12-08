@@ -1,7 +1,12 @@
 package net.novucs.esd.util;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
@@ -9,6 +14,9 @@ import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 
 public final class ClaimUtil {
+
+  @Inject
+  private static Dao<Claim> claimDao;
 
   private ClaimUtil() {
   }
@@ -44,5 +52,18 @@ public final class ClaimUtil {
             .and()
             .neq("status", ClaimStatus.CANCELLED.name()))
         .all();
+  }
+
+  public static int sumAllClaims(LocalDate from, LocalDate to) throws SQLException {
+    return  claimDao.select().all()
+        .stream()
+        .filter((r) -> r.getClaimDate().toLocalDate().isAfter(from.minusDays(1))
+            && r.getClaimDate().toLocalDate().isBefore(to.plusDays(1)))
+        .collect(Collectors.toList())
+        .stream()
+        .filter((c) -> c.getStatus().equals(ClaimStatus.APPROVED))
+        .map(Claim::getAmount)
+        .map(BigDecimal::intValue)
+        .mapToInt(Integer::intValue).sum();
   }
 }
