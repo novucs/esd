@@ -151,7 +151,8 @@ public class MakePaymentServlet extends BaseServlet {
           user.getId(),
           BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
           stripeId,
-          reference
+          reference,
+          stripeId == null ? "PENDING"  : "VERIFIED"
       ));
 
       application.setStatus(ApplicationStatus.PAID);
