@@ -117,7 +117,6 @@ public class DatabaseLifecycle {
         Password.fromPlaintext("password1"),
         "1 ESD Lane",
         new DateUtil().getDateFromString("2000-01-01"),
-        "ACTIVE",
         1
     );
     daoManager.get(User.class).insert(user);
