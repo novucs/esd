@@ -28,6 +28,7 @@
                         <th>Claim ID</th>
                         <th>Membership ID</th>
                         <th>Amount</th>
+                        <th>Rationale</th>
                         <th>Status</th>
                         <th>Edit</th>
                         <th>Cancel</th>
@@ -37,6 +38,7 @@
                             <td>${claim.id}</td>
                             <td>${claim.membershipId}</td>
                             <td>&pound;&nbsp;<fmt:formatNumber type="number" maxFractionDigits="2" value="${claim.getAmount()}"/></td>
+                            <td>${claim.rationale}</td>
                             <td>${claim.status}</td>
                             <c:choose>
                                 <c:when test="${claim.status == 'PENDING'}">

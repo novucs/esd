@@ -70,6 +70,7 @@ public class MemberEditClaimServlet extends BaseServlet {
 
       request.setAttribute("membershipClaimValueToDate", total);
       request.setAttribute("maxClaimValue", MAX_CLAIM_VALUE_POUNDS - total);
+      request.setAttribute("rationale", claim.getRationale());
 
       request.setAttribute("claimValue", String.format("%.2f", claimValue));
       request.setAttribute("claimId", claim.getId());
