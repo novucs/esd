@@ -161,7 +161,7 @@ public final class Membership {
    *
    * @param suspended whether the user is suspended.
    */
-  public void setSuspended(boolean suspended) {
+  public void setSuspended(Boolean suspended) {
     this.suspended = suspended ? 1 : 0;
   }
 

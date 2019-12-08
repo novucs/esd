@@ -4,6 +4,7 @@ import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +39,7 @@ public class TestMakePaymentServlet {
 
   private static final String LAYOUT = "/layout.jsp";
   private static final String SESSION = "session";
-  private static final String AMOUNT_OWED = "amountOwed";
+  private static final String FEE = "fee";
   private static final String DECIMAL_FORMAT = "#.##";
   private transient Session userSession;
 
@@ -121,10 +122,8 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS)));
+    verify(request).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
@@ -160,9 +159,8 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
+    verify(request).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
@@ -182,10 +180,7 @@ public class TestMakePaymentServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        false,
-        true);
+    setServletDaos(servlet, user, false, true);
 
     userSession.setUser(user);
 
@@ -198,10 +193,8 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS)));
+    verify(request, never()).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
@@ -221,10 +214,7 @@ public class TestMakePaymentServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        true);
+    setServletDaos(servlet, user, true, true);
 
     userSession.setUser(user);
 
@@ -237,10 +227,8 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS)));
+    verify(request, never()).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
@@ -260,10 +248,7 @@ public class TestMakePaymentServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        true);
+    setServletDaos(servlet, user, true, true);
 
     userSession.setUser(user);
 
@@ -276,8 +261,7 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
+    verify(request, never()).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 }

@@ -2,6 +2,7 @@ package net.novucs.esd.test.model;
 
 import static org.junit.Assert.assertEquals;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;
@@ -69,6 +71,8 @@ public class TestEachModel<M> {
       return DUMMY_DATE_TIME;
     } else if (type == ClaimStatus.class) {
       return ClaimStatus.APPROVED;
+    } else if (type == ApplicationStatus.class) {
+      return ApplicationStatus.APPROVED;
     }
     throw new IllegalArgumentException("No test data for type: " + type.getName());
   }
