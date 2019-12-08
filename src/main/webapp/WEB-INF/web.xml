@@ -128,12 +128,12 @@
     <url-pattern>/admin/edituser</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>UserSettingsServlet</servlet-name>
-    <servlet-class>net.novucs.esd.controllers.UserSettingsServlet</servlet-class>
+    <servlet-name>UserProfileServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.UserProfileServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>UserSettingsServlet</servlet-name>
-    <url-pattern>/settings</url-pattern>
+    <servlet-name>UserProfileServlet</servlet-name>
+    <url-pattern>/profile</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>AdminReportingServlet</servlet-name>
