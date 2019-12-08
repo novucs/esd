@@ -145,7 +145,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     response.sendRedirect("applications");
   }
 
-  public void updateAllStatuses(HttpServletRequest request, ApplicationStatus status) throws SQLException {
+  public void updateAllStatuses(HttpServletRequest request, ApplicationStatus status)
+      throws SQLException {
     List<Application> applications = applicationDao.select()
         .where(new Where().eq("status", ApplicationStatus.PAID.name())).all();
     for (Application application : applications) {
@@ -155,7 +156,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     }
   }
 
-  public void updateStatusesById(HttpServletRequest request, ApplicationStatus status, List<Integer> ids)
+  public void updateStatusesById(
+      HttpServletRequest request, ApplicationStatus status, List<Integer> ids)
       throws SQLException {
     for (Integer id : ids) {
       Application application = applicationDao.selectById(id);
@@ -165,7 +167,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     }
   }
 
-  public void addUpdateMessage(HttpServletRequest request, ApplicationStatus status, Application application)
+  public void addUpdateMessage(
+      HttpServletRequest request, ApplicationStatus status, Application application)
       throws SQLException {
     User user = userDao.selectById(application.getUserId());
     getSession(request).pushToast((status == ApplicationStatus.DENIED ? "Denied" : "Approved")

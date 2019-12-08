@@ -75,6 +75,8 @@ public class MakePaymentServlet extends BaseServlet {
           }
           forwardMakePayment(request, response);
           return;
+        default:
+          return;
       }
 
     } catch (SQLException e) {
