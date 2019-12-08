@@ -25,28 +25,6 @@ public class Session {
   private User user;
 
   /**
-   * Push toast.
-   *
-   * @param message the message
-   */
-  public void pushToast(String message) {
-    toasts.push(message);
-  }
-
-  /**
-   * Get toasts.
-   *
-   * @return the toasts.
-   */
-  public List<String> getToasts() {
-    List<String> toasts = new ArrayList<>();
-    while (!this.toasts.isEmpty()) {
-      toasts.add(this.toasts.pop());
-    }
-    return toasts;
-  }
-
-  /**
    * Push error.
    *
    * @param message the message
