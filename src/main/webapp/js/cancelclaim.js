@@ -1,3 +1,3 @@
 function submitForm() {
-  document.cancelClaim.submit();
+  document.getElementById('cancelClaim').submit();
 }

@@ -1,4 +1,4 @@
-package net.novucs.esd.test.controller.member;
+package net.novucs.esd.test.controller;
 
 import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
@@ -10,23 +10,18 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Objects;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.controllers.member.MemberManageClaimsServlet;
+import net.novucs.esd.controllers.ManagePaymentsServlet;
 import net.novucs.esd.lifecycle.Session;
-import net.novucs.esd.model.Claim;
-import net.novucs.esd.model.ClaimStatus;
-import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
-import net.novucs.esd.orm.Where;
 import net.novucs.esd.test.util.TestDummyDataUtil;
 import net.novucs.esd.util.ReflectUtil;
 import org.junit.Before;
@@ -36,14 +31,14 @@ import org.mockito.stubbing.Answer;
 /**
  * The type Test member manage claims servlet.
  */
-public class TestMemberManageClaimsServlet {
+public class TestManagePaymentsServlet {
 
   private static final String LAYOUT = "/layout.jsp";
   private static final String SESSION = "session";
-  private static final String RATIONALE = "RATIONALE";
+  private static final String VERIFIED = "VERIFIED";
+  private static final String PENDING = "PENDING";
   private transient Session userSession;
-  private Dao<Claim> claimDao;
-  private Dao<Membership> membershipDao;
+  private Dao<Payment> paymentDao;
 
   /**
    * Initialise test.
@@ -53,47 +48,30 @@ public class TestMemberManageClaimsServlet {
     userSession = new Session();
   }
 
-  private void setServletDaos(MemberManageClaimsServlet servlet,
-      User user,
-      boolean approvedClaim,
-      boolean rejectedClaim,
-      boolean pendingClaim,
-      boolean cancelledClaim,
-      double claimValue)
+  private void setServletDaos(ManagePaymentsServlet servlet,
+      User user)
       throws SQLException, ReflectiveOperationException {
     DaoManager dm = createTestDaoManager(true);
     dm = createTestDaoManager(true);
     Dao<User> userDao = dm.get(User.class);
-    claimDao = dm.get(Claim.class);
-    membershipDao = dm.get(Membership.class);
-
+    paymentDao = dm.get(Payment.class);
     userDao.insert(user);
-    Membership membership =
-        new Membership(user.getId(), ZonedDateTime.now().minusMonths(6), false);
-    membershipDao.insert(membership);
 
-    if (approvedClaim) {
-      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.APPROVED, RATIONALE);
-      claimDao.insert(claim);
-    }
-    if (rejectedClaim) {
-      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.REJECTED, RATIONALE);
-      claimDao.insert(claim);
-    }
-    if (pendingClaim) {
-      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.PENDING, RATIONALE);
-      claimDao.insert(claim);
-    }
-    if (cancelledClaim) {
-      Claim claim = new Claim(membership.getId(), BigDecimal.valueOf(claimValue),
-          ZonedDateTime.now().minusDays(1), ClaimStatus.CANCELLED, RATIONALE);
-      claimDao.insert(claim);
-    }
-    ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);
-    ReflectUtil.setFieldValue(servlet, "membershipDao", membershipDao);
+    paymentDao.insert(new Payment(
+        user.getId(),
+        BigDecimal.TEN,
+        "mockStripeId",
+        "Card Payment",
+        VERIFIED
+    ));
+    paymentDao.insert(new Payment(
+        user.getId(),
+        BigDecimal.TEN,
+        null,
+        "Bank Reference",
+        PENDING
+    ));
+    ReflectUtil.setFieldValue(servlet, "paymentDao", paymentDao);
   }
 
   /**
@@ -108,18 +86,12 @@ public class TestMemberManageClaimsServlet {
   public void testRequestReturnsCorrectPage()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
 
-    MemberManageClaimsServlet servlet = new MemberManageClaimsServlet();
+    ManagePaymentsServlet servlet = new ManagePaymentsServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        false,
-        false,
-        false,
-        50.0);
+    setServletDaos(servlet, user);
 
     userSession.setUser(user);
 
@@ -133,7 +105,7 @@ public class TestMemberManageClaimsServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("page", String.format("%s.jsp", "member.claims.manage"));
+    verify(request).setAttribute("page", String.format("%s.jsp", "user.payments.manage"));
 
   }
 
@@ -149,18 +121,12 @@ public class TestMemberManageClaimsServlet {
   public void testRequestReturnsCorrectNumberOfClaims()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
 
-    MemberManageClaimsServlet servlet = new MemberManageClaimsServlet();
+    ManagePaymentsServlet servlet = new ManagePaymentsServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        false,
-        false,
-        false,
-        50.0);
+    setServletDaos(servlet, user);
 
     userSession.setUser(user);
 
@@ -173,9 +139,9 @@ public class TestMemberManageClaimsServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    List<Claim> claims = claimDao.select().all();
+    List<Payment> payments = paymentDao.select().all();
     // Assert
-    verify(request).setAttribute("claims", claims);
+    verify(request).setAttribute("payments", payments);
   }
 
   /**
@@ -190,18 +156,12 @@ public class TestMemberManageClaimsServlet {
   public void testRequestReturnsCorrectPagination()
       throws ServletException, IOException, ReflectiveOperationException, SQLException {
 
-    MemberManageClaimsServlet servlet = new MemberManageClaimsServlet();
+    ManagePaymentsServlet servlet = new ManagePaymentsServlet();
     HttpSession httpSession = mock(HttpSession.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        false,
-        false,
-        false,
-        50.0);
+    setServletDaos(servlet, user);
 
     userSession.setUser(user);
 
@@ -213,28 +173,20 @@ public class TestMemberManageClaimsServlet {
 
     HttpServletResponse response = mock(HttpServletResponse.class);
 
-    Integer membershipId = Objects.requireNonNull(membershipDao.select()
-        .where(new Where().eq("user_id", user.getId()))
-        .all()
-        .stream()
-        .filter(Membership::isAbleToClaim)
-        .findFirst()
-        .orElse(null)).getId();
-
+    servlet.doGet(request, response);
     for (int i = 0; i < 20; i++) {
-      claimDao.insert(new Claim(
-          membershipId,
+      paymentDao.insert(new Payment(
+          user.getId(),
           BigDecimal.TEN,
-          ZonedDateTime.now().minusDays(i),
-          ClaimStatus.PENDING,
-          RATIONALE
+          "mockStripeId",
+          "Card Payment",
+          VERIFIED
       ));
     }
-    ReflectUtil.setFieldValue(servlet, "claimDao", claimDao);
-
+    ReflectUtil.setFieldValue(servlet, "paymentDao", paymentDao);
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("maxPages", 2);
+    verify(request).setAttribute("payments", paymentDao.select().all().subList(0, 15));
   }
 }
