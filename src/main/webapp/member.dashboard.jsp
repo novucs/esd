@@ -25,7 +25,6 @@
     </div>
     <div class="row">
         <t:tile title="${userOutstandingClaims}" label="Outstanding Claims" icon="ballot"/>
-        <t:tile title="${userAccountStatus}" label="Account Status" icon="verified_user"/>
         <t:tile title="${userTotalPayments}" label="Total Payments" icon="attach_money"/>
     </div>
 </div>
