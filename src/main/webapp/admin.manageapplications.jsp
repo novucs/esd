@@ -39,17 +39,17 @@
                                     <label>
                                         <input type="checkbox" class="filled-in"
                                                name="application-id"
-                                               value="${result.applicationId}"/>
+                                               value="${result.application.id}"/>
                                         <span></span>
                                     </label>
                                 </td>
-                                <td>${result.applicationId}</td>
-                                <td>${result.username}</td>
-                                <td>${result.email}</td>
-                                <td>${result.name}</td>
-                                <td>${result.address}</td>
+                                <td>${result.application.id}</td>
+                                <td>${result.user.username}</td>
+                                <td>${result.user.email}</td>
+                                <td>${result.user.name}</td>
+                                <td>${result.user.address}</td>
                                 <td class="managed-icon">
-                                    <a href="${pageContext.request.contextPath}/admin/edituser?userId=${result.userId}">
+                                    <a href="${pageContext.request.contextPath}/admin/edituser?userId=${result.user.id}">
                                         <i class="material-icons small">edit</i>
                                     </a>
                                 </td>
