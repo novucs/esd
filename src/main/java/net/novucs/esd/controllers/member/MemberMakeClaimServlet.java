@@ -27,6 +27,8 @@ public class MemberMakeClaimServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
   private static final String TITLE = "Make A Claim";
+  private static final Integer MAX_CLAIM_COUNT = 2;
+  private static final Integer MAX_CLAIM_VALUE_POUNDS = 100;
 
   @Inject
   private Dao<Membership> membershipDao;
@@ -69,7 +71,19 @@ public class MemberMakeClaimServlet extends BaseServlet {
         return;
       }
 
-      super.forward(request, response, TITLE, "member.claims");
+      List<Claim> claims = claimDao.select()
+          .where(new Where().eq("membership_id", membership.getId()))
+          .all();
+
+      double total = 0;
+      for (Claim claim : claims) {
+        total += claim.getAmount().doubleValue();
+      }
+
+      request.setAttribute("membershipClaimValueToDate", total);
+      request.setAttribute("maxClaimValue", MAX_CLAIM_VALUE_POUNDS - total);
+      request.setAttribute("remainingClaims", Math.max(0, MAX_CLAIM_COUNT - claims.size()));
+      super.forward(request, response, TITLE, "member.claim.create");
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -102,7 +116,8 @@ public class MemberMakeClaimServlet extends BaseServlet {
           ZonedDateTime.now(),
           ClaimStatus.PENDING
       ));
-      super.forward(request, response, "Claim successfully submitted", "member.claims");
+      super.forward(
+          request, response, "Claim successfully submitted", "member.claim.success");
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
