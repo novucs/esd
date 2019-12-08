@@ -78,39 +78,39 @@ public class TestMemberEditClaimServlet {
   }
 
   // TODO: Fix this test.
-//  /**
-//   * Test request returns correct page.
-//   *
-//   * @throws ServletException             the servlet exception
-//   * @throws IOException                  the io exception
-//   * @throws ReflectiveOperationException the reflective operation exception
-//   * @throws SQLException                 the sql exception
-//   */
-//  @Test
-//  public void testRequestReturnsCorrectPage()
-//      throws ServletException, IOException, ReflectiveOperationException, SQLException {
-//
-//    MemberEditClaimServlet servlet = new MemberEditClaimServlet();
-//    HttpSession httpSession = mock(HttpSession.class);
-//    HttpServletRequest request = mock(HttpServletRequest.class);
-//    User user = TestDummyDataUtil.getDummyUser();
-//
-//    setServletDaos(servlet, user,true,false);
-//
-//    userSession.setUser(user);
-//    // When
-//    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-//    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-//        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-//    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-//    when(request.getParameter(CLAIM_ID)).thenReturn("1");
-//
-//    HttpServletResponse response = mock(HttpServletResponse.class);
-//    servlet.doGet(request, response);
-//
-//    // Assert
-//    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.edit"));
-//  }
+  //  /**
+  //   * Test request returns correct page.
+  //   *
+  //   * @throws ServletException             the servlet exception
+  //   * @throws IOException                  the io exception
+  //   * @throws ReflectiveOperationException the reflective operation exception
+  //   * @throws SQLException                 the sql exception
+  //   */
+  //  @Test
+  //  public void testRequestReturnsCorrectPage()
+  //      throws ServletException, IOException, ReflectiveOperationException, SQLException {
+  //
+  //    MemberEditClaimServlet servlet = new MemberEditClaimServlet();
+  //    HttpSession httpSession = mock(HttpSession.class);
+  //    HttpServletRequest request = mock(HttpServletRequest.class);
+  //    User user = TestDummyDataUtil.getDummyUser();
+  //
+  //    setServletDaos(servlet, user,true,false);
+  //
+  //    userSession.setUser(user);
+  //    // When
+  //    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+  //    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
+  //        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+  //    when(request.getSession(anyBoolean())).thenReturn(httpSession);
+  //    when(request.getParameter(CLAIM_ID)).thenReturn("1");
+  //
+  //    HttpServletResponse response = mock(HttpServletResponse.class);
+  //    servlet.doGet(request, response);
+  //
+  //    // Assert
+  //    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.edit"));
+  //  }
 
   /**
    * Test request no membership.

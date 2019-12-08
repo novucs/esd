@@ -13,7 +13,6 @@ import java.util.List;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.ClaimStatus;
-import net.novucs.esd.model.Notification;
 import net.novucs.esd.model.NotificationType;
 import net.novucs.esd.util.Password;
 import net.novucs.esd.util.ReflectUtil;

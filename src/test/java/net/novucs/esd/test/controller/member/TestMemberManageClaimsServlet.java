@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Objects;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -138,46 +137,46 @@ public class TestMemberManageClaimsServlet {
   }
 
   // TODO: Fix this test.
-//  /**
-//   * Test request returns correct number of claims.
-//   *
-//   * @throws ServletException             the servlet exception
-//   * @throws IOException                  the io exception
-//   * @throws ReflectiveOperationException the reflective operation exception
-//   * @throws SQLException                 the sql exception
-//   */
-//  @Test
-//  public void testRequestReturnsCorrectNumberOfClaims()
-//      throws ServletException, IOException, ReflectiveOperationException, SQLException {
-//
-//    MemberManageClaimsServlet servlet = new MemberManageClaimsServlet();
-//    HttpSession httpSession = mock(HttpSession.class);
-//    HttpServletRequest request = mock(HttpServletRequest.class);
-//    User user = TestDummyDataUtil.getDummyUser();
-//
-//    setServletDaos(servlet,
-//        user,
-//        true,
-//        false,
-//        false,
-//        false,
-//        50.0);
-//
-//    userSession.setUser(user);
-//
-//    // When
-//    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-//    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-//        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-//    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-//
-//    HttpServletResponse response = mock(HttpServletResponse.class);
-//    servlet.doGet(request, response);
-//
-//    List<Claim> claims = claimDao.select().all();
-//    // Assert
-//    verify(request).setAttribute("claims", claims);
-//  }
+  //  /**
+  //   * Test request returns correct number of claims.
+  //   *
+  //   * @throws ServletException             the servlet exception
+  //   * @throws IOException                  the io exception
+  //   * @throws ReflectiveOperationException the reflective operation exception
+  //   * @throws SQLException                 the sql exception
+  //   */
+  //  @Test
+  //  public void testRequestReturnsCorrectNumberOfClaims()
+  //      throws ServletException, IOException, ReflectiveOperationException, SQLException {
+  //
+  //    MemberManageClaimsServlet servlet = new MemberManageClaimsServlet();
+  //    HttpSession httpSession = mock(HttpSession.class);
+  //    HttpServletRequest request = mock(HttpServletRequest.class);
+  //    User user = TestDummyDataUtil.getDummyUser();
+  //
+  //    setServletDaos(servlet,
+  //        user,
+  //        true,
+  //        false,
+  //        false,
+  //        false,
+  //        50.0);
+  //
+  //    userSession.setUser(user);
+  //
+  //    // When
+  //    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
+  //    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
+  //        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
+  //    when(request.getSession(anyBoolean())).thenReturn(httpSession);
+  //
+  //    HttpServletResponse response = mock(HttpServletResponse.class);
+  //    servlet.doGet(request, response);
+  //
+  //    List<Claim> claims = claimDao.select().all();
+  //    // Assert
+  //    verify(request).setAttribute("claims", claims);
+  //  }
 
   /**
    * Test request returns correct pagination.

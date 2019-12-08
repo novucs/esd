@@ -169,11 +169,12 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     User user = userDao.selectById(application.getUserId());
 
     int userId = Session.fromRequest(request).getUser().getId();
-    notificationService.sendNotification(new Notification((status == ApplicationStatus.DENIED
-        ? "Denied" : "Approved") + " " + user.getName() + " - " + user.getEmail(),
-        userId, userId, NotificationType.SUCCESS));
+    String message = status == ApplicationStatus.DENIED ? "Denied" : "Approved";
+    notificationService.sendNotification(
+        new Notification(message + " " + user.getName() + " - " + user.getEmail(),
+            userId, userId, NotificationType.SUCCESS));
 
-    notificationService.sendNotification(new Notification("Your application was approved.",
+    notificationService.sendNotification(new Notification("Your application was " + message,
         userId, user.getId(), NotificationType.SUCCESS));
   }
 
