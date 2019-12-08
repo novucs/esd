@@ -27,8 +27,6 @@ public class MemberEditClaimServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
 
-  private static final Integer MAX_CLAIM_VALUE_POUNDS = 100;
-
   @Inject
   private Dao<Claim> claimDao;
 
@@ -69,7 +67,7 @@ public class MemberEditClaimServlet extends BaseServlet {
       total -= claimValue;
 
       request.setAttribute("membershipClaimValueToDate", total);
-      request.setAttribute("maxClaimValue", MAX_CLAIM_VALUE_POUNDS - total);
+      request.setAttribute("maxClaimValue", Claim.MAX_VALUE_POUNDS - total);
       request.setAttribute("rationale", claim.getRationale());
 
       request.setAttribute("claimValue", String.format("%.2f", claimValue));
