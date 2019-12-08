@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="net.novucs.esd.model.User" %>
 <%@ page import="net.novucs.esd.lifecycle.Session" %>
 <% User user = ((Session) request.getAttribute("session")).getUser(); %>
@@ -61,7 +63,8 @@
                     </tr>
                     <tr>
                         <td class="w200px bold-text">Date of Birth</td>
-                        <td><%=user.getDateOfBirth().toLocalDate()%></td>
+                        <td><%=user.getDateOfBirth().toLocalDate()%>
+                        </td>
                     </tr>
                     <tr>
                         <td class="w200px bold-text">Roles</td>
@@ -73,7 +76,8 @@
                     </tr>
                     <tr>
                         <td class="w200px bold-text">Address</td>
-                        <td><%=user.getAddress()%></td>
+                        <td><%=user.getAddress()%>
+                        </td>
                     </tr>
                 </table>
             </li>
@@ -84,7 +88,43 @@
             </li>
         </ul>
     </div>
+
+
+    <c:choose>
+        <c:when test="${actions != null}">
+            <div class="col s12 m6 l4">
+                <div class="card">
+                    <div class="card-content bold-text">
+                        <span class="card-title text-darken-4">Actions Required:</span>
+                        <ul>
+                            <c:forEach var="action" items="${actions}">
+                                <li>
+                                    <a>
+                                        Pay
+                                    </a>
+                                    <strong>&pound;${action.pounds}.${action.pence}</strong> by
+                                    <fmt:parseDate value="${action.complete_by.toLocalDate()}"
+                                                   type="date" pattern="yyyy-MM-dd"
+                                                   var="parsedDate"/>
+                                    <fmt:formatDate value="${parsedDate}" type="date"
+                                                    pattern="dd-MM-yyyy" var="formattedDate"
+                                    />
+                                        ${formattedDate}
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+
+        </c:otherwise>
+    </c:choose>
+
+
 </div>
+
 
 <!-- Modal Structure -->
 <form method="post" action="" id="accModal" class="modal">

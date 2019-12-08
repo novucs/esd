@@ -14,13 +14,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
+import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Action;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Notification;
+import net.novucs.esd.model.NotificationType;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserAction;
 import net.novucs.esd.model.UserRole;
+import net.novucs.esd.notifications.NotificationService;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ClaimUtil;
@@ -45,7 +48,7 @@ public class AdminAnnualChargeServlet extends BaseServlet {
   private Dao<UserAction> userActionDao;
 
   @Inject
-  private Dao<Notification> notificationDao;
+  private NotificationService notificationService;
 
   protected void doGet(HttpServletRequest request,
       HttpServletResponse response)
@@ -94,7 +97,13 @@ public class AdminAnnualChargeServlet extends BaseServlet {
       }
 
       userActionDao.insert(userActions);
+      int notificationUserId = Session.fromRequest(request).getUser().getId();
+      Notification notification = new Notification("Successfully charged members: "
+          + String.valueOf(charge), notificationUserId, notificationUserId,
+          NotificationType.SUCCESS);
+      notificationService.sendNotification(notification);
 
+      response.sendRedirect("/admin/annualcharge");
 
     } catch (SQLException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage());
