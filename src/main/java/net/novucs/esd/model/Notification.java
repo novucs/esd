@@ -5,7 +5,7 @@ import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
 @Table
-public class Notification {
+public final class Notification {
 
   @Column(primary = true)
   private Integer id;
@@ -19,6 +19,9 @@ public class Notification {
   @Column(foreign = User.class)
   private Integer recipientId;
 
+  @Column
+  private String type;
+
   /**
    * Instantiates a new Notifications.
    */
@@ -26,10 +29,12 @@ public class Notification {
     // This constructor is intentionally empty.
   }
 
-  public Notification(String message, Integer senderId, Integer recipientId) {
+  public Notification(String message, Integer senderId, Integer recipientId,
+      NotificationType type) {
     this.message = message;
     this.senderId = senderId;
     this.recipientId = recipientId;
+    this.type = type.name();
   }
 
   public Integer getId() {
@@ -62,6 +67,14 @@ public class Notification {
 
   public void setRecipientId(Integer recipientId) {
     this.recipientId = recipientId;
+  }
+
+  public NotificationType getType() {
+    return NotificationType.valueOf(this.type);
+  }
+
+  public void setType(NotificationType type) {
+    this.type = type.name();
   }
 
   @Override
