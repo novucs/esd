@@ -99,7 +99,6 @@ public class MemberEditClaimServlet extends BaseServlet {
         response.sendRedirect("claims");
         return;
       }
-
       // Claim value requested to be changed
       double claimValue = Double.parseDouble(request.getParameter("claim-value"));
       BigDecimal claimAmount = BigDecimal.valueOf(claimValue);
