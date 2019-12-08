@@ -132,7 +132,7 @@ public class DatabaseLifecycle {
       daoManager.get(Application.class).insert(application);
     } else if ("Member".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationStatus.PAID);
+      application.setStatus(ApplicationStatus.APPROVED);
       daoManager.get(Application.class).insert(application);
 
       daoManager.get(Membership.class).insert(new Membership(
@@ -151,7 +151,7 @@ public class DatabaseLifecycle {
       ));
     } else if ("FullMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationStatus.PAID);
+      application.setStatus(ApplicationStatus.APPROVED);
       daoManager.get(Application.class).insert(application);
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
@@ -161,7 +161,7 @@ public class DatabaseLifecycle {
       ));
     } else if ("ExpiredMember".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
-      application.setStatus(ApplicationStatus.PAID);
+      application.setStatus(ApplicationStatus.APPROVED);
       daoManager.get(Application.class).insert(application);
       // Current membership
       daoManager.get(Membership.class).insert(new Membership(
