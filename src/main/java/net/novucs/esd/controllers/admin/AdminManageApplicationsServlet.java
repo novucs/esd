@@ -159,7 +159,8 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     }
   }
 
-  public void updateStatusesById(HttpServletRequest request, String status, List<Integer> ids) throws SQLException {
+  public void updateStatusesById(HttpServletRequest request, String status, List<Integer> ids)
+      throws SQLException {
     for (Integer id : ids) {
       Application application = applicationDao.selectById(id);
       application.setStatus(status);
