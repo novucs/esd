@@ -48,6 +48,14 @@ public final class PaginationUtil {
     return dao.select().offset(getOffset(pageSize, pageNumber)).limit(pageSize).all();
   }
 
+  public static <M> List<M> paginate(Dao<M> dao, int pageSize, double pageNumber, Where where)
+      throws SQLException {
+    if (where == null) {
+      return dao.select().offset(getOffset(pageSize, pageNumber)).limit(pageSize).all();
+    }
+    return dao.select().where(where).offset(getOffset(pageSize, pageNumber)).limit(pageSize).all();
+  }
+
   public static int getOffset(int pageSize, double pageNumber) {
     return (int) (pageSize * (pageNumber - 1));
   }

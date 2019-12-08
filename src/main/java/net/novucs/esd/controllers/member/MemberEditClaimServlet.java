@@ -109,10 +109,7 @@ public class MemberEditClaimServlet extends BaseServlet {
         // Claim requested for cancellation
         claim.setStatus(ClaimStatus.CANCELLED);
         claimDao.update(claim);
-
-        // Return back to manage claims page
-        request.setAttribute("message", "You have successfully cancelled your claim");
-        super.forward(request, response, "Manage Claims", "member.manageclaims");
+        response.sendRedirect("claims");
         return;
       }
       // Claim value requested to be changed

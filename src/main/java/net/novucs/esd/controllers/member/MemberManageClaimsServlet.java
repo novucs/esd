@@ -2,6 +2,7 @@ package net.novucs.esd.controllers.member;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -10,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.Membership;
+import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
+import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.PaginationUtil;
 
 public class MemberManageClaimsServlet extends BaseServlet {
@@ -23,6 +27,8 @@ public class MemberManageClaimsServlet extends BaseServlet {
 
   @Inject
   private Dao<Claim> claimDao;
+  @Inject
+  private Dao<Membership> membershipDao;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,13 +36,24 @@ public class MemberManageClaimsServlet extends BaseServlet {
 
     try {
       Session session = Session.fromRequest(request);
+      User user = session.getUser();
       String searchQuery = (String) session.getFilter(USER_SEARCH_QUERY);
       int pageSize = PaginationUtil.getPageSize(request, PAGE_SIZE_FILTER);
       double pageNumber = PaginationUtil.getPageNumber(request);
 
+      Membership membership = membershipDao.select()
+          .where(new Where().eq("user_id", user.getId()))
+          .all()
+          .stream()
+          .filter(Membership::isAbleToClaim)
+          .findFirst()
+          .orElse(null);
+
       List<Claim> claims;
-      if (searchQuery == null) {
-        claims = PaginationUtil.paginate(claimDao, pageSize, pageNumber);
+      if (searchQuery == null && membership != null) {
+        claims = PaginationUtil
+            .paginate(claimDao, pageSize, pageNumber,
+                new Where().eq("membership_id", membership.getId()));
       } else {
         String[] columns = {"name", "email"};
         claims = PaginationUtil.paginateWithSearch(claimDao, pageSize, pageNumber,
@@ -45,10 +62,11 @@ public class MemberManageClaimsServlet extends BaseServlet {
 
       int max = PaginationUtil.getMaxPages(claimDao, pageSize);
       PaginationUtil.setRequestAttributes(request, max, pageNumber, pageSize);
+      claims.sort(Comparator.comparing(Claim::getId).reversed());
       request.setAttribute("claims", claims);
       session.removeFilter(USER_SEARCH_QUERY);
 
-      super.forward(request, response, "Manage Claims", "member.manageclaims");
+      super.forward(request, response, "Manage Claims", "member.claims.manage");
     } catch (SQLException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }

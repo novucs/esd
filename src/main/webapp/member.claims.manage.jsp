@@ -50,7 +50,7 @@
                                         </a>
                                     </td>
                                     <td class="managed-icon">
-                                        <form name="cancelClaim" method="post" action="editclaim">
+                                        <form id="cancelClaim" name="cancelClaim" method="post" action="editclaim">
                                             <input
                                                   type="hidden"
                                                   id="cancel-claim"
@@ -128,7 +128,7 @@
     <div class="row" class="pagination-control">
         <div class="col s12 center-align">
             <ul class="pagination">
-                <p:pagination />
+                <p:pagination path="${pageContext.request.contextPath}/members/claims"/>
             </ul>
         </div>
     </div>
