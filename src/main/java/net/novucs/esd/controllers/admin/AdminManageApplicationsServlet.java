@@ -17,9 +17,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
+import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.ApplicationStatus;
+import net.novucs.esd.model.Notification;
+import net.novucs.esd.model.NotificationType;
 import net.novucs.esd.model.User;
+import net.novucs.esd.notifications.NotificationService;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ManageApplicationResult;
@@ -36,6 +40,12 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   @Inject
   private Dao<User> userDao;
+
+  @Inject
+  private Dao<Notification> notificationDao;
+
+  @Inject
+  private NotificationService notificationService;
 
   @SuppressWarnings("SqlResolve")
   private List<ManageApplicationResult> manageApplicationResults(int offset, int limit)
@@ -101,7 +111,6 @@ public class AdminManageApplicationsServlet extends BaseServlet {
       int maxPages = PaginationUtil.getMaxPages(userDao, pageSize);
       PaginationUtil.setRequestAttributes(request, maxPages, pageNumber, pageSize);
       request.setAttribute("results", results);
-      request.setAttribute("toasts", getSession(request).getToasts());
 
       super.forward(request, response, "Manage Applications", "admin.manageapplications");
     } catch (SQLException e) {
@@ -171,8 +180,14 @@ public class AdminManageApplicationsServlet extends BaseServlet {
       HttpServletRequest request, ApplicationStatus status, Application application)
       throws SQLException {
     User user = userDao.selectById(application.getUserId());
-    getSession(request).pushToast((status == ApplicationStatus.DENIED ? "Denied" : "Approved")
-        + " " + user.getName() + " - " + user.getEmail());
+
+    int userId = Session.fromRequest(request).getUser().getId();
+    notificationService.sendNotification(new Notification((status == ApplicationStatus.DENIED
+        ? "Denied" : "Approved")  + " " + user.getName() + " - " + user.getEmail(),
+        userId, userId, NotificationType.Success));
+
+    notificationService.sendNotification(new Notification(("Your application was approved."),
+        userId, user.getId(), NotificationType.Success));
   }
 
   @Override
