@@ -36,8 +36,7 @@
                         <tr>
                             <td>${claim.id}</td>
                             <td>${claim.membershipId}</td>
-
-                            <td><fmt:formatNumber type="number" maxFractionDigits="2" value="${claim.getAmount()}"/></td>
+                            <td>&pound;&nbsp;<fmt:formatNumber type="number" maxFractionDigits="2" value="${claim.getAmount()}"/></td>
                             <td>${claim.status}</td>
                             <c:choose>
                                 <c:when test="${claim.status == 'PENDING'}">
