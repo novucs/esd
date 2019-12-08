@@ -12,10 +12,13 @@ import net.novucs.esd.orm.Table;
 @Table
 public final class Role {
 
+  public static final String MEMBER = "Member";
+  public static final String USER = "User";
+  public static final String ADMINISTRATOR = "Administrator";
   public static final List<String> DEFAULT_VALUES = Arrays.asList(
-      "Member",
-      "User",
-      "Administrator"
+      MEMBER,
+      USER,
+      ADMINISTRATOR
   );
 
   @Column(primary = true)

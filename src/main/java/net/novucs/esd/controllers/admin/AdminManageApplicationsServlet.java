@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.ApplicationStatus;
+import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ManageApplicationResult;
@@ -36,6 +38,12 @@ public class AdminManageApplicationsServlet extends BaseServlet {
 
   @Inject
   private Dao<User> userDao;
+
+  @Inject
+  private Dao<Role> roleDao;
+
+  @Inject
+  private Dao<UserRole> userRoleDao;
 
   @SuppressWarnings("SqlResolve")
   private List<ManageApplicationResult> manageApplicationResults(int offset, int limit)
@@ -136,33 +144,45 @@ public class AdminManageApplicationsServlet extends BaseServlet {
         default:
           break;
       }
+      response.sendRedirect("applications");
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName())
           .log(Level.SEVERE, "Failed to execute manage applications SQL update", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
-
-    response.sendRedirect("applications");
   }
 
   public void updateAllStatuses(HttpServletRequest request, ApplicationStatus status)
       throws SQLException {
     List<Application> applications = applicationDao.select()
         .where(new Where().eq("status", ApplicationStatus.PAID.name())).all();
-    for (Application application : applications) {
-      application.setStatus(status);
-      applicationDao.update(application);
-      addUpdateMessage(request, status, application);
-    }
+    innerUpdateStatuses(request, status, applications);
   }
 
   public void updateStatusesById(
       HttpServletRequest request, ApplicationStatus status, List<Integer> ids)
       throws SQLException {
+    Where where = new Where();
     for (Integer id : ids) {
-      Application application = applicationDao.selectById(id);
+      where = where.eq("id", id).or();
+    }
+    where.getClauses().remove(where.getClauses().size() - 1);
+    List<Application> applications = applicationDao.select().where(where).all();
+    innerUpdateStatuses(request, status, applications);
+  }
+
+  public void innerUpdateStatuses(HttpServletRequest request, ApplicationStatus status,
+      List<Application> applications) throws SQLException {
+    Role role = roleDao.select().where(new Where().eq("name", Role.MEMBER)).first();
+
+    for (Application application : applications) {
       application.setStatus(status);
       applicationDao.update(application);
+
+      if (status == ApplicationStatus.APPROVED) {
+        userRoleDao.insert(new UserRole(application.getUserId(), role.getId()));
+      }
+
       addUpdateMessage(request, status, application);
     }
   }
