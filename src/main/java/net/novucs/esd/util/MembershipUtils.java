@@ -80,10 +80,8 @@ public final class MembershipUtils {
 
   public String evaluateMembershipClaimsBalance(List<Claim> claims) {
     double balance = 0;
-    for (Claim claim : claims
-    ) {
+    for (Claim claim : claims) {
       balance += Double.parseDouble(claim.getAmount().toString());
-
     }
     return df.format(balance);
   }
