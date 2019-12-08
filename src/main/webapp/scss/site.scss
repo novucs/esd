@@ -207,8 +207,7 @@ nav {
 
 /* Override Nice Container styling for logged in users */
 body {
-  &:not(.xyz-login)
-   :not(.xyz-register) {
+  &:not(.xyz-login):not(.xyz-register) {
     .nice-container {
       margin-top: 0 !important;
       box-shadow: none !important;
