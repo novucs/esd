@@ -65,7 +65,7 @@
             </ul>
             <% } %>
             <ul id="userDropdown" class="dropdown-content">
-                <li><a href="${baseUrl}/settings">User Settings</a></li>
+                <li><a href="${baseUrl}/profile">Profile</a></li>
                 <li><a href="${baseUrl}/logout">Logout</a></li>
             </ul>
         </div>

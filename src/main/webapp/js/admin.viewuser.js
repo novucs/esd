@@ -8,7 +8,7 @@
       const elems = document.querySelectorAll('select');
       M.FormSelect.init(elems, {});
     });
-  }
+  };
 
   return {
     init

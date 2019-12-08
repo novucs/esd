@@ -160,6 +160,10 @@ nav {
   text-align: center;
 }
 
+.text-right {
+  text-align: right;
+}
+
 .row {
   &.no-after::after {
     display: initial;
@@ -218,6 +222,10 @@ body {
   width: 100px;
 }
 
+.w200px {
+  width: 200px;
+}
+
 .bold-text {
   font-weight: bold;
 }
@@ -228,4 +236,12 @@ body {
 
 .f-right {
   float: right;
+}
+
+table {
+  &.no-border-last {
+    tr:last-child {
+      border-bottom: none;
+    }
+  }
 }
