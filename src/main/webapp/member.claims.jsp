@@ -5,14 +5,12 @@
 
 <div class="container">
     <div class="row">
-        <div id="make-claim-component-container" class="col s6 push-s3 rounded-container">
-            <div class="col s12 center-align">
-                <h4>Make a new claim</h4>
-            </div>
-            <div class="row">
-                <div class="col s12 center-align">
-                    <t:makeclaim />
+        <div class="nice-container col s8 push-s2 card">
+            <div class="card-content">
+                <div class="card-title">
+                    Make a new claim
                 </div>
+                <p class="text-center"><t:makeclaim /></p>
             </div>
         </div>
     </div>

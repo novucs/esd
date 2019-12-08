@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="${baseUrl}/css/${name}.css" />
     <link rel="stylesheet" href="${baseUrl}/css/overrides.css" />
   </head>
-  <body>
+  <body class="xyz-${name}">
     <t:navigation hasSession="<%=userHasSession%>" isMember="<%=userIsMember%>" isAdmin="<%=userIsAdmin%>"/>
     <% if (userHasSession && !request.getAttribute("name").equals("homepage")) { %>
       <script type="text/javascript">

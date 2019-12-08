@@ -121,7 +121,7 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
+    verify(request).setAttribute(eq("updated"), eq(true));
   }
 
   @Test
@@ -155,7 +155,6 @@ public class TestUserSettingsServlet {
 
     // Verify
     verify(request).setAttribute(eq("updated"), eq(true));
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
   }
 
   @Test
@@ -186,7 +185,7 @@ public class TestUserSettingsServlet {
     servlet.doPost(request, response);
 
     // Verify
-    verify(request).setAttribute(eq(ERRORS_LABEL), anyList());
+    verify(request).setAttribute(eq("updated"), eq(true));
   }
 
   @Test
