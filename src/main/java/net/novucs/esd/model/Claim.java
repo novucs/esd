@@ -12,6 +12,9 @@ import net.novucs.esd.orm.Table;
 @Table
 public final class Claim {
 
+  public static final Integer CONCURRENT_LIMIT = 2;
+  public static final int MAX_VALUE_POUNDS = 100;
+
   @Column(primary = true)
   private Integer id;
 
