@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@attribute name="path" type="java.lang.String"%>
+<link rel="stylesheet" href="${baseUrl}/css/pagination.css" />
 <ul class="pagination">
     <c:choose>
         <c:when test="${pn == 1 || maxPages == 1}">
@@ -7,7 +9,7 @@
         </c:when>
         <c:otherwise>
             <li class="waves-effect">
-                <a href="${pageContext.request.contextPath}/admin/users?pn=${pn - 1}">
+                <a href="${path}?pn=${pn - 1}">
                     <i class="material-icons">
                         chevron_left
                     </i>
@@ -19,14 +21,14 @@
         <c:choose>
             <c:when test="${loop.index == pn}">
                 <li class="active">
-                    <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}">
+                    <a href="${path}?pn=${loop.index}">
                             ${loop.index}
                     </a>
                 </li>
             </c:when>
             <c:otherwise>
                 <li class="waves-effect">
-                    <a href="${pageContext.request.contextPath}/admin/users?pn=${loop.index}">
+                    <a href="${path}?pn=${loop.index}">
                             ${loop.index}
                     </a>
                 </li>
@@ -40,7 +42,7 @@
         </c:when>
         <c:otherwise>
             <li class="waves-effect"><a
-                    href="${pageContext.request.contextPath}/admin/users?pn=${pn + 1}"><i
+                    href="${path}?pn=${pn + 1}"><i
                     class="material-icons">chevron_right</i></a></li>
         </c:otherwise>
     </c:choose>

@@ -4,23 +4,22 @@ import static net.novucs.esd.test.util.TestUtil.createTestDaoManager;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.novucs.esd.constants.MembershipUtils;
 import net.novucs.esd.controllers.MakePaymentServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Application;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
@@ -38,8 +37,7 @@ public class TestMakePaymentServlet {
 
   private static final String LAYOUT = "/layout.jsp";
   private static final String SESSION = "session";
-  private static final String AMOUNT_OWED = "amountOwed";
-  private static final String DECIMAL_FORMAT = "#.##";
+  private static final String FEE = "fee";
   private transient Session userSession;
 
   /**
@@ -53,10 +51,7 @@ public class TestMakePaymentServlet {
   private void setServletDaos(MakePaymentServlet servlet,
       User user,
       boolean withOldMembership,
-      boolean withCurrentMembership,
-      BigDecimal applicationBalance,
-      BigDecimal oldMembershipBalance,
-      BigDecimal currentMembershipBalance)
+      boolean withCurrentMembership)
       throws SQLException, ReflectiveOperationException {
 
     DaoManager dm = createTestDaoManager(true);
@@ -65,26 +60,21 @@ public class TestMakePaymentServlet {
     Dao<Membership> membershipDao = dm.get(Membership.class);
     Dao<Application> applicationDao = dm.get(Application.class);
     Application application = new Application(
-        user.getId(),
-        applicationBalance
+        user.getId()
     );
     //Integer userId, BigDecimal balance, String status, ZonedDateTime startDate
     if (withOldMembership) {
       Membership oldMembership = new Membership(
           user.getId(),
-          oldMembershipBalance,
-          "EXPIRED",
           ZonedDateTime.now().minusMonths(15),
           false
       );
       membershipDao.insert(oldMembership);
     }
     if (withCurrentMembership) {
-      application.setStatus("CLOSED");
+      application.setStatus(ApplicationStatus.APPROVED);
       Membership newMembership = new Membership(
           user.getId(),
-          currentMembershipBalance,
-          MembershipUtils.STATUS_ACTIVE,
           ZonedDateTime.now().minusMonths(3),
           !withOldMembership
       );
@@ -92,7 +82,6 @@ public class TestMakePaymentServlet {
     }
     applicationDao.insert(application);
 
-    ReflectUtil.setFieldValue(servlet, "userDao", userDao);
     ReflectUtil.setFieldValue(servlet, "membershipDao", membershipDao);
     ReflectUtil.setFieldValue(servlet, "applicationDao", applicationDao);
   }
@@ -117,10 +106,7 @@ public class TestMakePaymentServlet {
     setServletDaos(servlet,
         user,
         false,
-        false,
-        BigDecimal.ZERO,
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
+        false);
 
     userSession.setUser(user);
 
@@ -133,10 +119,8 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
+    verify(request).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
@@ -159,10 +143,7 @@ public class TestMakePaymentServlet {
     setServletDaos(servlet,
         user,
         false,
-        false,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
+        false);
 
     userSession.setUser(user);
 
@@ -175,9 +156,8 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
+    verify(request).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
@@ -197,13 +177,7 @@ public class TestMakePaymentServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        false,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
+    setServletDaos(servlet, user, false, true);
 
     userSession.setUser(user);
 
@@ -216,14 +190,12 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
+    verify(request, never()).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
-   * Test request gets make payment membership to pay multiple.
+   * Test request gets make payment membership.
    *
    * @throws ServletException             the servlet exception
    * @throws IOException                  the io exception
@@ -231,7 +203,7 @@ public class TestMakePaymentServlet {
    * @throws ReflectiveOperationException the reflective operation exception
    */
   @Test
-  public void testRequestGetsMakePaymentMembershipToPayMultiple()
+  public void testRequestGetsMakePaymentMembership()
       throws ServletException, IOException, SQLException, ReflectiveOperationException {
 
     MakePaymentServlet servlet = new MakePaymentServlet();
@@ -239,13 +211,7 @@ public class TestMakePaymentServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO,
-        BigDecimal.ZERO);
+    setServletDaos(servlet, user, true, true);
 
     userSession.setUser(user);
 
@@ -258,54 +224,8 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED,
-        df.format(
-            BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE).multiply(BigDecimal.valueOf(2))));
-
-  }
-
-  /**
-   * Test request gets make payment membership to pay single.
-   *
-   * @throws ServletException             the servlet exception
-   * @throws IOException                  the io exception
-   * @throws SQLException                 the sql exception
-   * @throws ReflectiveOperationException the reflective operation exception
-   */
-  @Test
-  public void testRequestGetsMakePaymentMembershipToPaySingle()
-      throws ServletException, IOException, SQLException, ReflectiveOperationException {
-
-    MakePaymentServlet servlet = new MakePaymentServlet();
-    HttpSession httpSession = mock(HttpSession.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    User user = TestDummyDataUtil.getDummyUser();
-
-    setServletDaos(servlet,
-        user,
-        true,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.ZERO);
-
-    userSession.setUser(user);
-
-    // When
-    when(httpSession.getAttribute(eq(SESSION))).thenReturn(userSession);
-    when(request.getRequestDispatcher(LAYOUT)).thenAnswer(
-        (Answer<RequestDispatcher>) invocation -> mock(RequestDispatcher.class));
-    when(request.getSession(anyBoolean())).thenReturn(httpSession);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    servlet.doGet(request, response);
-
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
-    // Assert
-    verify(request)
-        .setAttribute(AMOUNT_OWED, df.format(BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE)));
+    verify(request, never()).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 
   /**
@@ -325,13 +245,7 @@ public class TestMakePaymentServlet {
     HttpServletRequest request = mock(HttpServletRequest.class);
     User user = TestDummyDataUtil.getDummyUser();
 
-    setServletDaos(servlet,
-        user,
-        true,
-        true,
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE),
-        BigDecimal.valueOf(MembershipUtils.ANNUAL_FEE));
+    setServletDaos(servlet, user, true, true);
 
     userSession.setUser(user);
 
@@ -344,8 +258,7 @@ public class TestMakePaymentServlet {
     HttpServletResponse response = mock(HttpServletResponse.class);
     servlet.doGet(request, response);
 
-    DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
     // Assert
-    verify(request).setAttribute(AMOUNT_OWED, df.format(BigDecimal.ZERO));
+    verify(request, never()).setAttribute(FEE, Membership.ANNUAL_FEE_POUNDS);
   }
 }

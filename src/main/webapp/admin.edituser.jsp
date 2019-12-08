@@ -47,7 +47,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12">
+            <div class="input-field col s6">
+                <input name="username" id="username" type="text" class="validate"
+                       value="<%=editUser.getUsername()%>" required>
+                <label for="username">Username</label>
+            </div>
+            <div class="input-field col s6">
                 <input name="email" id="email" type="email" class="validate"
                        value="<%=editUser.getEmail()%>" required>
                 <label for="email">Email</label>
