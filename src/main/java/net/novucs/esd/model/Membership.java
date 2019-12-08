@@ -11,6 +11,7 @@ import net.novucs.esd.orm.Table;
 @Table
 public final class Membership {
 
+  public static final int ANNUAL_FEE_POUNDS = 10;
   public static final int LENGTH_IN_MONTHS = 12;
 
   @Column(primary = true)

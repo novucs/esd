@@ -31,7 +31,6 @@ import net.novucs.esd.orm.Where;
 public class MakePaymentServlet extends BaseServlet {
 
   private static final long serialVersionUID = 1426082847044519303L;
-  private static final int ANNUAL_FEE_POUNDS = 10;
 
   @Inject
   private Dao<Membership> membershipDao;
@@ -111,7 +110,7 @@ public class MakePaymentServlet extends BaseServlet {
 
   private void forwardMakePayment(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    request.setAttribute("fee", ANNUAL_FEE_POUNDS);
+    request.setAttribute("fee", Membership.ANNUAL_FEE_POUNDS);
     super.forward(request, response, "Membership Payment", "user.makepayment.pay");
   }
 
@@ -147,7 +146,7 @@ public class MakePaymentServlet extends BaseServlet {
 
       paymentDao.insert(new Payment(
           user.getId(),
-          BigDecimal.valueOf(ANNUAL_FEE_POUNDS),
+          BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
           stripeId,
           reference
       ));
@@ -177,7 +176,7 @@ public class MakePaymentServlet extends BaseServlet {
       throws IOException, ServletException {
     Stripe.apiKey = StripeUtils.TEST_SECRET_KEY;
     Map<String, Object> params = new HashMap<>();
-    params.put("amount", ANNUAL_FEE_POUNDS);
+    params.put("amount", Membership.ANNUAL_FEE_POUNDS);
     params.put("currency", "gbp");
     params.put("description", "Example charge");
     params.put("source", token);

@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +50,7 @@ public class AdminDashboardServlet extends BaseServlet {
       List<User> numberOfUsers = userDao.select().all();
       List<UserRole> userRoles = userRoleDao.select().all();
       int outstandingApplications = applicationDao.select().where(new Where()
-          .eq("status", ApplicationStatus.OPEN)).all().size();
+          .eq("status", ApplicationStatus.OPEN.name())).all().size();
       List<Claim> claims = claimDao.select().all();
       int numberOfClaims = claims.size();
       int members = 0;
@@ -74,6 +76,7 @@ public class AdminDashboardServlet extends BaseServlet {
       request.setAttribute("quarterlyClaimCost", String.valueOf(quarterlyClaimSum));
       super.forward(request, response, "Dashboard", "admin.dashboard");
     } catch (SQLException e) {
+      Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
