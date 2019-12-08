@@ -64,5 +64,9 @@ public class AdminAnnualChargeServlet extends BaseServlet {
       throws ServletException, IOException {
       // Here we need to go through all of the members, and charge them based on how many claims
       // have been made.
+
+    int rangeValue = Integer.parseInt(request.getParameter("range"));
+    int maxValue = Integer.parseInt(request.getParameter("max-charge"));
+    int charge =  maxValue * rangeValue / 100;;
   }
 }

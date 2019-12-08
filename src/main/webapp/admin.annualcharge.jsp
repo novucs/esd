@@ -5,8 +5,8 @@
         </h3>
     </div>
 </div>
-<hr/>
 <div class="row top-margin-30">
+    <hr/>
     <div class="col s6 center-align">
         The total amount claimed in the past year is ${claimSum}
     </div>
@@ -14,19 +14,31 @@
         The total number of members is ${numberOfMembers}
     </div>
 </div>
-<form id="slider-form" class="row top-margin-30" data-max-charge="${maxCharge}">
-    <div class="col s6 push-s3 center-align">
+<form method="post" id="slider-form" class="row top-margin-30">
+    <div class="col s12">
         <div class="row">
-            <h5>
-                Premium to charge members: &pound;
-                <span id="amount-to-charge">
-                    ${maxCharge}
-                </span>
-            </h5>
+            <div class="col s6 push-s3 center-align">
+                <div class="row">
+                    <h5>
+                        Premium to charge members: &pound;
+                        <span id="amount-to-charge">
+                            ${maxCharge}
+                        </span>
+                    </h5>
+                </div>
+                <p class="range-field">
+                    <input hidden name="max-charge" id="max-charge" value="${maxCharge}" />
+                    <input name="range" type="range" id="range" min="0" max="100" value="100" step="1"/>
+                </p>
+            </div>
         </div>
-        <p class="range-field">
-            <input type="range" id="percentage-charge" min="0" max="100" value="100" step="1"/>
-        </p>
+        <div class="row">
+            <div class="col s6 push-s3 input-field center-align">
+                <button type="submit" class="waves-effect btn waves-light xyz-button">
+                    Charge Members
+                </button>
+            </div>
+        </div>
     </div>
 </form>
 <script src="${pageContext.request.contextPath}/js/admin.annualcharge.js"></script>
