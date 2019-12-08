@@ -180,7 +180,16 @@ public class AdminManageApplicationsServlet extends BaseServlet {
       applicationDao.update(application);
 
       if (status == ApplicationStatus.APPROVED) {
-        userRoleDao.insert(new UserRole(application.getUserId(), role.getId()));
+        List<UserRole> existingRoles = userRoleDao.select()
+            .where(new Where()
+                .eq("user_id", application.getUserId())
+                .and()
+                .eq("role_id", role.getId()))
+            .all();
+
+        if (existingRoles.isEmpty()) {
+          userRoleDao.insert(new UserRole(application.getUserId(), role.getId()));
+        }
       }
 
       addUpdateMessage(request, status, application);
