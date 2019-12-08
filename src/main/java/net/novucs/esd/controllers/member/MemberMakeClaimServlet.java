@@ -71,7 +71,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
         return;
       }
 
-      List<Claim> claims = getClaims(membership);
+      List<Claim> claims = getNonRejectedClaims(membership);
       double total = getTotal(claims);
       request.setAttribute("membershipClaimValueToDate", total);
       request.setAttribute("maxClaimValue", MAX_CLAIM_VALUE_POUNDS - total);
@@ -83,9 +83,12 @@ public class MemberMakeClaimServlet extends BaseServlet {
     }
   }
 
-  public List<Claim> getClaims(Membership membership) throws SQLException {
+  public List<Claim> getNonRejectedClaims(Membership membership) throws SQLException {
     return claimDao.select()
-            .where(new Where().eq("membership_id", membership.getId()))
+            .where(new Where()
+                .eq("membership_id", membership.getId())
+                .and()
+                .neq("status", ClaimStatus.REJECTED.name()))
             .all();
   }
 
@@ -118,7 +121,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
       }
 
       BigDecimal claimAmount = new BigDecimal(request.getParameter("claim-value"));
-      double total = getTotal(getClaims(membership));
+      double total = getTotal(getNonRejectedClaims(membership));
 
       if ((MAX_CLAIM_VALUE_POUNDS - total) < claimAmount.doubleValue()) {
         request.setAttribute("error", "You cannot make a claim of this amount");

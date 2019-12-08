@@ -1,53 +1,23 @@
 package net.novucs.esd.util;
 
-import java.time.ZonedDateTime;
+import net.novucs.esd.model.Application;
+import net.novucs.esd.model.User;
 
 public class ManageApplicationResult {
 
-  private final int applicationId;
-  private final int userId;
-  private final String name;
-  private final String username;
-  private final String email;
-  private final String address;
-  private final ZonedDateTime dateOfBirth;
+  private final Application application;
+  private final User user;
 
-  public ManageApplicationResult(int applicationId, int userId, String name,
-      String username, String email, String address, ZonedDateTime dateOfBirth) {
-    this.applicationId = applicationId;
-    this.userId = userId;
-    this.name = name;
-    this.username = username;
-    this.email = email;
-    this.address = address;
-    this.dateOfBirth = dateOfBirth;
+  public ManageApplicationResult(Application application, User user) {
+    this.application = application;
+    this.user = user;
   }
 
-  public int getApplicationId() {
-    return applicationId;
+  public Application getApplication() {
+    return application;
   }
 
-  public int getUserId() {
-    return userId;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public ZonedDateTime getDateOfBirth() {
-    return dateOfBirth;
+  public User getUser() {
+    return user;
   }
 }
