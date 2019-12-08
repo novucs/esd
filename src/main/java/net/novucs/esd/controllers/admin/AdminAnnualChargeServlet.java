@@ -4,17 +4,21 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.Tuple;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.model.Action;
 import net.novucs.esd.model.Claim;
+import net.novucs.esd.model.Notification;
 import net.novucs.esd.model.Role;
+import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserAction;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
@@ -40,6 +44,9 @@ public class AdminAnnualChargeServlet extends BaseServlet {
   @Inject
   private Dao<UserAction> userActionDao;
 
+  @Inject
+  private Dao<Notification> notificationDao;
+
   protected void doGet(HttpServletRequest request,
       HttpServletResponse response)
       throws ServletException, IOException {
@@ -48,11 +55,7 @@ public class AdminAnnualChargeServlet extends BaseServlet {
       LocalDate to = LocalDate.now();
 
       int claimSum = ClaimUtil.sumAllClaims(claimDao, from, to);
-      Role memberRole = roleDao.select().where(new Where().eq("name", Role.MEMBER)).one();
-
-      long numberOfMembers = userRoleDao.select()
-          .where(new Where().eq("role_id", memberRole.getId()))
-          .count("*");
+      long numberOfMembers = getNumberOfMembers();
 
       long maxCharge = claimSum / numberOfMembers;
       if(claimSum == 0){
@@ -84,6 +87,15 @@ public class AdminAnnualChargeServlet extends BaseServlet {
     Action action = new Action(pounds, pence, completeBy, created);
     try {
       actionDao.insert(action);
+      List<Integer> memberIds = getAllMemberIds();
+      List<UserAction> userActions = new ArrayList<>();
+      for (Integer id : memberIds){
+        userActions.add(new UserAction(id, action.getId()));
+      }
+
+      userActionDao.insert(userActions);
+
+
     } catch (SQLException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage());
     }
@@ -95,5 +107,23 @@ public class AdminAnnualChargeServlet extends BaseServlet {
     intArr[0]=Integer.parseInt(arr[0]); // 1
     intArr[1]=Integer.parseInt(arr[1]); // 9
     return intArr;
+  }
+
+  private List<Integer> getAllMemberIds() throws SQLException {
+    Role memberRole = roleDao.select().where(new Where().eq("name", Role.MEMBER)).one();
+    return userRoleDao.select()
+        .where(new Where().eq("role_id", memberRole.getId()))
+        .all()
+        .stream()
+        .map(UserRole::getUserId)
+        .collect(Collectors.toList());
+  }
+
+  private long getNumberOfMembers() throws SQLException {
+    Role memberRole = roleDao.select().where(new Where().eq("name", Role.MEMBER)).one();
+
+    return userRoleDao.select()
+        .where(new Where().eq("role_id", memberRole.getId()))
+        .count("*");
   }
 }
