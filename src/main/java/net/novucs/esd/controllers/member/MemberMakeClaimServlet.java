@@ -72,11 +72,10 @@ public class MemberMakeClaimServlet extends BaseServlet {
         return;
       }
 
-      List<Claim> claims = getClaims(membership, claimDao);
-
-      double total = ClaimUtil.getTotal(claims);
-      request.setAttribute("membershipClaimValueToDate", String.format("%.2f", total));
-      request.setAttribute("maxClaimValue", String.format("%.2f", MAX_CLAIM_VALUE_POUNDS - total));
+      List<Claim> claims = getNonRejectedClaims(membership);
+      double total = getTotal(claims);
+      request.setAttribute("membershipClaimValueToDate", total);
+      request.setAttribute("maxClaimValue", MAX_CLAIM_VALUE_POUNDS - total);
       request.setAttribute("remainingClaims", Math.max(0, MAX_CLAIM_COUNT - claims.size()));
       super.forward(request, response, TITLE, "member.claim.create");
     } catch (SQLException e) {
@@ -85,20 +84,21 @@ public class MemberMakeClaimServlet extends BaseServlet {
     }
   }
 
-  /**
-   * Gets claims.
-   *
-   * @param membership the membership
-   * @param claimDao   the claim dao
-   * @return the claims
-   * @throws SQLException the sql exception
-   */
-  private List<Claim> getClaims(Membership membership, Dao<Claim> claimDao) throws SQLException {
+  public List<Claim> getNonRejectedClaims(Membership membership) throws SQLException {
     return claimDao.select()
-        .where(new Where().eq("membership_id", membership.getId())
-            .and().eq("status", ClaimStatus.PENDING.name())
-            .or().eq("status", ClaimStatus.APPROVED.name()))
-        .all();
+            .where(new Where()
+                .eq("membership_id", membership.getId())
+                .and()
+                .neq("status", ClaimStatus.REJECTED.name()))
+            .all();
+  }
+
+  public double getTotal(List<Claim> claims) {
+    double total = 0;
+    for (Claim claim : claims) {
+      total += claim.getAmount().doubleValue();
+    }
+    return total;
   }
 
   @Override
@@ -122,7 +122,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
       }
 
       BigDecimal claimAmount = new BigDecimal(request.getParameter("claim-value"));
-      double total = ClaimUtil.getTotal(getClaims(membership, claimDao));
+      double total = getTotal(getNonRejectedClaims(membership));
 
       if ((MAX_CLAIM_VALUE_POUNDS - total) < claimAmount.doubleValue()) {
         request.setAttribute("error", "You cannot make a claim of this amount");
