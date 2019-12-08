@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -290,6 +291,10 @@ public class Dao<M> {
    */
   public <O> List<M> join(List<O> origin, Function<O, Integer> mapper) throws SQLException {
     Set<Integer> ids = origin.stream().map(mapper).collect(Collectors.toSet());
+    if (ids.isEmpty()) {
+      return Collections.emptyList();
+    }
+
     Where where = new Where();
     for (Integer id : ids) {
       where = where.eq("id", id).or();

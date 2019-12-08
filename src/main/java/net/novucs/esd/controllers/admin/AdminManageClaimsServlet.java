@@ -45,7 +45,7 @@ public class AdminManageClaimsServlet extends BaseServlet {
       int pageNumber = (int) PaginationUtil.getPageNumber(request);
       int offset = PaginationUtil.getOffset(pageSize, pageNumber);
       long count = claimDao.select().where(WHERE_CLAIM_IS_PENDING).count("*");
-      int maxPages = (int) Math.ceil(count / (double) pageSize);
+      int maxPages = (int) Math.max(1, Math.ceil(count / (double) pageSize));
 
       List<Claim> claims = claimDao.select().where(WHERE_CLAIM_IS_PENDING)
           .offset(offset).limit(pageSize).all();
