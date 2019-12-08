@@ -40,6 +40,8 @@ import org.mockito.stubbing.Answer;
 public class TestMemberMakeClaimServlet {
 
   private static final String LAYOUT = "/layout.jsp";
+  private static final String PAGE = "page";
+  private static final String JSP_EXT = "%s.jsp";
   private static final String ACTIVE_MEMBERSHIP = "ACTIVE";
   private static final String USER_NAME = "User Name";
   private static final String USER_EMAIL = "user@email.com";
@@ -47,14 +49,6 @@ public class TestMemberMakeClaimServlet {
   private static final String USER_ADDRESS = "1 Esd Lane, UWE, A12 BC3";
 
   private static final String SESSION = "session";
-  private static final String TITLE = "Make A Claim";
-  private static final String MEMBERSHIP_STATUS_ATTR = "membershipStatus";
-  private static final String MEMBER_STATUS_NONE = "NONE";
-  private static final String MEMBER_STATUS_FULL_CLAIM = "FULL_CLAIM";
-  private static final String MEMBER_STATUS_FULL_WAIT = "FULL_WAIT";
-  private static final String MEMBER_STATUS_FULL_USED = "FULL_USED";
-  private static final String MEMBER_STATUS_SUSPENDED = "SUSPENDED";
-  private static final String MEMBER_STATUS_EXPIRED = "EXPIRED";
   private transient Session userSession;
 
   /**
@@ -159,7 +153,7 @@ public class TestMemberMakeClaimServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.nomembership"));
+    verify(request).setAttribute(PAGE, String.format(JSP_EXT, "member.claim.nomembership"));
   }
 
   /**
@@ -211,7 +205,7 @@ public class TestMemberMakeClaimServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.expired"));
+    verify(request).setAttribute(PAGE, String.format(JSP_EXT, "member.claim.expired"));
   }
 
   /**
@@ -262,7 +256,7 @@ public class TestMemberMakeClaimServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.wait"));
+    verify(request).setAttribute(PAGE, String.format(JSP_EXT, "member.claim.wait"));
   }
 
   /**
@@ -369,7 +363,7 @@ public class TestMemberMakeClaimServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.suspended"));
+    verify(request).setAttribute(PAGE, String.format(JSP_EXT, "member.claim.suspended"));
   }
 
   /**
@@ -412,7 +406,7 @@ public class TestMemberMakeClaimServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.create"));
+    verify(request).setAttribute(PAGE, String.format(JSP_EXT, "member.claim.create"));
   }
 
   /**
@@ -464,7 +458,7 @@ public class TestMemberMakeClaimServlet {
     servlet.doGet(request, response);
 
     // Assert
-    verify(request).setAttribute("page", String.format("%s.jsp", "member.claim.create"));
+    verify(request).setAttribute(PAGE, String.format(JSP_EXT, "member.claim.create"));
     verify(request).setAttribute("membershipClaimValueToDate", 50.0);
   }
 }
