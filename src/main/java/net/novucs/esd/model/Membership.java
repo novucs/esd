@@ -117,7 +117,7 @@ public final class Membership {
 
   public boolean isExpired() {
     ZonedDateTime now = ZonedDateTime.now();
-    return now.toEpochSecond() < startDate.plusMonths(LENGTH_IN_MONTHS).toEpochSecond();
+    return now.toEpochSecond() > startDate.plusMonths(LENGTH_IN_MONTHS).toEpochSecond();
   }
 
   /**
