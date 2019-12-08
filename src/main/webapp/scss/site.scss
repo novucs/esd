@@ -1,9 +1,22 @@
-.rounded-container {
-  padding: 25px !important;
-  border-radius: 10px;
-  background-color: #fdfdfd;
-  box-shadow: 0px 0px 3px 4px #efefef;
-  z-index: 10;
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+  background-color: #d5d5d5;
+  &.xyz-login, &.xyz-register {
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -250px;
+      width: 60vw;
+      background: #000;
+      transform: skew(-30deg);
+      z-index: 0;
+    }
+  }
 }
 
 .nav-wrapper {
@@ -18,6 +31,7 @@
 nav .brand-logo {
   font-weight: lighter;
   padding-left: 15px;
+  z-index: 10;
 
   &:hover {
     > span {
@@ -46,14 +60,12 @@ nav .brand-logo {
   }
 }
 
-body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-}
-
 main {
   flex: 1 0 auto;
+
+  &.container {
+    background-color: white;
+  }
 }
 
 .page-footer {
@@ -97,4 +109,78 @@ nav {
 
 .top-margin-30 {
   margin-top: 30px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.row {
+  &.no-after::after {
+    display: initial;
+  }
+}
+
+.nice-container {
+  margin-top: 3em;
+  background-color: rgb(250, 250, 250);
+
+  &.col {
+    padding: 0 !important;
+  }
+
+  > .card-image {
+    background-color: black;
+    > img {
+      width: 200px !important;
+      background-image: url('../assets/padlock.png');
+      background-repeat: repeat;
+      opacity: 0.175;
+      height: 100%;
+    }
+  }
+
+  .card-content {
+    > .card-title {
+      font-weight: 700;
+      padding-bottom: 0.5em;
+      border-bottom: 1px solid #9e9e9e;
+      margin-bottom: 1.5em;
+    }
+  }
+
+  button[type="submit"],
+  button[type="button"] {
+    float: left;
+    border-radius: 5px;
+  }
+}
+
+/* Override Nice Container styling for logged in users */
+body {
+  &:not(.xyz-login)
+   :not(.xyz-register) {
+    .nice-container {
+      margin-top: 0 !important;
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      background-color: transparent !important;
+    }
+  }
+}
+
+.w100px {
+  width: 100px;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.c-pointer {
+  cursor: pointer;
+}
+
+.f-right {
+  float: right;
 }
