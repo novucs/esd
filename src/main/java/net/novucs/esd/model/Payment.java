@@ -1,6 +1,7 @@
 package net.novucs.esd.model;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
@@ -32,6 +33,9 @@ public final class Payment {
   @Column
   private String reference;
 
+  @Column
+  private ZonedDateTime date;
+
   /**
    * Instantiates a new Payment.
    */
@@ -46,14 +50,16 @@ public final class Payment {
    * @param amount    the amount
    * @param stripeId  the stripe id
    * @param reference the reference
+   * @param date      the payment date
    */
-  public Payment(Integer userId, BigDecimal amount, String stripeId, String reference) {
+  public Payment(Integer userId, BigDecimal amount, String stripeId, String reference, ZonedDateTime date) {
     this.userId = userId;
     double doubleBalance = amount.doubleValue();
     pounds = (int) doubleBalance;
     pence = (int) ((doubleBalance - pounds) * 100);
     this.stripeId = stripeId;
     this.reference = reference;
+    this.date = date;
   }
 
   /**
@@ -146,6 +152,24 @@ public final class Payment {
    */
   public void setReference(String reference) {
     this.reference = reference;
+  }
+
+  /**
+   * Get payment date.
+   *
+   * @return date
+   */
+  public ZonedDateTime getDate() {
+    return date;
+  }
+
+  /**
+   * Set payment date.
+   *
+   * @param date the date
+   */
+  public void setDate(ZonedDateTime date) {
+    this.date = date;
   }
 
   /**
