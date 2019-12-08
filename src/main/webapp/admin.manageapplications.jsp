@@ -5,17 +5,21 @@
 
 <div>
     <form method="post" id="process-form">
-    <div class="fixed-action-btn">
-        <a class="btn-floating btn-large blue-grey">
-            <i class="large material-icons">mode_edit</i>
-        </a>
-        <ul>
-            <li><a href="javascript:{}" id="approve-all" class="btn-floating green"><i class="material-icons">done_all</i></a></li>
-            <li><a href="javascript:{}" id="approve-selection" class="btn-floating lime"><i class="material-icons">done</i></a></li>
-            <li><a href="javascript:{}" id="deny-selection" class="btn-floating amber"><i class="material-icons">clear</i></a></li>
-            <li><a href="javascript:{}" id="deny-all" class="btn-floating red"><i class="material-icons">gavel</i></a></li>
-        </ul>
-    </div>
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large blue-grey">
+                <i class="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+                <li><a href="javascript:{}" id="approve-all" class="btn-floating green"><i
+                        class="material-icons">done_all</i></a></li>
+                <li><a href="javascript:{}" id="approve-selection" class="btn-floating lime"><i
+                        class="material-icons">done</i></a></li>
+                <li><a href="javascript:{}" id="deny-selection" class="btn-floating amber"><i
+                        class="material-icons">clear</i></a></li>
+                <li><a href="javascript:{}" id="deny-all" class="btn-floating red"><i
+                        class="material-icons">gavel</i></a></li>
+            </ul>
+        </div>
         <div class="row">
             <div class="col s12">
                 <div id="applications-table">
@@ -33,7 +37,9 @@
                             <tr>
                                 <td>
                                     <label>
-                                        <input type="checkbox" class="filled-in" name="application-id" value="${result.applicationId}"/>
+                                        <input type="checkbox" class="filled-in"
+                                               name="application-id"
+                                               value="${result.applicationId}"/>
                                         <span></span>
                                     </label>
                                 </td>
@@ -76,3 +82,16 @@
     </div>
 </div>
 <script src="${pageContext.request.contextPath}/js/admin.manageapplications.js"></script>
+<script src="${pageContext.request.contextPath}/js/pagination.js"></script>
+<c:forEach var="toast" items="${toasts}">
+    <script>
+      (function () {
+        let init = () => {
+          document.addEventListener('DOMContentLoaded', function () {
+            M.toast({html: '${toast}'});
+          });
+        };
+        return {init};
+      })().init();
+    </script>
+</c:forEach>

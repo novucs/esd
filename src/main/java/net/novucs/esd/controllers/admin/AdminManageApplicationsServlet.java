@@ -31,7 +31,7 @@ public class AdminManageApplicationsServlet extends BaseServlet {
   private static final String PAGE_SIZE_FILTER = "applicationPageSizeFilter";
 
   // TODO: update these statuses once complete
-  private static final String PAID_STATUS = "OPEN";
+  private static final String PAID_STATUS = "APPROVED";
   private static final String APPROVED_STATUS = "APPROVED";
   private static final String DENIED_STATUS = "DENIED";
 
@@ -105,6 +105,7 @@ public class AdminManageApplicationsServlet extends BaseServlet {
       int maxPages = PaginationUtil.getMaxPages(userDao, pageSize);
       PaginationUtil.setRequestAttributes(request, maxPages, pageNumber, pageSize);
       request.setAttribute("results", results);
+      request.setAttribute("toasts", getSession(request).getToasts());
 
       super.forward(request, response, "Manage Applications", "admin.manageapplications");
     } catch (SQLException e) {
@@ -125,16 +126,16 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     try {
       switch (method) {
         case "approve-all":
-          updateAllStatuses(APPROVED_STATUS);
+          updateAllStatuses(request, APPROVED_STATUS);
           break;
         case "approve-selection":
-          updateStatusesById(APPROVED_STATUS, applicationIds);
+          updateStatusesById(request, APPROVED_STATUS, applicationIds);
           break;
         case "deny-selection":
-          updateStatusesById(DENIED_STATUS, applicationIds);
+          updateStatusesById(request, DENIED_STATUS, applicationIds);
           break;
         case "deny-all":
-          updateAllStatuses(DENIED_STATUS);
+          updateAllStatuses(request, DENIED_STATUS);
           break;
         default:
           break;
@@ -148,21 +149,30 @@ public class AdminManageApplicationsServlet extends BaseServlet {
     response.sendRedirect("applications");
   }
 
-  public void updateAllStatuses(String status) throws SQLException {
+  public void updateAllStatuses(HttpServletRequest request, String status) throws SQLException {
     List<Application> applications = applicationDao.select()
         .where(new Where().eq("status", PAID_STATUS)).all();
     for (Application application : applications) {
       application.setStatus(status);
       applicationDao.update(application);
+      addUpdateMessage(request, status, application);
     }
   }
 
-  public void updateStatusesById(String status, List<Integer> ids) throws SQLException {
+  public void updateStatusesById(HttpServletRequest request, String status, List<Integer> ids) throws SQLException {
     for (Integer id : ids) {
       Application application = applicationDao.selectById(id);
       application.setStatus(status);
       applicationDao.update(application);
+      addUpdateMessage(request, status, application);
     }
+  }
+
+  public void addUpdateMessage(HttpServletRequest request, String status, Application application)
+      throws SQLException {
+    User user = userDao.selectById(application.getUserId());
+    getSession(request).pushToast((DENIED_STATUS.equals(status) ? "Denied" : "Approved")
+        + " " + user.getName() + " - " + user.getEmail());
   }
 
   @Override
