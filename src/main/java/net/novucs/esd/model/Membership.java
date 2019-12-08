@@ -1,6 +1,5 @@
 package net.novucs.esd.model;
 
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
@@ -12,20 +11,14 @@ import net.novucs.esd.orm.Table;
 @Table
 public final class Membership {
 
+  public static final int ANNUAL_FEE_POUNDS = 10;
+  public static final int LENGTH_IN_MONTHS = 12;
+
   @Column(primary = true)
   private Integer id;
 
   @Column(foreign = User.class)
   private Integer userId;
-
-  // Pounds and pence integers make up balance, we do not want to store
-  // monetary values as floating point numbers to prevent the possibility
-  // of rounding errors.
-  @Column
-  private Integer pounds;
-
-  @Column
-  private Integer pence;
 
   @Column
   private ZonedDateTime startDate;
@@ -34,7 +27,7 @@ public final class Membership {
   private ZonedDateTime claimFromDate;
 
   @Column
-  private String status;
+  private Integer suspended;
 
   /**
    * Instantiates a new Membership.
@@ -47,24 +40,26 @@ public final class Membership {
    * Instantiates a new Membership.
    *
    * @param userId      the user id
-   * @param balance     the balance
-   * @param status      the status
+   * @param isNewMember the is new member
+   */
+  public Membership(Integer userId, Boolean isNewMember) {
+    this(userId, ZonedDateTime.now(), isNewMember);
+  }
+
+  /**
+   * Instantiates a new Membership.
+   *
+   * @param userId      the user id
    * @param startDate   the start date
    * @param isNewMember the is new member
    */
-  public Membership(Integer userId, BigDecimal balance, String status, ZonedDateTime startDate,
-      Boolean isNewMember) {
+  public Membership(Integer userId, ZonedDateTime startDate, Boolean isNewMember) {
     this.userId = userId;
-    this.status = status;
-    double doubleBalance = balance.doubleValue();
-    this.pounds = (int) doubleBalance;
-    this.pence = (int) ((doubleBalance - pounds) * 100);
     this.startDate = startDate;
-
     this.claimFromDate = isNewMember ? startDate.plusMonths(6) : startDate;
-
-    setBalance(balance);
+    this.suspended = 0;
   }
+
 
   /**
    * Gets id.
@@ -103,45 +98,6 @@ public final class Membership {
   }
 
   /**
-   * Gets balance.
-   *
-   * @return the balance
-   */
-  public BigDecimal getBalance() {
-    return BigDecimal.valueOf(pounds + (pence / 100f));
-  }
-
-  /**
-   * Sets balance.
-   *
-   * @param balance the balance
-   */
-  public void setBalance(BigDecimal balance) {
-    double doubleBalance = balance.doubleValue();
-    this.pounds = (int) doubleBalance;
-    this.pence = (int) ((doubleBalance - pounds) * 100);
-  }
-
-  /**
-   * Gets status.
-   *
-   * @return the status
-   */
-  public String getStatus() {
-    return status;
-  }
-
-  /**
-   * Sets status.
-   *
-   * @param status the status
-   */
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-
-  /**
    * Gets start date.
    *
    * @return the start date
@@ -157,6 +113,11 @@ public final class Membership {
    */
   public void setStartDate(ZonedDateTime startDate) {
     this.startDate = startDate;
+  }
+
+  public boolean isExpired() {
+    ZonedDateTime now = ZonedDateTime.now();
+    return now.toEpochSecond() > startDate.plusMonths(LENGTH_IN_MONTHS).toEpochSecond();
   }
 
   /**
@@ -184,6 +145,47 @@ public final class Membership {
    */
   public void setClaimFromDate(ZonedDateTime claimFromDate) {
     this.claimFromDate = claimFromDate;
+  }
+
+  /**
+   * Gets whether the membership is suspended.
+   *
+   * @return <code>true</code> if the membership is suspended.
+   */
+  public boolean isSuspended() {
+    return suspended != 0;
+  }
+
+  /**
+   * Update suspended status.
+   *
+   * @param suspended whether the user is suspended.
+   */
+  public void setSuspended(Boolean suspended) {
+    this.suspended = suspended ? 1 : 0;
+  }
+
+  /**
+   * Gets whether the membership is active.
+   *
+   * @return <code>true</code> if the membership is active.
+   */
+  public boolean isActive() {
+    return !isSuspended() && !isExpired();
+  }
+
+  /**
+   * Gets whether the membership is able to make a claim.
+   *
+   * @return <code>true</code> if the membership is able to make a claim.
+   */
+  public boolean isAbleToClaim() {
+    if (!isActive()) {
+      return false;
+    }
+
+    ZonedDateTime now = ZonedDateTime.now();
+    return now.toEpochSecond() >= claimFromDate.toEpochSecond();
   }
 
   @Override

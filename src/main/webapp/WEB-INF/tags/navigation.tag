@@ -8,7 +8,8 @@
 <header>
     <nav class="navigation-bar">
         <div class="nav-wrapper ${hasSession ? 'container' : ''}">
-            <a href="${pageContext.request.contextPath}/${isAdmin ? 'admin/dashboard' : 'dashboard'}" class="brand-logo">
+            <a href="${baseUrl}/${hasSession ? (isAdmin ? 'admin/dashboard' : 'dashboard') : ''}"
+               class="brand-logo">
                 <span>XYZ</span>
                 <span>Drivers Association</span>
             </a>
@@ -16,8 +17,9 @@
             <nav class="navigation-bar">
                 <div class="nav-wrapper">
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
-                        <li><a href="login">Login</a></li>
-                        <li><a href="register">Register</a></li>
+                        <li><a href="${baseUrl}/">Homepage</a></li>
+                        <li><a href="${baseUrl}/login">Login</a></li>
+                        <li><a href="${baseUrl}/register">Register</a></li>
                     </ul>
                 </div>
             </nav>
@@ -25,7 +27,8 @@
             <% if (hasSession) { %>
             <ul class="right hide-on-med-and-down">
                 <li>
-                    <a href="${baseUrl}/dashboard" class="dropdown-trigger" data-target="memberDropdown">
+                    <a href="${baseUrl}/dashboard" class="dropdown-trigger"
+                       data-target="memberDropdown">
                         Member
                     </a>
                 </li>
@@ -54,7 +57,6 @@
                     <li><a href="${baseUrl}/admin/users">Manage Users</a></li>
                     <li><a href="${baseUrl}/admin/applications">Manage Applications</a></li>
                     <li><a href="${baseUrl}/admin/claims">Manage Claims</a></li>
-                    <li><a href="${baseUrl}/admin/payments">Manage Payments</a></li>
                 </ul>
                 <% } %>
                 <!-- Dropdown Trigger -->
@@ -63,7 +65,7 @@
             </ul>
             <% } %>
             <ul id="userDropdown" class="dropdown-content">
-                <li><a href="${baseUrl}/settings">User Settings</a></li>
+                <li><a href="${baseUrl}/profile">Profile</a></li>
                 <li><a href="${baseUrl}/logout">Logout</a></li>
             </ul>
         </div>

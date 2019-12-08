@@ -3,6 +3,8 @@ package net.novucs.esd.controllers.admin;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +42,7 @@ public class AdminManageUsersServlet extends BaseServlet {
       if (searchQuery == null) {
         users = PaginationUtil.paginate(userDao, pageSize, pageNumber);
       } else {
-        String[] columns = {"name", "email"};
+        String[] columns = {"name", "username", "email"};
         users = PaginationUtil.paginateWithSearch(userDao, pageSize, pageNumber,
             searchQuery, columns);
       }
@@ -52,6 +54,7 @@ public class AdminManageUsersServlet extends BaseServlet {
 
       super.forward(request, response, "Manage Users", "admin.manageusers");
     } catch (SQLException e) {
+      Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }

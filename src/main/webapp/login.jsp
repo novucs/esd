@@ -1,57 +1,59 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<link rel="stylesheet" href="${baseUrl}/css/login.css">
 <div class="container">
-    <div class="row">
-        <div id="login-component-container" class="col s6 push-s3 rounded-container">
-            <div class="row">
-                <div class="col s12 center-align">
-                    <h3 id="login-title">
+    <div class="row no-padding">
+        <div class="nice-container col s6 push-s3 card horizontal large">
+            <div class="card-image">
+                <img/>
+                <span class="card-title">XYZ Association</span>
+            </div>
+            <div class="card-stacked">
+                <div class="card-content">
+                    <div class="card-title">
                         Login
-                    </h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    <form method="post" action="login">
-                        <div class="row">
-                            <div class="col s12">
-                                <div class="input-field">
-                                    <input name="username" placeholder="" id="username" type="email"
-                                           class="validate"
-                                           autocomplete="off" required/>
-                                    <label for="username">Username</label>
+                    </div>
+                    <div class="row no-after">
+                        <div class="col s12">
+                            <form method="post" action="login">
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <i class="material-icons prefix">person</i>
+                                        <input class="validate" name="username" id="username"
+                                               type="text" autocomplete="off" placeholder=""
+                                               required/>
+                                        <label for="username" data-error="wrong"
+                                               data-success="right">
+                                            Username
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col  s12">
-                                <div class="input-field">
-                                    <input placeholder="" name="password" id="password"
-                                           type="password" class="validate"
-                                           minlength="3" required/>
-                                    <label for="password">Password</label>
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <i class="material-icons prefix">lock_outline</i>
+                                        <input name="password" placeholder=""
+                                               id="password" type="password" minlength="3"
+                                               required/>
+                                        <label for="password">Password</label>
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <button type="submit"
+                                                class="btn waves-effect orange waves-light col s12">
+                                            Login
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="row">
-                            <div class="col s12 left">
-                                <button id="login-button"
-                                        class="waves-effect btn secondary-content left-align"
-                                        type="submit" name="login">
-                                    Submit
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    Not have an account? Register <a href="register">here</a>.
+                <div class="card-action">
+                    <a href="${pageContext.request.contextPath}/register">
+                        Register for an account
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
 </div>

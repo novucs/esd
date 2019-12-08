@@ -12,7 +12,6 @@ public final class PaginationUtil {
   public static String[] pageSizes = {"15", "30", "50"};
 
   private PaginationUtil() {
-
   }
 
   public static void postPagination(HttpServletRequest request, String pageSizeFilterName) {
@@ -46,24 +45,27 @@ public final class PaginationUtil {
 
   public static <M> List<M> paginate(Dao<M> dao, int pageSize, double pageNumber)
       throws SQLException {
-    return dao.select().offset(
-        (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
+    return dao.select().offset(getOffset(pageSize, pageNumber)).limit(pageSize).all();
+  }
+
+  public static int getOffset(int pageSize, double pageNumber) {
+    return (int) (pageSize * (pageNumber - 1));
   }
 
   public static <M> List<M> paginateWithSearch(Dao<M> dao, int pageSize, double pageNumber,
       String searchQuery, String... columnNames) throws SQLException {
     return dao.select().where(new Where().search(searchQuery, columnNames)).offset(
-        (int) (pageSize * (pageNumber - 1))).limit(pageSize).all();
+        getOffset(pageSize, pageNumber)).limit(pageSize).all();
   }
 
   public static <M> int getMaxPages(Dao<M> dao, double pageSize) throws SQLException {
-    return (int) Math.ceil(dao.select().all().size() / pageSize);
+    return (int) Math.ceil(dao.select().count("*") / pageSize);
   }
 
   public static void setRequestAttributes(HttpServletRequest request, int maxPages,
       double pageNumber, int pageSize) {
     request.setAttribute("maxPages", maxPages);
-    request.setAttribute("pn", pageNumber);
+    request.setAttribute("pn", (int) pageNumber);
     request.setAttribute("ps", pageSize);
     request.setAttribute("pageSizes", PaginationUtil.pageSizes);
   }

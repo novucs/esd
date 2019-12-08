@@ -15,7 +15,7 @@
   <head>
     <title>${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="icon" type="image/png" href="${baseUrl}/assets/favicon.png" />
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
@@ -23,18 +23,19 @@
     <link rel="stylesheet" href="${baseUrl}/css/${name}.css" />
     <link rel="stylesheet" href="${baseUrl}/css/overrides.css" />
   </head>
-  <body>
+  <body class="xyz-${name}">
     <t:navigation hasSession="<%=userHasSession%>" isMember="<%=userIsMember%>" isAdmin="<%=userIsAdmin%>"/>
     <% if (userHasSession && !request.getAttribute("name").equals("homepage")) { %>
       <script type="text/javascript">
         const userId = "${user.id}";
       </script>
-    <main class="container">
+      <main class="container">
         <jsp:include page="breadcrumb.jsp" />
         <jsp:include page="${page}" />
       </main>
     <% } else { %>
       <main>
+        ${name == 'homepage' ? '<div class="car-background"></div>' : ''}
         <jsp:include page="${page}" />
       </main>
     <% } %>

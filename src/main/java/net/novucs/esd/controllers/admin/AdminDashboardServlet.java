@@ -5,13 +5,15 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.novucs.esd.constants.ApplicationUtils;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.model.Application;
+import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Role;
@@ -48,7 +50,7 @@ public class AdminDashboardServlet extends BaseServlet {
       List<User> numberOfUsers = userDao.select().all();
       List<UserRole> userRoles = userRoleDao.select().all();
       int outstandingApplications = applicationDao.select().where(new Where()
-          .eq("status", ApplicationUtils.STATUS_OPEN)).all().size();
+          .eq("status", ApplicationStatus.OPEN.name())).all().size();
       List<Claim> claims = claimDao.select().all();
       int numberOfClaims = claims.size();
       int members = 0;
@@ -70,12 +72,11 @@ public class AdminDashboardServlet extends BaseServlet {
       request.setAttribute("outstandingMemberApplications", outstandingApplications);
       request.setAttribute("currentMembers", members);
       request.setAttribute("outstandingBalances", numberOfClaims);
-
-      // todo: Update when reporting is set in place
       request.setAttribute("monthlyClaimCost", String.valueOf(monthlyClaimSum));
       request.setAttribute("quarterlyClaimCost", String.valueOf(quarterlyClaimSum));
       super.forward(request, response, "Dashboard", "admin.dashboard");
     } catch (SQLException e) {
+      Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
