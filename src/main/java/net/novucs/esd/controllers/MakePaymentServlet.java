@@ -27,6 +27,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserAction;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
+import net.novucs.esd.util.MembershipUtil;
 
 /**
  * The type Make payment servlet.
@@ -58,7 +59,7 @@ public class MakePaymentServlet extends BaseServlet {
 
     try {
       User user = session.getUser();
-      Application application = getApplication(user);
+      Application application = MembershipUtil.getApplication(user, applicationDao);
 
       if (application == null) {
         // All users must have an application associated with their account.
@@ -85,7 +86,7 @@ public class MakePaymentServlet extends BaseServlet {
               request, response, "Membership Payment", "user.makepayment.notnecessary");
           return;
         case APPROVED:
-          if (hasActiveMembership(user)) {
+          if (MembershipUtil.hasActiveMembership(user, membershipDao)) {
             response.sendRedirect("dashboard");
             return;
           }
@@ -99,32 +100,6 @@ public class MakePaymentServlet extends BaseServlet {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
-  }
-
-  private Application getApplication(User user) throws SQLException {
-    return applicationDao.select().where(new Where().eq("user_id", user.getId())).first();
-  }
-
-  private List<Membership> getMemberships(User user) throws SQLException {
-    return membershipDao.select()
-        .where(new Where().eq("user_id", user.getId()))
-        .all();
-  }
-
-  private boolean hasPreviousMemberships(User user) throws SQLException {
-    return !getMemberships(user).isEmpty();
-  }
-
-  private Membership getActiveMembership(User user) throws SQLException {
-    return getMemberships(user)
-        .stream()
-        .filter(Membership::isActive)
-        .findFirst()
-        .orElse(null);
-  }
-
-  private boolean hasActiveMembership(User user) throws SQLException {
-    return getActiveMembership(user) != null;
   }
 
   private void forwardMakePayment(HttpServletRequest request, HttpServletResponse response)
@@ -181,13 +156,13 @@ public class MakePaymentServlet extends BaseServlet {
             .first();
         request.setAttribute("charge", df.format(fee));
       } else {
-        if (hasActiveMembership(user)) {
+        if (MembershipUtil.hasActiveMembership(user, membershipDao)) {
           // Users with an active membership cannot make a payment.
           sendError(request, response, "You already have a membership");
           return;
         }
 
-        Application application = getApplication(user);
+        Application application = MembershipUtil.getApplication(user, applicationDao);
         if (application == null) {
           sendError(request, response, "Your account has no related application");
           return;
@@ -208,7 +183,7 @@ public class MakePaymentServlet extends BaseServlet {
         applicationDao.update(application);
         membershipDao.insert(new Membership(
             user.getId(),
-            hasPreviousMemberships(user)
+            MembershipUtil.hasPreviousMemberships(user, membershipDao)
         ));
 
         request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
