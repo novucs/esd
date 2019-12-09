@@ -1,6 +1,7 @@
 package net.novucs.esd.model;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
@@ -106,6 +107,10 @@ public final class Claim {
     double doubleBalance = balance.doubleValue();
     this.pounds = (int) doubleBalance;
     this.pence = (int) ((doubleBalance - pounds) * 100);
+  }
+
+  public String getFormattedAmount() {
+    return new DecimalFormat("£#,###.##").format(getAmount());
   }
 
   public Integer getPounds() {

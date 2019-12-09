@@ -27,6 +27,7 @@
                         <tr>
                             <th>Select</th>
                             <th>Claim ID</th>
+                            <th>Amount</th>
                             <th>Rationale</th>
                             <th>Username</th>
                             <th>Email</th>
@@ -42,6 +43,7 @@
                                     </label>
                                 </td>
                                 <td>${result.claim.id}</td>
+                                <td>${result.claim.getFormattedAmount()}</td>
                                 <td>${result.claim.rationale}</td>
                                 <td>${result.user.username}</td>
                                 <td>${result.user.email}</td>
