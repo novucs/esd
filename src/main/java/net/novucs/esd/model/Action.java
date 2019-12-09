@@ -39,7 +39,7 @@ public class Action {
     return amountPaid;
   }
 
-  public void setAmountPaid(int amountPaid) {
+  public void setAmountPaid(Integer amountPaid) {
     this.amountPaid = amountPaid;
   }
 
