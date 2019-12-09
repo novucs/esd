@@ -132,7 +132,6 @@ public class MakePaymentServlet extends BaseServlet {
     try {
       // Check for Action payments
       if (actionId != null && !actionId.isEmpty()) {
-        System.out.println("Action Id: " + actionId);
         double fee = processActionPayment(actionId, token, request, response, reference, user);
         request.setAttribute("charge", df.format(fee));
         super.forward(request, response, "Payment Success", "user.makepayment.success");
