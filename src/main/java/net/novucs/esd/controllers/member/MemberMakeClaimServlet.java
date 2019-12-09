@@ -106,9 +106,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
       }
 
       BigDecimal claimAmount = new BigDecimal(request.getParameter("claim-value"));
-      double total = ClaimUtil.getTotal(ClaimUtil.getNonRejectedClaims(claimDao, membership));
-
-      if ((Claim.MAX_VALUE_POUNDS - total) < claimAmount.doubleValue()) {
+      if ((Claim.MAX_VALUE_POUNDS) < claimAmount.doubleValue()) {
         request.setAttribute("error", "You cannot make a claim of this amount");
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
