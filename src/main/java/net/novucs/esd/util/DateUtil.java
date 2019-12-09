@@ -52,7 +52,7 @@ public class DateUtil {
    * @param dateTime the date time to format
    * @return the date from string
    */
-  public String getFormattedDate(ZonedDateTime dateTime) {
+  public static String getFormattedDate(ZonedDateTime dateTime) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     return formatter.format(dateTime);
   }

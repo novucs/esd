@@ -187,7 +187,6 @@
   <filter-mapping>
     <filter-name>MemberFilter</filter-name>
     <url-pattern>/claims</url-pattern>
-    <url-pattern>/payments</url-pattern>
   </filter-mapping>
   <error-page>
     <error-code>404</error-code>

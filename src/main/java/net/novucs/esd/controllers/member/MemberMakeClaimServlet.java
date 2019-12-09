@@ -20,6 +20,7 @@ import net.novucs.esd.model.User;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 import net.novucs.esd.util.ClaimUtil;
+import net.novucs.esd.util.DateUtil;
 
 /**
  * The type Member make claim servlet.
@@ -65,7 +66,9 @@ public class MemberMakeClaimServlet extends BaseServlet {
       }
 
       if (!membership.isAbleToClaim()) {
-        request.setAttribute("claimFrom", membership.getClaimFromDate());
+
+        request.setAttribute("claimFrom",
+            DateUtil.getFormattedDate(membership.getClaimFromDate()));
         super.forward(request, response, TITLE, "member.claim.wait");
         return;
       }
@@ -73,7 +76,7 @@ public class MemberMakeClaimServlet extends BaseServlet {
       List<Claim> claims = ClaimUtil.getNonRejectedClaims(claimDao, membership);
       double total = ClaimUtil.getTotal(claims);
       request.setAttribute("membershipClaimValueToDate", total);
-      request.setAttribute("maxClaimValue", Claim.MAX_VALUE_POUNDS - total);
+      request.setAttribute("maxClaimValue", Claim.MAX_VALUE_POUNDS);
       request.setAttribute("remainingClaims", Math.max(0, Claim.CONCURRENT_LIMIT - claims.size()));
       super.forward(request, response, TITLE, "member.claim.create");
     } catch (SQLException e) {

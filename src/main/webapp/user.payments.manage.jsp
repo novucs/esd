@@ -8,9 +8,9 @@
 <div>
     <div class="row no-bottom-margin">
         <div class="col s3 input-field">
-            <label for="search-users-query">Filter</label>
-            <input type="text" id="search-users-query" placeholder="Search your payments..."
-                   name="search-users-query" form="search-form"/>
+            <label for="search-payment-query">Filter</label>
+            <input type="text" id="search-payment-query" placeholder="Search your payments..."
+                   name="search-payment-query" form="search-form"/>
         </div>
         <div class="col s2 input-field">
             <form method="post" id="search-form">

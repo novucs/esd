@@ -2,6 +2,7 @@ package net.novucs.esd.controllers.member;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ public class MemberManageClaimsServlet extends BaseServlet {
 
   private static final String PAGE_SIZE_FILTER = "userPageSizeFilter";
 
-  private static final String USER_SEARCH_QUERY = "userSearchQuery";
+  private static final String CLAIM_SEARCH_QUERY = "claimSearchQuery";
 
   @Inject
   private Dao<Claim> claimDao;
@@ -37,7 +38,7 @@ public class MemberManageClaimsServlet extends BaseServlet {
     try {
       Session session = Session.fromRequest(request);
       User user = session.getUser();
-      String searchQuery = (String) session.getFilter(USER_SEARCH_QUERY);
+      String searchQuery = (String) session.getFilter(CLAIM_SEARCH_QUERY);
       int pageSize = PaginationUtil.getPageSize(request, PAGE_SIZE_FILTER);
       double pageNumber = PaginationUtil.getPageNumber(request);
 
@@ -49,14 +50,15 @@ public class MemberManageClaimsServlet extends BaseServlet {
           .findFirst()
           .orElse(null);
 
-      List<Claim> claims;
+      List<Claim> claims = new ArrayList<>();
       if (searchQuery == null && membership != null) {
         claims = PaginationUtil
             .paginate(claimDao, pageSize, pageNumber,
                 new Where().eq("membership_id", membership.getId()));
-      } else {
-        String[] columns = {"name", "email"};
+      } else if (membership != null) {
+        String[] columns = {"rationale", "status"};
         claims = PaginationUtil.paginateWithSearch(claimDao, pageSize, pageNumber,
+            new Where().eq("membership_id", membership.getId()),
             searchQuery, columns);
       }
 
@@ -64,7 +66,7 @@ public class MemberManageClaimsServlet extends BaseServlet {
       PaginationUtil.setRequestAttributes(request, max, pageNumber, pageSize);
       claims.sort(Comparator.comparing(Claim::getId).reversed());
       request.setAttribute("claims", claims);
-      session.removeFilter(USER_SEARCH_QUERY);
+      session.removeFilter(CLAIM_SEARCH_QUERY);
 
       super.forward(request, response, "Manage Claims", "member.claims.manage");
     } catch (SQLException e) {
@@ -78,7 +80,7 @@ public class MemberManageClaimsServlet extends BaseServlet {
     // Here we will set the filters in the users session.
 
     String searchQuery = request.getParameter("search-claims-query");
-    PaginationUtil.postPaginationWithSearch(request, PAGE_SIZE_FILTER, USER_SEARCH_QUERY,
+    PaginationUtil.postPaginationWithSearch(request, PAGE_SIZE_FILTER, CLAIM_SEARCH_QUERY,
         searchQuery);
 
     response.sendRedirect("claims");
