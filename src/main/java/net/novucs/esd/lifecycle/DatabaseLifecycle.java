@@ -129,7 +129,7 @@ public class DatabaseLifecycle {
     daoManager.get(User.class).insert(user);
     daoManager.get(UserRole.class).insert(new UserRole(user.getId(), role.getId()));
 
-    if ("User".equalsIgnoreCase(name)) {
+    if ("User".equalsIgnoreCase(name) || "Administrator".equalsIgnoreCase(name)) {
       Application application = new Application(user.getId());
       daoManager.get(Application.class).insert(application);
     } else if ("Approved User".equalsIgnoreCase(name)) {
