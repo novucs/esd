@@ -132,7 +132,8 @@ public class MakePaymentServlet extends BaseServlet {
     DecimalFormat df = new DecimalFormat("#.##");
 
     try {
-      if (actionId == null && offlineActionId == null) {
+      if (actionId.isEmpty() && offlineActionId.isEmpty()) {
+
         if (MembershipUtil.hasActiveMembership(user, membershipDao)) {
           // Users with an active membership cannot make a payment.
           sendError(request, response, "You already have a membership");
