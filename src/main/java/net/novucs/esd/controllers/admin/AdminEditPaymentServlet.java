@@ -24,9 +24,9 @@ public class AdminEditPaymentServlet extends BaseServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    int claimId = Integer.parseInt(request.getParameter("paymentId"));
+    int paymentId = Integer.parseInt(request.getParameter("paymentId"));
     try {
-      Payment payment = paymentDao.selectById(claimId);
+      Payment payment = paymentDao.selectById(paymentId);
 
       boolean verifyPayment = Boolean.parseBoolean(request.getParameter("verify-payment"));
       boolean declinePayment = Boolean.parseBoolean(request.getParameter("decline-payment"));

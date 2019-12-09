@@ -59,7 +59,7 @@
                             </td>
                              <td>
                                 <div id="managePayment">
-                                    <form id="verifyPayment" name="verifyPayment" method="post" action="editpayment">
+                                    <form id="verifyPayment_${payment.id}" name="verifyPayment" method="post" action="editpayment">
                                         <input
                                               type="hidden"
                                               id="verify-payment"
@@ -70,13 +70,13 @@
                                               id="payment-id"
                                               name="paymentId"
                                               value="${payment.id}"/>
-                                        <a class="managed-icon" href="javascript: verifyPayment()" disabled="${payment.approvalStatus == 'VERIFIED'}">
+                                        <a class="managed-icon" href="javascript: verifyPayment(${payment.id})">
                                            <i class="material-icons small">
                                                check
                                            </i>
                                         </a>
                                     </form>
-                                  <form id="declinePayment" name="declinePayment" method="post" action="editpayment">
+                                  <form id="declinePayment_${payment.id}" name="declinePayment" method="post" action="editpayment">
                                         <input
                                               type="hidden"
                                               id="decline-payment"
@@ -87,13 +87,13 @@
                                               id="payment-id"
                                               name="paymentId"
                                               value="${payment.id}"/>
-                                        <a class="managed-icon" href="javascript: declinePayment()"  disabled="${payment.approvalStatus == 'REJECTED'}">
+                                        <a class="managed-icon" href="javascript: declinePayment(${payment.id})">
                                            <i class="material-icons small">
                                                pan_tool
                                            </i>
                                         </a>
                                         </form>
-                                        <form id="pendingPayment" name="pendingPayment" method="post" action="editpayment">
+                                        <form id="pendingPayment_${payment.id}" name="pendingPayment" method="post" action="editpayment">
                                         <input
                                               type="hidden"
                                               id="pending-payment"
@@ -104,7 +104,7 @@
                                                   id="payment-id"
                                                   name="paymentId"
                                                   value="${payment.id}"/>
-                                        <a href="javascript: pendingPayment()"  disabled="${payment.approvalStatus == 'PENDING'}">
+                                        <a href="javascript: pendingPayment(${payment.id})">
                                            <i class="material-icons small">
                                                av_timer
                                            </i>

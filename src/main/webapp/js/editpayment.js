@@ -1,9 +1,9 @@
-function verifyPayment() {
-  document.getElementById('verifyPayment').submit();
+function verifyPayment(paymentId) {
+  document.getElementById('verifyPayment_' + paymentId.toString()).submit();
 }
-function declinePayment() {
-  document.getElementById('declinePayment').submit();
+function declinePayment(paymentId) {
+  document.getElementById('declinePayment_' + paymentId.toString()).submit();
 }
-function pendingPayment() {
-  document.getElementById('pendingPayment').submit();
+function pendingPayment(paymentId) {
+  document.getElementById('pendingPayment_' + paymentId.toString()).submit();
 }
