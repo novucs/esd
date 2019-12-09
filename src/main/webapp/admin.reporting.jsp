@@ -1,6 +1,10 @@
+<%@ page import="net.novucs.esd.model.ClaimStatus" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="CS_APPROVED" value="<%=ClaimStatus.APPROVED.name()%>"/>
+<c:set var="CS_PENDING" value="<%=ClaimStatus.PENDING.name()%>"/>
+<c:set var="CS_REJECTED" value="<%=ClaimStatus.REJECTED.name()%>"/>
 
 <form class="row" method="post" name="reporting-form">
     <div class="col s12 ">
@@ -100,8 +104,8 @@
                                         </span>
                                     </div>
                                     <c:set var="claimStatusColor" scope="session"
-                                           value="${claim.status.equals(CS_APPROVED) ?
-                                            'green-text' : (claim.status.equals(CS_PENDING) ?
+                                           value="${fn:trim(claim.status).equals(fn:trim(CS_APPROVED)) ?
+                                            'green-text' : (claim.status.equals(fn:trim(CS_PENDING)) ?
                                             'orange-text' : 'red-text')}"/>
                                     <div class="col s3">
                                         <label>

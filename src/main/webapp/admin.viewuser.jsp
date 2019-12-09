@@ -151,8 +151,8 @@
                                         </span>
                                     </div>
                                     <c:set var="claimStatusColor" scope="session"
-                                           value="${claim.status.equals(CS_APPROVED) ?
-                                            'green-text' : (claim.status.equals(CS_PENDING) ?
+                                           value="${fn:trim(claim.status).equals(fn:trim(CS_APPROVED)) ?
+                                            'green-text' : (claim.status.equals(fn:trim(CS_PENDING)) ?
                                             'orange-text' : 'red-text')}"/>
                                     <div class="col s3">
                                         <label>
