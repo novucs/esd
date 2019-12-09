@@ -60,11 +60,11 @@
     <url-pattern>/member/editclaim</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>MemberMyPaymentsServlet</servlet-name>
-    <servlet-class>net.novucs.esd.controllers.member.MemberMyPaymentsServlet</servlet-class>
+    <servlet-name>ManagePaymentsServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.ManagePaymentsServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>MemberMyPaymentsServlet</servlet-name>
+    <servlet-name>ManagePaymentsServlet</servlet-name>
     <url-pattern>/payments</url-pattern>
   </servlet-mapping>
   <servlet>
