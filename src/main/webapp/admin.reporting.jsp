@@ -58,13 +58,16 @@
                     </div>
                 </div>
                 <div class="row top-margin-30">
-                    <div class="col s4 center-align">
-                        Recieved from memberships: &pound;${membershipSum}
+                    <div class="col s3 center-align">
+                        Received from memberships: &pound;${membershipSum}
                     </div>
-                    <div class="col s4 center-align">
+                    <div class="col s3 center-align">
+                        Other charges: &pound;${actionSum}
+                    </div>
+                    <div class="col s3 center-align">
                         Paid out to claims: &pound;${claimSum}
                     </div>
-                    <div class="col s4 center-align ${turnover < 0 ? 'red-text' : 'green-text'}">
+                    <div class="col s3 center-align ${turnover < 0 ? 'red-text' : 'green-text'}">
                         Turnover: &pound;${turnover}
                     </div>
                 </div>

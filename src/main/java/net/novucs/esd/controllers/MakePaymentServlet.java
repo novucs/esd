@@ -203,6 +203,8 @@ public class MakePaymentServlet extends BaseServlet {
         .first();
 
     userActionDao.delete(toDelete);
+    action.setAmountPaid(action.getAmountPaid() + 1);
+
     if (userActionDao.select()
         .where(new Where().eq("action_id", actionId)).count("*") == 0) {
       actionDao.delete(action);

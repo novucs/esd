@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Action;
 import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.orm.Dao;
@@ -32,6 +33,9 @@ public class AdminReportingServlet extends BaseServlet {
 
   @Inject
   private Dao<Membership> membershipDao;
+
+  @Inject
+  private Dao<Action> actionDao;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,13 +55,15 @@ public class AdminReportingServlet extends BaseServlet {
       request.setAttribute("fromFormatted", ((LocalDate) session.getFilter(FROM_LABEL))
           .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)));
 
-      int claimSum = (int) session.getFilter("claimSum");
-      long membershipSum = (long) session.getFilter("membershipSum");
+      double claimSum = (double) session.getFilter("claimSum");
+      double membershipSum = (double) session.getFilter("membershipSum");
+      double actionSum = (double) session.getFilter("actionSum");
 
       request.setAttribute("claims", session.getFilter("claims"));
       request.setAttribute("claimSum", claimSum);
+      request.setAttribute("actionSum", actionSum);
       request.setAttribute("membershipSum", membershipSum);
-      request.setAttribute("turnover", membershipSum - claimSum);
+      request.setAttribute("turnover", membershipSum + actionSum - claimSum);
       session.clearFilters();
     }
 
@@ -79,21 +85,40 @@ public class AdminReportingServlet extends BaseServlet {
               && r.getClaimDate().toLocalDate().isBefore(to.plusDays(1)))
           .collect(Collectors.toList());
 
-      int claimSum = ClaimUtil.sumAllClaims(claimDao, from, to);
-      long membershipSum = membershipDao.select().all().stream().filter(
+      double claimSum = ClaimUtil.sumAllClaims(claimDao, from, to);
+      double membershipSum = membershipDao.select().all().stream().filter(
           r -> r.getStartDate().toLocalDate().isAfter(from.minusDays(1))
               && r.isActive()
               && r.getStartDate().toLocalDate().isBefore(to.plusDays(1))
       ).count() * Membership.ANNUAL_FEE_POUNDS;
 
+
+      List<Action> actions = actionDao.select().all();
+      actions = actions.stream().filter((a) ->
+          a.getDateCreated()
+              .toLocalDate()
+              .isBefore(to.plusDays(1))
+         && a.getDateCreated()
+          .toLocalDate()
+          .isAfter(from.minusDays(1))).collect(Collectors.toList());
+
+      double actionSum = 0.0;
+      if (actions != null && !actions.isEmpty()) {
+        for (Action loopAction: actions) {
+          actionSum += loopAction.getBalance().doubleValue();
+        }
+      }
+
+      double turnover = membershipSum + actionSum - claimSum;
       Session session = Session.fromRequest(request);
       session.setFilter("showReport", true);
       session.setFilter("to", to);
       session.setFilter(FROM_LABEL, from);
       session.setFilter("claimSum", claimSum);
       session.setFilter("claims", claimsMade);
+      session.setFilter("actionSum", actionSum);
       session.setFilter("membershipSum", membershipSum);
-      session.setFilter("turnover", membershipSum - claimSum);
+      session.setFilter("turnover", turnover);
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
