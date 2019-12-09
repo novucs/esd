@@ -44,9 +44,9 @@ public class UserProfileServlet extends BaseServlet {
           new Where().eq("user_id", userId))
           .all();
 
-      if(userActions != null && userActions.size() > 0){
+      if (userActions != null && userActions.size() > 0) {
         List<Action> actions = new ArrayList<>();
-        for(UserAction userAction : userActions){
+        for (UserAction userAction : userActions) {
           actions.add(actionDao.select().where(
               new Where().eq("id", userAction.getActionId())).one());
         }

@@ -69,7 +69,7 @@ public class MakePaymentServlet extends BaseServlet {
 
       String actionId = request.getParameter("actionId");
 
-      if(actionId != null){
+      if (actionId != null) {
         // Procees action payment
         forwardMakeActionPayment(request, response, Integer.parseInt(actionId));
       }
@@ -132,7 +132,7 @@ public class MakePaymentServlet extends BaseServlet {
     DecimalFormat df = new DecimalFormat("#.##");
 
     try {
-      if(actionId != null || offlineActionId != null){
+      if (actionId != null || offlineActionId != null) {
         actionId = actionId == null ? offlineActionId : actionId;
         String stripeId = getStripeChargeId(token, request, response);
         Action action = actionDao.selectById(Integer.parseInt(actionId));

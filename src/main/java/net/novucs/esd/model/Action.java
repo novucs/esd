@@ -27,8 +27,8 @@ public class Action {
     return dateCreated;
   }
 
-  public void setDateCreated(ZonedDateTime date_created) {
-    this.dateCreated = date_created;
+  public void setDateCreated(ZonedDateTime dateCreated) {
+    this.dateCreated = dateCreated;
   }
 
   public Action(Integer pounds, Integer pence, ZonedDateTime completeBy,
@@ -70,8 +70,8 @@ public class Action {
     return completeBy;
   }
 
-  public void setCompleteBy(ZonedDateTime complete_by) {
-    this.completeBy = complete_by;
+  public void setCompleteBy(ZonedDateTime completeBy) {
+    this.completeBy = completeBy;
   }
 
   @Override

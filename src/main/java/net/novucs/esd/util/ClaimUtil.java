@@ -51,7 +51,8 @@ public final class ClaimUtil {
         .all();
   }
 
-  public static int sumAllClaims(Dao<Claim> claimDao, LocalDate from, LocalDate to) throws SQLException {
+  public static int sumAllClaims(Dao<Claim> claimDao, LocalDate from, LocalDate to)
+      throws SQLException {
     return  claimDao.select().all()
         .stream()
         .filter((r) -> r.getClaimDate().toLocalDate().isAfter(from.minusDays(1))

@@ -3,7 +3,10 @@ package net.novucs.esd.controllers.admin;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -50,10 +53,13 @@ public class AdminAnnualChargeServlet extends BaseServlet {
   @Inject
   private NotificationService notificationService;
 
+  @Override
   protected void doGet(HttpServletRequest request,
       HttpServletResponse response)
       throws ServletException, IOException {
-    try{
+
+    try {
+
       LocalDate from = LocalDate.now().minusYears(1);
       LocalDate to = LocalDate.now();
 
@@ -61,20 +67,37 @@ public class AdminAnnualChargeServlet extends BaseServlet {
       long numberOfMembers = getNumberOfMembers();
 
       long maxCharge = claimSum / numberOfMembers;
-      if(claimSum == 0){
+      if (claimSum == 0) {
         maxCharge = 10;
+      }
+
+      List<Action> actions = actionDao.select().all();
+      String disable = "";
+
+      if (!actions.isEmpty()) {
+        LocalDateTime dateCreated = actions.get(actions.size() - 1)
+            .getDateCreated().toLocalDateTime();
+
+        if (dateCreated.plusYears(1).isAfter(LocalDateTime.now())) {
+          disable = "Disabled";
+          request.setAttribute("earliestDate", dateCreated.plusYears(1)
+              .format(DateTimeFormatter.ofLocalizedDate(
+              FormatStyle.FULL)));
+        }
       }
 
       request.setAttribute("claimSum", claimSum);
       request.setAttribute("numberOfMembers", numberOfMembers);
       request.setAttribute("maxCharge", maxCharge);
+      request.setAttribute("disable", disable);
 
       super.forward(request, response, "Annual Sum", "admin.annualcharge");
-    } catch(SQLException e) {
+    } catch (SQLException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage());
     }
   }
 
+  @Override
   protected void doPost(HttpServletRequest request,
       HttpServletResponse response)
       throws ServletException, IOException {
@@ -88,21 +111,21 @@ public class AdminAnnualChargeServlet extends BaseServlet {
     ZonedDateTime completeBy = ZonedDateTime.now().plusMonths(1);
     ZonedDateTime created = ZonedDateTime.now();
     Action action = new Action(pounds, pence, completeBy, created);
+
     try {
       actionDao.insert(action);
       List<Integer> memberIds = getAllMemberIds();
       List<UserAction> userActions = new ArrayList<>();
-      for (Integer id : memberIds){
+      for (Integer id : memberIds) {
         userActions.add(new UserAction(id, action.getId()));
       }
 
       userActionDao.insert(userActions);
       int notificationUserId = Session.fromRequest(request).getUser().getId();
-      Notification notification = new Notification("Successfully charged members: "
+      Notification notification = new Notification("Successfully charged members: &pound;"
           + String.valueOf(charge), notificationUserId, notificationUserId,
           NotificationType.SUCCESS);
       notificationService.sendNotification(notification);
-
       response.sendRedirect("annualcharge");
 
     } catch (SQLException e) {
@@ -110,11 +133,11 @@ public class AdminAnnualChargeServlet extends BaseServlet {
     }
   }
 
-  private int[] parsePoundsAndPence(double value){
-    String[] arr=String.valueOf(value).split("\\.");
-    int[] intArr=new int[2];
-    intArr[0]=Integer.parseInt(arr[0]); // 1
-    intArr[1]=Integer.parseInt(arr[1]); // 9
+  private int[] parsePoundsAndPence(double value) {
+    String[] arr = String.valueOf(value).split("\\.");
+    int[] intArr = new int[2];
+    intArr[0] = Integer.parseInt(arr[0]); // 1
+    intArr[1] = Integer.parseInt(arr[1]); // 9
     return intArr;
   }
 
