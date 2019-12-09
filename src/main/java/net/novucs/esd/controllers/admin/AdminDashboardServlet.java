@@ -52,7 +52,7 @@ public class AdminDashboardServlet extends BaseServlet {
       int outstandingApplications = applicationDao.select().where(new Where()
           .eq("status", ApplicationStatus.OPEN.name())).all().size();
       List<Claim> claims = claimDao.select().where(new Where()
-      .eq("status", ClaimStatus.PENDING.name())).all();
+          .eq("status", ClaimStatus.PENDING.name())).all();
       int numberOfClaims = claims.size();
       int members = 0;
 
