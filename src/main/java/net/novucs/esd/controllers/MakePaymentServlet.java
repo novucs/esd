@@ -71,6 +71,7 @@ public class MakePaymentServlet extends BaseServlet {
       if (actionId != null) {
         // Procees action payment
         forwardMakeActionPayment(request, response, Integer.parseInt(actionId));
+        return;
       }
 
       switch (application.getStatus()) {
@@ -131,7 +132,7 @@ public class MakePaymentServlet extends BaseServlet {
     DecimalFormat df = new DecimalFormat("#.##");
 
     try {
-      if (actionId == null || offlineActionId == null) {
+      if (actionId == null && offlineActionId == null) {
         if (MembershipUtil.hasActiveMembership(user, membershipDao)) {
           // Users with an active membership cannot make a payment.
           sendError(request, response, "You already have a membership");
