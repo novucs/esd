@@ -1,5 +1,6 @@
 package net.novucs.esd.model;
 
+import java.util.Objects;
 import net.novucs.esd.orm.Column;
 import net.novucs.esd.orm.Table;
 
@@ -23,6 +24,23 @@ public final class UserAction {
     this.id = id;
     this.userId = userId;
     this.actionId = actionId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    UserAction that = (UserAction) o;
+    return id.equals(that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 
   public Integer getId() {

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -132,30 +131,7 @@ public class MakePaymentServlet extends BaseServlet {
     DecimalFormat df = new DecimalFormat("#.##");
 
     try {
-      if (actionId != null || offlineActionId != null) {
-        actionId = actionId == null ? offlineActionId : actionId;
-        String stripeId = getStripeChargeId(token, request, response);
-        Action action = actionDao.selectById(Integer.parseInt(actionId));
-        double fee = Double.parseDouble(action.getPounds().toString()
-                + "." + action.getPence().toString());
-        paymentDao.insert(new Payment(
-            user.getId(),
-            BigDecimal.valueOf(fee),
-            stripeId,
-            reference,
-            ZonedDateTime.now(),
-            stripeId == null ? "PENDING" : "VERIFIED"
-        ));
-
-        int userId = Session.fromRequest(request).getUser().getId();
-        UserAction toDelete = userActionDao.select().where(
-            new Where()
-                .eq("user_id", userId)
-                .and()
-                .eq("action_id", actionId))
-            .first();
-        request.setAttribute("charge", df.format(fee));
-      } else {
+      if (actionId == null || offlineActionId == null) {
         if (MembershipUtil.hasActiveMembership(user, membershipDao)) {
           // Users with an active membership cannot make a payment.
           sendError(request, response, "You already have a membership");
@@ -187,6 +163,10 @@ public class MakePaymentServlet extends BaseServlet {
         ));
 
         request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
+      } else {
+        actionId = actionId == null ? offlineActionId : actionId;
+        double fee = processActionPayment(actionId, token, request, response, reference, user);
+        request.setAttribute("charge", df.format(fee));
       }
 
       super.forward(request, response, "Payment Success", "user.makepayment.success");
@@ -194,6 +174,40 @@ public class MakePaymentServlet extends BaseServlet {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private double processActionPayment(String actionId, String token,
+      HttpServletRequest request, HttpServletResponse response, String reference, User user)
+      throws SQLException, IOException, ServletException {
+
+    String stripeId = getStripeChargeId(token, request, response);
+    Action action = actionDao.selectById(Integer.parseInt(actionId));
+    double fee = Double.parseDouble(action.getPounds().toString()
+        + "." + action.getPence().toString());
+    paymentDao.insert(new Payment(
+        user.getId(),
+        BigDecimal.valueOf(fee),
+        stripeId,
+        reference,
+        ZonedDateTime.now(),
+        stripeId == null ? "PENDING" : "VERIFIED"
+    ));
+
+    int userId = Session.fromRequest(request).getUser().getId();
+    UserAction toDelete = userActionDao.select().where(
+        new Where()
+            .eq("user_id", userId)
+            .and()
+            .eq("action_id", actionId))
+        .first();
+
+    userActionDao.delete(toDelete);
+    if (userActionDao.select()
+        .where(new Where().eq("action_id", actionId)).count("*") == 0) {
+      actionDao.delete(action);
+    }
+
+    return fee;
   }
 
   public String getStripeChargeId(String token,
@@ -239,3 +253,5 @@ public class MakePaymentServlet extends BaseServlet {
     return "MakePaymentServlet";
   }
 }
+
+

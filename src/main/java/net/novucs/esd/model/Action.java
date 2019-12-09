@@ -39,7 +39,9 @@ public class Action {
     this.dateCreated = dateCreated;
   }
 
+
   public Action() {
+    // This constructor is intentionally empty.
   }
 
   public Integer getId() {

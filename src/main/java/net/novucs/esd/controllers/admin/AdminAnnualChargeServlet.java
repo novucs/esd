@@ -23,7 +23,6 @@ import net.novucs.esd.model.Claim;
 import net.novucs.esd.model.Notification;
 import net.novucs.esd.model.NotificationType;
 import net.novucs.esd.model.Role;
-import net.novucs.esd.model.User;
 import net.novucs.esd.model.UserAction;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.notifications.NotificationService;
@@ -123,7 +122,7 @@ public class AdminAnnualChargeServlet extends BaseServlet {
       userActionDao.insert(userActions);
       int notificationUserId = Session.fromRequest(request).getUser().getId();
       Notification notification = new Notification("Successfully charged members: &pound;"
-          + String.valueOf(charge), notificationUserId, notificationUserId,
+          + charge, notificationUserId, notificationUserId,
           NotificationType.SUCCESS);
       notificationService.sendNotification(notification);
       response.sendRedirect("annualcharge");

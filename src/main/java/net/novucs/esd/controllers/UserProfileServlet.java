@@ -40,11 +40,12 @@ public class UserProfileServlet extends BaseServlet {
 
     int userId = Session.fromRequest(request).getUser().getId();
     try {
+
       List<UserAction> userActions = userActionDao.select().where(
           new Where().eq("user_id", userId))
           .all();
 
-      if (userActions != null && userActions.size() > 0) {
+      if (userActions != null && !userActions.isEmpty()) {
         List<Action> actions = new ArrayList<>();
         for (UserAction userAction : userActions) {
           actions.add(actionDao.select().where(
@@ -57,9 +58,8 @@ public class UserProfileServlet extends BaseServlet {
       super.forward(request, response, "My Profile", "user.profile");
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage());
     }
-
   }
 
   @Override

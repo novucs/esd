@@ -21,8 +21,10 @@ import javax.servlet.http.HttpSession;
 import net.novucs.esd.controllers.UserProfileServlet;
 import net.novucs.esd.lifecycle.DatabaseLifecycle;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Action;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserAction;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.DaoManager;
@@ -66,6 +68,8 @@ public class TestUserProfileServlet {
 
     // Reflect DAO
     ReflectUtil.setFieldValue(servlet, "userDao", userDao);
+    ReflectUtil.setFieldValue(servlet, "actionDao", dm.get(Action.class));
+    ReflectUtil.setFieldValue(servlet, "userActionDao", dm.get(UserAction.class));
   }
 
   @Test
