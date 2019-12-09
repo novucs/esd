@@ -151,6 +151,14 @@
     <servlet-name>AdminReportingServlet</servlet-name>
     <url-pattern>/admin/reporting</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>AdminAnnualChargeServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.admin.AdminAnnualChargeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminAnnualChargeServlet</servlet-name>
+    <url-pattern>/admin/annualcharge</url-pattern>
+  </servlet-mapping>
   <session-config>
     <session-timeout>
       20

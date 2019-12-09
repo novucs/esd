@@ -15,6 +15,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import net.novucs.esd.model.Action;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.Claim;
@@ -25,6 +26,7 @@ import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.Role;
 import net.novucs.esd.model.RolePermission;
 import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserAction;
 import net.novucs.esd.model.UserLog;
 import net.novucs.esd.model.UserRole;
 import net.novucs.esd.orm.ConnectionSource;
@@ -55,7 +57,9 @@ public class DatabaseLifecycle {
       User.class,
       UserLog.class,
       UserRole.class,
-      Notification.class
+      Notification.class,
+      Action.class,
+      UserAction.class
   ));
 
   private DaoManager daoManager;

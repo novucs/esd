@@ -1,7 +1,6 @@
 package net.novucs.esd.controllers.admin;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.controllers.BaseServlet;
 import net.novucs.esd.lifecycle.Session;
 import net.novucs.esd.model.Claim;
-import net.novucs.esd.model.ClaimStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.orm.Dao;
+import net.novucs.esd.util.ClaimUtil;
 
 public class AdminReportingServlet extends BaseServlet {
 
@@ -27,7 +26,6 @@ public class AdminReportingServlet extends BaseServlet {
 
   private static final String DATE_FORMAT = "dd-MM-yy";
   private static final String FROM_LABEL = "from";
-
 
   @Inject
   private Dao<Claim> claimDao;
@@ -81,10 +79,7 @@ public class AdminReportingServlet extends BaseServlet {
               && r.getClaimDate().toLocalDate().isBefore(to.plusDays(1)))
           .collect(Collectors.toList());
 
-      int claimSum = claimsMade.stream().filter((c) -> c.getStatus().equals(ClaimStatus.APPROVED))
-          .map(Claim::getAmount)
-          .map(BigDecimal::intValue)
-          .mapToInt(Integer::intValue).sum();
+      int claimSum = ClaimUtil.sumAllClaims(claimDao, from, to);
       long membershipSum = membershipDao.select().all().stream().filter(
           r -> r.getStartDate().toLocalDate().isAfter(from.minusDays(1))
               && r.isActive()

@@ -17,12 +17,14 @@
                 </div>
                 <br/>
                 <div id="card" class="tabcontent">
-                    <h6>Pay your membership fees</h6>
+                    <h6>Pay your fees</h6>
                     <div>You have an outstanding balance of &pound;${fee}</div>
                     <br/>
                     <div class="col s3 left"></div>
                     <div class="col s6 center-align">
                         <form action="makepayment" method="post" id="stripe-payment-form">
+                            <input form="stripe-payment-form"
+                                   hidden name="actionId" id="actionId" value="${actionId}"/>
                             <div class="form-row">
                                 <div class="card-input-field">
                                     <label for="card-number">Card number</label>
@@ -60,12 +62,14 @@
                 </div>
                 <div id="offline" class="tabcontent">
                     <h6>Make a payment by bank transfer</h6>
-                    <p>Annual membership fee is &pound;${fee}</p>
+                    <p>Amount to pay is &pound;${fee}</p>
                     <p>Please make a bank transfer and provide the reference.</p>
 
                     <div class="col s3 left"></div>
                     <div class="col s6 center-align">
                         <form action="makepayment" method="post" id="offline-payment-form">
+                            <input form="offline-payment-form"
+                                   hidden name="offlineActionId" id="offlineActionId" value="${actionId}"/>
                             <div class="form-row">
                                 <div class="input-field">
                                     <input name="reference" id="reference"

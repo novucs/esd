@@ -13,7 +13,7 @@ public class MemberMyPaymentsServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    super.forward(request, response, "My Payments", "member.payments");
+    super.forward(request, response, "My Payments", "member.payments.manage");
   }
 
   @Override

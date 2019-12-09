@@ -40,10 +40,13 @@
                 <t:tile title="<%=String.valueOf(request.getAttribute("monthlyClaimCost"))%>"
                         label="Monthly claim cost"
                         icon="attach_money"/>
-                <t:tile title="<%=String.valueOf(request.getAttribute("quarterlyClaimCost"))%>"
-                        label="Quarterly claim cost"
-                        icon="date_range"/>
-                <a class="reporting" href="${pageContext.request.contextPath}/admin/reporting"">
+                <a class="reporting" href="${pageContext.request.contextPath}/admin/annualcharge">
+                    <t:tile title=""
+                            colour="black reporting"
+                            label="Calculate Annual Charge"
+                            icon="date_range"/>
+                </a>
+                <a class="reporting" href="${pageContext.request.contextPath}/admin/reporting">
                     <t:tile title=""
                             colour="black reporting"
                             label="Reporting"
