@@ -20,7 +20,7 @@ public class ManagePaymentsServlet extends BaseServlet {
 
   private static final String PAGE_SIZE_FILTER = "userPageSizeFilter";
 
-  private static final String USER_SEARCH_QUERY = "userSearchQuery";
+  private static final String PAYMENT_SEARCH_QUERY = "userSearchQuery";
 
   @Inject
   private Dao<Payment> paymentDao;
@@ -32,24 +32,26 @@ public class ManagePaymentsServlet extends BaseServlet {
     try {
       Session session = Session.fromRequest(request);
       User user = session.getUser();
-      String searchQuery = (String) session.getFilter(USER_SEARCH_QUERY);
+      String searchQuery = (String) session.getFilter(PAYMENT_SEARCH_QUERY);
       int pageSize = PaginationUtil.getPageSize(request, PAGE_SIZE_FILTER);
       double pageNumber = PaginationUtil.getPageNumber(request);
 
       List<Payment> payments;
       if (searchQuery == null) {
         payments = PaginationUtil
-            .paginate(paymentDao, pageSize, pageNumber, new Where().eq("user_id", user.getId()));
+            .paginate(paymentDao, pageSize, pageNumber,
+                new Where().eq("user_id", user.getId()));
       } else {
-        String[] columns = {"name", "email"};
+        String[] columns = {"reference", "approval_status"};
         payments = PaginationUtil.paginateWithSearch(paymentDao, pageSize, pageNumber,
+            new Where().eq("user_id", user.getId()),
             searchQuery, columns);
       }
 
       int max = PaginationUtil.getMaxPages(paymentDao, pageSize);
       PaginationUtil.setRequestAttributes(request, max, pageNumber, pageSize);
       request.setAttribute("payments", payments);
-      session.removeFilter(USER_SEARCH_QUERY);
+      session.removeFilter(PAYMENT_SEARCH_QUERY);
 
       super.forward(request, response, "Manage Payments", "user.payments.manage");
     } catch (SQLException e) {
@@ -59,14 +61,13 @@ public class ManagePaymentsServlet extends BaseServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+      throws IOException {
     // Here we will set the filters in the users session.
-
-    String searchQuery = request.getParameter("search-claims-query");
-    PaginationUtil.postPaginationWithSearch(request, PAGE_SIZE_FILTER, USER_SEARCH_QUERY,
+    String searchQuery = request.getParameter("search-payment-query");
+    PaginationUtil.postPaginationWithSearch(request, PAGE_SIZE_FILTER, PAYMENT_SEARCH_QUERY,
         searchQuery);
 
-    response.sendRedirect("claims");
+    response.sendRedirect("payments");
   }
 
   @Override

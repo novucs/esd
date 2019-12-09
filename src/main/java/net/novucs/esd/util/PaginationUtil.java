@@ -66,6 +66,13 @@ public final class PaginationUtil {
         getOffset(pageSize, pageNumber)).limit(pageSize).all();
   }
 
+  public static <M> List<M> paginateWithSearch(Dao<M> dao, int pageSize, double pageNumber,
+      Where where, String searchQuery, String... columnNames) throws SQLException {
+    return dao.select().where(where.and()
+        .where(new Where().search(searchQuery, columnNames))).offset(
+        getOffset(pageSize, pageNumber)).limit(pageSize).all();
+  }
+
   public static <M> int getMaxPages(Dao<M> dao, double pageSize) throws SQLException {
     return (int) Math.ceil(dao.select().count("*") / pageSize);
   }
