@@ -113,7 +113,7 @@ public class DatabaseLifecycle {
     return daoManager.get(clazz);
   }
 
-  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+  @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidLiteralsInIfCondition"})
   private void setupDummyUser(String name, String roleName, String password) throws SQLException {
     Role role = daoManager.get(Role.class)
         .select().where(new Where().eq("name", roleName)).first();

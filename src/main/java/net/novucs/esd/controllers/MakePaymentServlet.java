@@ -51,6 +51,7 @@ public class MakePaymentServlet extends BaseServlet {
   @Inject
   private Dao<UserAction> userActionDao;
 
+  @SuppressWarnings("PMD")
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
@@ -94,7 +95,6 @@ public class MakePaymentServlet extends BaseServlet {
         default:
           return;
       }
-
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
