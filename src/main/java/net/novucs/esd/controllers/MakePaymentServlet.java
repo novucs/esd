@@ -166,7 +166,7 @@ public class MakePaymentServlet extends BaseServlet {
 
         request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
       } else {
-        actionId = actionId == null ? offlineActionId : actionId;
+        actionId = actionId.isEmpty() ? offlineActionId : actionId;
         double fee = processActionPayment(actionId, token, request, response, reference, user);
         request.setAttribute("charge", df.format(fee));
       }
