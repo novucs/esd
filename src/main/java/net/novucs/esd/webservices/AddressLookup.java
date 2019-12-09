@@ -25,6 +25,8 @@ public class AddressLookup {
       "https://maps.googleapis.com/maps/api/geocode/json?key="
           + GOOGLE_MAPS_API_KEY + "&sensor=false";
 
+  private static final String LONG_NAME = "long_name";
+
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public String getAddressOptions(@QueryParam("pc") String postalCode)
@@ -44,19 +46,32 @@ public class AddressLookup {
     // Use the latitude and longitude to request additional address information
     URL addressEndpoint = new URL(GOOGLE_MAPS_ENDPOINT + "&latlng=" + lat + "," + lng);
     JsonObject addressResponse = readJsonObject(addressEndpoint);
-
+    
+    // Find a valid address component to use
+    int componentIndex = 0;
+    for (JsonObject jo : addressResponse.getJsonArray("results").getValuesAs(JsonObject.class)) {
+      String name = jo.getJsonArray("address_components")
+              .getJsonObject(1)
+              .getJsonString(LONG_NAME)
+              .getString();
+      if (!name.matches("[0-9]+")) {
+        break;
+      }
+      componentIndex++;
+    }
+    
     // Parse the address components for address data
     JsonArray addressComponent = addressResponse.getJsonArray("results")
-            .getJsonObject(0)
+            .getJsonObject(componentIndex)
             .getJsonArray("address_components");
-
+    
     // Fetch the data from addressEndpoint
     String street = addressComponent
-            .getJsonObject(1).getJsonString("long_name").getString();
+            .getJsonObject(1).getJsonString(LONG_NAME).getString();
     String town = addressComponent
-            .getJsonObject(2).getJsonString("long_name").getString();
+            .getJsonObject(2).getJsonString(LONG_NAME).getString();
     String county = addressComponent
-            .getJsonObject(3).getJsonString("long_name").getString();
+            .getJsonObject(3).getJsonString(LONG_NAME).getString();
 
     // Concatenate the address data together and return it
     return Json.createObjectBuilder()

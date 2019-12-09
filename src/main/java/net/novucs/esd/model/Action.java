@@ -1,5 +1,6 @@
 package net.novucs.esd.model;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import net.novucs.esd.orm.Column;
@@ -23,6 +24,9 @@ public class Action {
   @Column
   private ZonedDateTime dateCreated;
 
+  @Column
+  private Integer amountPaid;
+
   public ZonedDateTime getDateCreated() {
     return dateCreated;
   }
@@ -31,12 +35,21 @@ public class Action {
     this.dateCreated = dateCreated;
   }
 
+  public int getAmountPaid() {
+    return amountPaid;
+  }
+
+  public void setAmountPaid(Integer amountPaid) {
+    this.amountPaid = amountPaid;
+  }
+
   public Action(Integer pounds, Integer pence, ZonedDateTime completeBy,
       ZonedDateTime dateCreated) {
     this.pounds = pounds;
     this.pence = pence;
     this.completeBy = completeBy;
     this.dateCreated = dateCreated;
+    this.amountPaid = 0;
   }
 
 
@@ -54,6 +67,10 @@ public class Action {
 
   public Integer getPounds() {
     return pounds;
+  }
+
+  public BigDecimal getBalance() {
+    return BigDecimal.valueOf(pounds + (pence / 100f));
   }
 
   public void setPounds(Integer pounds) {

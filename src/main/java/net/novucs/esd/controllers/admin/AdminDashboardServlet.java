@@ -51,7 +51,8 @@ public class AdminDashboardServlet extends BaseServlet {
       List<UserRole> userRoles = userRoleDao.select().all();
       int outstandingApplications = applicationDao.select().where(new Where()
           .eq("status", ApplicationStatus.OPEN.name())).all().size();
-      List<Claim> claims = claimDao.select().all();
+      List<Claim> claims = claimDao.select().where(new Where()
+          .eq("status", ClaimStatus.PENDING.name())).all();
       int numberOfClaims = claims.size();
       int members = 0;
 

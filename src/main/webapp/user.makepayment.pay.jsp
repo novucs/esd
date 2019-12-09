@@ -69,7 +69,7 @@
                     <div class="col s6 center-align">
                         <form action="makepayment" method="post" id="offline-payment-form">
                             <input form="offline-payment-form"
-                                   hidden name="offlineActionId" id="offlineActionId" value="${actionId}"/>
+                                   hidden name="actionId" id="offlineActionId" value="${actionId}"/>
                             <div class="form-row">
                                 <div class="input-field">
                                     <input name="reference" id="reference"

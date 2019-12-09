@@ -51,6 +51,7 @@ public class MakePaymentServlet extends BaseServlet {
   @Inject
   private Dao<UserAction> userActionDao;
 
+  @SuppressWarnings("PMD")
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
@@ -67,8 +68,7 @@ public class MakePaymentServlet extends BaseServlet {
       }
 
       String actionId = request.getParameter("actionId");
-
-      if (actionId != null) {
+      if (actionId != null && !actionId.isEmpty()) {
         // Procees action payment
         forwardMakeActionPayment(request, response, Integer.parseInt(actionId));
         return;
@@ -95,7 +95,6 @@ public class MakePaymentServlet extends BaseServlet {
         default:
           return;
       }
-
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -128,48 +127,48 @@ public class MakePaymentServlet extends BaseServlet {
     String token = request.getParameter("stripeToken");
     String reference = request.getParameter("reference");
     String actionId = request.getParameter("actionId");
-    String offlineActionId = request.getParameter("offlineActionId");
     DecimalFormat df = new DecimalFormat("#.##");
 
     try {
-      if (actionId.isEmpty() && offlineActionId.isEmpty()) {
-
-        if (MembershipUtil.hasActiveMembership(user, membershipDao)) {
-          // Users with an active membership cannot make a payment.
-          sendError(request, response, "You already have a membership");
-          return;
-        }
-
-        Application application = MembershipUtil.getApplication(user, applicationDao);
-        if (application == null) {
-          sendError(request, response, "Your account has no related application");
-          return;
-        }
-
-        String stripeId = getStripeChargeId(token, request, response);
-
-        paymentDao.insert(new Payment(
-            user.getId(),
-            BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
-            stripeId,
-            reference,
-            ZonedDateTime.now(),
-            stripeId == null ? "PENDING" : "VERIFIED"
-        ));
-
-        application.setStatus(ApplicationStatus.PAID);
-        applicationDao.update(application);
-        membershipDao.insert(new Membership(
-            user.getId(),
-            MembershipUtil.hasPreviousMemberships(user, membershipDao)
-        ));
-
-        request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
-      } else {
-        actionId = actionId == null ? offlineActionId : actionId;
+      // Check for Action payments
+      if (actionId != null && !actionId.isEmpty()) {
         double fee = processActionPayment(actionId, token, request, response, reference, user);
         request.setAttribute("charge", df.format(fee));
+        super.forward(request, response, "Payment Success", "user.makepayment.success");
+        return;
       }
+      
+      if (MembershipUtil.hasActiveMembership(user, membershipDao)) {
+        // Users with an active membership cannot make a payment.
+        sendError(request, response, "You already have a membership");
+        return;
+      }
+
+      Application application = MembershipUtil.getApplication(user, applicationDao);
+      if (application == null) {
+        sendError(request, response, "Your account has no related application");
+        return;
+      }
+
+      String stripeId = getStripeChargeId(token, request, response);
+
+      paymentDao.insert(new Payment(
+          user.getId(),
+          BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
+          stripeId,
+          reference,
+          ZonedDateTime.now(),
+          stripeId == null ? "PENDING" : "VERIFIED"
+      ));
+
+      application.setStatus(ApplicationStatus.PAID);
+      applicationDao.update(application);
+      membershipDao.insert(new Membership(
+          user.getId(),
+          MembershipUtil.hasPreviousMemberships(user, membershipDao)
+      ));
+
+      request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
 
       super.forward(request, response, "Payment Success", "user.makepayment.success");
     } catch (SQLException e) {
@@ -204,6 +203,8 @@ public class MakePaymentServlet extends BaseServlet {
         .first();
 
     userActionDao.delete(toDelete);
+    action.setAmountPaid(action.getAmountPaid() + 1);
+
     if (userActionDao.select()
         .where(new Where().eq("action_id", actionId)).count("*") == 0) {
       actionDao.delete(action);

@@ -1,6 +1,10 @@
+<%@ page import="net.novucs.esd.model.ClaimStatus" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="CS_APPROVED" value="<%=ClaimStatus.APPROVED.name()%>"/>
+<c:set var="CS_PENDING" value="<%=ClaimStatus.PENDING.name()%>"/>
+<c:set var="CS_REJECTED" value="<%=ClaimStatus.REJECTED.name()%>"/>
 
 <form class="row" method="post" name="reporting-form">
     <div class="col s12 ">
@@ -54,13 +58,16 @@
                     </div>
                 </div>
                 <div class="row top-margin-30">
-                    <div class="col s4 center-align">
-                        Recieved from memberships: &pound;${membershipSum}
+                    <div class="col s3 center-align">
+                        Received from memberships: &pound;${membershipSum}
                     </div>
-                    <div class="col s4 center-align">
+                    <div class="col s3 center-align">
+                        Other charges: &pound;${actionSum}
+                    </div>
+                    <div class="col s3 center-align">
                         Paid out to claims: &pound;${claimSum}
                     </div>
-                    <div class="col s4 center-align ${turnover < 0 ? 'red-text' : 'green-text'}">
+                    <div class="col s3 center-align ${turnover < 0 ? 'red-text' : 'green-text'}">
                         Turnover: &pound;${turnover}
                     </div>
                 </div>
@@ -100,8 +107,8 @@
                                         </span>
                                     </div>
                                     <c:set var="claimStatusColor" scope="session"
-                                           value="${claim.status.equals(CS_APPROVED) ?
-                                            'green-text' : (claim.status.equals(CS_PENDING) ?
+                                           value="${fn:trim(claim.status).equals(fn:trim(CS_APPROVED)) ?
+                                            'green-text' : (claim.status.equals(fn:trim(CS_PENDING)) ?
                                             'orange-text' : 'red-text')}"/>
                                     <div class="col s3">
                                         <label>
