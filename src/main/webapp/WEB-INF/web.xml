@@ -112,6 +112,22 @@
     <servlet-class>net.novucs.esd.controllers.admin.AdminManageUsersServlet</servlet-class>
   </servlet>
   <servlet-mapping>
+    <servlet-name>AdminManagePaymentsServlet</servlet-name>
+    <url-pattern>/admin/payments</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AdminManagePaymentsServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.admin.AdminManagePaymentsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminEditPaymentServlet</servlet-name>
+    <url-pattern>/admin/editpayment</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AdminEditPaymentServlet</servlet-name>
+    <servlet-class>net.novucs.esd.controllers.admin.AdminEditPaymentServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
     <servlet-name>AdminManageUsersServlet</servlet-name>
     <url-pattern>/admin/users</url-pattern>
   </servlet-mapping>

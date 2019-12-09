@@ -56,6 +56,7 @@
                     <li class="divider" tabindex="-1"></li>
                     <li><a href="${baseUrl}/admin/users">Manage Users</a></li>
                     <li><a href="${baseUrl}/admin/applications">Manage Applications</a></li>
+                    <li><a href="${baseUrl}/admin/payments">Manage Payments</a></li>
                     <li><a href="${baseUrl}/admin/claims">Manage Claims</a></li>
                 </ul>
                 <% } %>
