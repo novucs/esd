@@ -99,11 +99,14 @@
                         <ul>
                             <c:forEach var="action" items="${actions}">
                                 <li>
-                                    <a>
+                                    <a href="${pageContext.request.contextPath}/makepayment?actionId=${action.id}">
                                         Pay
                                     </a>
-                                    <strong>&pound;${action.pounds}.${action.pence}</strong> by
-                                    <fmt:parseDate value="${action.complete_by.toLocalDate()}"
+                                    <strong>
+                                        &pound;${action.pounds}.${action.pence}
+                                    </strong>
+                                    by
+                                    <fmt:parseDate value="${action.completeBy.toLocalDate()}"
                                                    type="date" pattern="yyyy-MM-dd"
                                                    var="parsedDate"/>
                                     <fmt:formatDate value="${parsedDate}" type="date"

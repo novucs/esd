@@ -103,7 +103,7 @@ public class AdminAnnualChargeServlet extends BaseServlet {
           NotificationType.SUCCESS);
       notificationService.sendNotification(notification);
 
-      response.sendRedirect("/admin/annualcharge");
+      response.sendRedirect("annualcharge");
 
     } catch (SQLException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage());

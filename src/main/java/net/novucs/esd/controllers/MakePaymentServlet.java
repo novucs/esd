@@ -18,11 +18,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.novucs.esd.lifecycle.Session;
+import net.novucs.esd.model.Action;
 import net.novucs.esd.model.Application;
 import net.novucs.esd.model.ApplicationStatus;
 import net.novucs.esd.model.Membership;
 import net.novucs.esd.model.Payment;
 import net.novucs.esd.model.User;
+import net.novucs.esd.model.UserAction;
 import net.novucs.esd.orm.Dao;
 import net.novucs.esd.orm.Where;
 
@@ -43,6 +45,12 @@ public class MakePaymentServlet extends BaseServlet {
   @Inject
   private Dao<Payment> paymentDao;
 
+  @Inject
+  private Dao<Action> actionDao;
+
+  @Inject
+  private Dao<UserAction> userActionDao;
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
@@ -56,6 +64,13 @@ public class MakePaymentServlet extends BaseServlet {
         // All users must have an application associated with their account.
         sendError(request, response, "Your account has no related application");
         return;
+      }
+
+      String actionId = request.getParameter("actionId");
+
+      if(actionId != null){
+        // Procees action payment
+        forwardMakeActionPayment(request, response, Integer.parseInt(actionId));
       }
 
       switch (application.getStatus()) {
@@ -118,6 +133,18 @@ public class MakePaymentServlet extends BaseServlet {
     super.forward(request, response, "Membership Payment", "user.makepayment.pay");
   }
 
+  private void forwardMakeActionPayment(HttpServletRequest request, HttpServletResponse response,
+      int actionId)
+      throws IOException, ServletException, SQLException {
+
+    Action action = actionDao.selectById(actionId);
+    double fee = Double.parseDouble(action.getPounds().toString()
+        + "." + action.getPence().toString());
+    request.setAttribute("fee", fee);
+    request.setAttribute("actionId", actionId);
+    super.forward(request, response, "Membership Payment", "user.makepayment.pay");
+  }
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
@@ -125,53 +152,86 @@ public class MakePaymentServlet extends BaseServlet {
     User user = session.getUser();
     String token = request.getParameter("stripeToken");
     String reference = request.getParameter("reference");
+    String actionId = request.getParameter("actionId");
+    String offlineActionId = request.getParameter("offlineActionId");
+    DecimalFormat df = new DecimalFormat("#.##");
 
     try {
-      if (hasActiveMembership(user)) {
-        // Users with an active membership cannot make a payment.
-        sendError(request, response, "You already have a membership");
-        return;
-      }
+      if(actionId != null || offlineActionId != null){
+        actionId = actionId == null ? offlineActionId : actionId;
+        String stripeId = getStripeChargeId(token, request, response);
+        Action action = actionDao.selectById(Integer.parseInt(actionId));
+        double fee = Double.parseDouble(action.getPounds().toString()
+                + "." + action.getPence().toString());
+        paymentDao.insert(new Payment(
+            user.getId(),
+            BigDecimal.valueOf(fee),
+            stripeId,
+            reference,
+            ZonedDateTime.now(),
+            stripeId == null ? "PENDING" : "VERIFIED"
+        ));
 
-      Application application = getApplication(user);
-      if (application == null) {
-        sendError(request, response, "Your account has no related application");
-        return;
-      }
-
-      String stripeId = null;
-      if (token != null) {
-        Charge charge = executeStripePayment(request, response, token);
-        if (charge == null) {
+        int userId = Session.fromRequest(request).getUser().getId();
+        UserAction toDelete = userActionDao.select().where(
+            new Where()
+                .eq("user_id", userId)
+                .and()
+                .eq("action_id", actionId))
+            .first();
+        request.setAttribute("charge", df.format(fee));
+      } else {
+        if (hasActiveMembership(user)) {
+          // Users with an active membership cannot make a payment.
+          sendError(request, response, "You already have a membership");
           return;
         }
-        stripeId = charge.getId();
+
+        Application application = getApplication(user);
+        if (application == null) {
+          sendError(request, response, "Your account has no related application");
+          return;
+        }
+
+        String stripeId = getStripeChargeId(token, request, response);
+
+        paymentDao.insert(new Payment(
+            user.getId(),
+            BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
+            stripeId,
+            reference,
+            ZonedDateTime.now(),
+            stripeId == null ? "PENDING" : "VERIFIED"
+        ));
+
+        application.setStatus(ApplicationStatus.PAID);
+        applicationDao.update(application);
+        membershipDao.insert(new Membership(
+            user.getId(),
+            hasPreviousMemberships(user)
+        ));
+
+        request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
       }
 
-      paymentDao.insert(new Payment(
-          user.getId(),
-          BigDecimal.valueOf(Membership.ANNUAL_FEE_POUNDS),
-          stripeId,
-          reference,
-          ZonedDateTime.now(),
-          stripeId == null ? "PENDING" : "VERIFIED"
-      ));
-
-      application.setStatus(ApplicationStatus.PAID);
-      applicationDao.update(application);
-      membershipDao.insert(new Membership(
-          user.getId(),
-          hasPreviousMemberships(user)
-      ));
-
-      DecimalFormat df = new DecimalFormat("#.##");
-      request.setAttribute("charge", df.format(Membership.ANNUAL_FEE_POUNDS));
       super.forward(request, response, "Payment Success", "user.makepayment.success");
-
     } catch (SQLException e) {
       Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public String getStripeChargeId(String token,
+      HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    if (token != null) {
+      Charge charge = executeStripePayment(request, response, token);
+      if (charge == null) {
+        return null;
+      }
+      return charge.getId();
+    }
+    return null;
   }
 
   public void sendError(HttpServletRequest request, HttpServletResponse response, String message)

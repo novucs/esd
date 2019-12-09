@@ -18,26 +18,25 @@ public class Action {
   private Integer pence;
 
   @Column
-  private ZonedDateTime complete_by;
+  private ZonedDateTime completeBy;
 
   @Column
-  private ZonedDateTime date_created;
+  private ZonedDateTime dateCreated;
 
   public ZonedDateTime getDateCreated() {
-    return date_created;
+    return dateCreated;
   }
 
   public void setDateCreated(ZonedDateTime date_created) {
-    this.date_created = date_created;
+    this.dateCreated = date_created;
   }
 
-  public Action(Integer pounds, Integer pence, ZonedDateTime complete_by,
-      ZonedDateTime date_created) {
-    this.id = id;
+  public Action(Integer pounds, Integer pence, ZonedDateTime completeBy,
+      ZonedDateTime dateCreated) {
     this.pounds = pounds;
     this.pence = pence;
-    this.complete_by = complete_by;
-    this.date_created = date_created;
+    this.completeBy = completeBy;
+    this.dateCreated = dateCreated;
   }
 
   public Action() {
@@ -68,11 +67,11 @@ public class Action {
   }
 
   public ZonedDateTime getCompleteBy() {
-    return complete_by;
+    return completeBy;
   }
 
   public void setCompleteBy(ZonedDateTime complete_by) {
-    this.complete_by = complete_by;
+    this.completeBy = complete_by;
   }
 
   @Override
